@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">gpns</string>
+    <string name="enter">Войти</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="gpns">Газпром Нефтехим Салават</string>
+    <string name="welcome_text_second">Поиск попутчиков</string>
+    <string name="email">Электронная почта</string>
+    <string name="password">Пароль</string>
+    <string name="finish_login_button">Продолжить</string>
+    <string name="cofirm_password">Подтвердите пароль</string>
+    <string name="user_name">Ваше имя</string>
 </resources>
