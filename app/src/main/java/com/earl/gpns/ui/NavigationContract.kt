@@ -11,4 +11,10 @@ interface NavigationContract {
     fun back()
 
     fun mainFragment()
+
+    fun showProgressBar()
+
+    fun hideProgressBar()
+
+    fun log(text: String)
 }

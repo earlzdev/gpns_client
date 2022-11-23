@@ -14,4 +14,5 @@
     <color name="input_edittext_color">#E6E6E6</color>
     <color name="input_text_color">#484141</color>
     <color name="input_hint_color">#90484141</color>
+    <color name="custom_transparent">#80FFFFFF</color>
 </resources>
