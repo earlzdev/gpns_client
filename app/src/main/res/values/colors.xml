@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+<!--    theme day -->
+
+    <color name="log_in_button_color">#99292929</color>
+    <color name="sign_up_button_color">#999F9F9F</color>
+    <color name="input_edittext_color">#E6E6E6</color>
+    <color name="input_text_color">#484141</color>
+    <color name="input_hint_color">#90484141</color>
+    <color name="custom_transparent">#80FFFFFF</color>
 </resources>
