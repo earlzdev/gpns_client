@@ -47,12 +47,6 @@ class BaseRepository @Inject constructor(
 
     override suspend fun authenticate(token: String, callback: AuthResultListener) {
         try {
-//            val authenticateResult = service.authenticate("Bearer $token")
-//            if (authenticateResult == KEY_SUCCESS) {
-//                callback.authorized(authenticateResult)
-//            } else {
-//                callback.unknownError(Exception(authenticateResult))
-//            }
             service.authenticate("Bearer $token")
             callback.authorized(KEY_SUCCESS)
         } catch (e: HttpException) {
