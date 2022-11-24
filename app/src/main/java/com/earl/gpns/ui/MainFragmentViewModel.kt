@@ -20,10 +20,4 @@ class MainFragmentViewModel @Inject constructor(
             interactor.authenticate(token, callback)
         }
     }
-
-    fun getSecretInfo(token: String, callback: OperationResultListener) {
-        viewModelScope.launch(Dispatchers.IO) {
-            interactor.getSecretInfo(token, callback)
-        }
-    }
 }

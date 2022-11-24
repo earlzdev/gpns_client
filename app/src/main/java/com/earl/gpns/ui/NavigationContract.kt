@@ -16,5 +16,7 @@ interface NavigationContract {
 
     fun hideProgressBar()
 
+    fun usersFragment()
+
     fun log(text: String)
 }

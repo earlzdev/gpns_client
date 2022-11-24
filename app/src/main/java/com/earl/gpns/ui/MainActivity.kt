@@ -11,6 +11,7 @@ import com.earl.gpns.R
 import com.earl.gpns.ui.auth.LoginFragment
 import com.earl.gpns.ui.auth.SignUpFragment
 import com.earl.gpns.ui.auth.StartFragment
+import com.earl.gpns.ui.usersFragment.FragmentUsers
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -55,6 +56,10 @@ class MainActivity : AppCompatActivity(), NavigationContract {
 
     override fun hideProgressBar() {
         progressBar?.dismiss()
+    }
+
+    override fun usersFragment() {
+        showFragment(FragmentUsers.newInstance())
     }
 
     private fun showFragment(fragment: Fragment) {
