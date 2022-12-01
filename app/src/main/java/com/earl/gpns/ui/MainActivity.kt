@@ -7,20 +7,27 @@ import android.view.LayoutInflater
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
 import com.earl.gpns.ui.auth.LoginFragment
 import com.earl.gpns.ui.auth.SignUpFragment
 import com.earl.gpns.ui.auth.StartFragment
+import com.earl.gpns.ui.chat.ChatFragment
+import com.earl.gpns.ui.models.ChatInfo
+import com.earl.gpns.ui.usersFragment.FragmentUsers
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationContract {
 
     var progressBar: Dialog? = null
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         start()
     }
 
@@ -57,11 +64,40 @@ class MainActivity : AppCompatActivity(), NavigationContract {
         progressBar?.dismiss()
     }
 
+    override fun usersFragment() {
+        showFragment(FragmentUsers.newInstance())
+    }
+
+    override fun chat(chatInfo: ChatInfo) {
+        showFragment(ChatFragment.newInstance(chatInfo))
+    }
+
     private fun showFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_container, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onBackPressed() {
+        val fm: FragmentManager = supportFragmentManager
+        var backPressedListener: OnBackPressedListener? = null
+        for (fragment in fm.fragments) {
+            if (fragment is OnBackPressedListener) {
+                backPressedListener = fragment
+                break
+            }
+        }
+        if (backPressedListener != null) {
+            backPressedListener.onBackPressed()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.closeSocketSession()
     }
 
     override fun log(text: String) {

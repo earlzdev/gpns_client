@@ -1,5 +1,8 @@
 package com.earl.gpns.ui
 
+import com.earl.gpns.ui.models.ChatInfo
+import com.earl.gpns.ui.models.RoomUi
+
 interface NavigationContract {
 
     fun start()
@@ -12,9 +15,13 @@ interface NavigationContract {
 
     fun mainFragment()
 
+    fun chat(chatInfo: ChatInfo)
+
     fun showProgressBar()
 
     fun hideProgressBar()
+
+    fun usersFragment()
 
     fun log(text: String)
 }

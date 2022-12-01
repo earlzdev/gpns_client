@@ -1,9 +1,17 @@
 package com.earl.gpns.domain
 
 import com.earl.gpns.core.AuthResultListener
-import com.earl.gpns.core.OperationResultListener
+import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.data.retrofit.requests.LoginRequest
 import com.earl.gpns.data.retrofit.requests.RegisterRequest
+import com.earl.gpns.domain.models.MessageDomain
+import com.earl.gpns.domain.models.NewRoomDtoDomain
+import com.earl.gpns.domain.models.RoomDomain
+import com.earl.gpns.domain.models.UserDomain
+import com.earl.gpns.domain.repositories.DatabaseRepository
+import com.earl.gpns.domain.repositories.Repository
+import com.earl.gpns.domain.repositories.SocketsRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface Interactor {
@@ -14,10 +22,42 @@ interface Interactor {
 
     suspend fun authenticate(token: String, callback: AuthResultListener)
 
-    suspend fun getSecretInfo(token: String, callback: OperationResultListener)
+    suspend fun fetchUserInfo(token: String) : UserDomain?
+
+    suspend fun fetchUsers(token: String) : List<UserDomain>
+
+    suspend fun fetchRooms(token: String) : List<RoomDomain>
+
+    suspend fun initChatSocketSession(token: String) : SocketOperationResultListener<Unit>
+
+    suspend fun closeChatSocketSession()
+
+    suspend fun observeNewRooms() : Flow<RoomDomain>
+
+    suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain)
+
+    suspend fun fetchMessagesForRoom(token: String, roomId: String) : List<MessageDomain>
+
+    suspend fun sendMessage(message: MessageDomain, token: String)
+
+    suspend fun observeNewMessages() : Flow<MessageDomain>
+
+    suspend fun initMessagingSocket(jwtToken: String, roomId: String)
+
+    suspend fun closeMessagingSocket()
+
+    suspend fun fetchRoomsListFromLocalDb() : List<RoomDomain>
+
+    suspend fun insertRoomIntoLocalDb(room: NewRoomDtoDomain)
+
+    suspend fun deleteRoom(token: String, roomId: String)
+
+    suspend fun clearDatabase()
 
     class Base @Inject constructor(
-        private val repository: Repository
+        private val repository: Repository,
+        private val socketRepository: SocketsRepository,
+        private val localDatabaseRepository: DatabaseRepository,
     ) : Interactor {
 
         override suspend fun register(registerRequest: RegisterRequest, callback: AuthResultListener) {
@@ -32,8 +72,55 @@ interface Interactor {
             repository.authenticate(token, callback)
         }
 
-        override suspend fun getSecretInfo(token: String, callback: OperationResultListener) {
-            repository.getSecretInfo(token, callback)
+        override suspend fun fetchUsers(token: String) = repository.fetchUsers(token)
+
+        override suspend fun fetchRooms(token: String) = repository.fetchRooms(token)
+
+        override suspend fun initChatSocketSession(token: String) =
+            socketRepository.initChatSocketSession(token)
+
+        override suspend fun closeChatSocketSession() {
+            socketRepository.closeChatSocketSession()
+        }
+
+        override suspend fun fetchUserInfo(token: String) = repository.fetchUserInfo(token)
+
+        override suspend fun observeNewRooms() = socketRepository.observeNewRooms()
+
+        override suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain) {
+            socketRepository.addRoom(token, newRoomDtoDomain)
+        }
+
+        override suspend fun fetchMessagesForRoom(token: String, roomId: String) =
+            repository.fetchMessagesForRoom(token, roomId)
+
+        override suspend fun sendMessage(message: MessageDomain, token: String) {
+            socketRepository.sendMessage(message, token)
+        }
+
+        override suspend fun observeNewMessages() = socketRepository.observeMessages()
+
+        override suspend fun initMessagingSocket(jwtToken: String, roomId: String) {
+            socketRepository.initMessagingSocket(jwtToken, roomId)
+        }
+
+        override suspend fun fetchRoomsListFromLocalDb() = localDatabaseRepository.fetchRoomsListFromLocalDb()
+
+        override suspend fun insertRoomIntoLocalDb(room: NewRoomDtoDomain) {
+            localDatabaseRepository.insertNewRoomIntoLocalDb(room)
+        }
+
+        override suspend fun closeMessagingSocket() {
+            socketRepository.closeMessagingSocket()
+        }
+
+        override suspend fun deleteRoom(token: String, roomId: String) {
+            repository.removeRoom(token, roomId)
+            localDatabaseRepository.deleteRoomFromLocalDb(roomId)
+        }
+
+        override suspend fun clearDatabase() {
+            localDatabaseRepository.clearLocalDataBase()
         }
     }
 }

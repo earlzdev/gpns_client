@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/primary"
+    android:layout_marginVertical="5dp">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/chat_image"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="centerCrop"
+        app:riv_oval="true"
+        android:layout_marginStart="20dp"
+        />
+
+    <TextView
+        android:id="@+id/chat_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/common_chat"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="@id/chat_image"
+        app:layout_constraintStart_toEndOf="@id/chat_image"
+        app:layout_constraintBottom_toTopOf="@id/chat_last_msg"
+        android:layout_marginStart="20dp"
+        />
+
+    <ImageView
+        android:id="@+id/main_chat_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/main_chat"
+        app:layout_constraintStart_toEndOf="@id/chat_name"
+        app:layout_constraintTop_toTopOf="@id/chat_name"
+        app:layout_constraintBottom_toBottomOf="@id/chat_name"
+        android:layout_marginStart="5dp"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/chat_last_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/last_msg_in_chat"
+        android:fontFamily="@font/montserrat_regular"
+        android:textColor="@color/grey_tab_unselected"
+        android:textSize="16sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        app:layout_constraintTop_toBottomOf="@id/chat_name"
+        app:layout_constraintStart_toStartOf="@id/chat_name"
+        app:layout_constraintBottom_toBottomOf="@id/chat_image"
+        android:layout_marginEnd="20dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
