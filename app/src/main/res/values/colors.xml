@@ -17,4 +17,9 @@
     <color name="custom_transparent">#80FFFFFF</color>
     <color name="white_alpha_5">#05FFFFFF</color>
     <color name="grey_tab_unselected">#8B8B8B</color>
+    <color name="contact_message_background">#60D9D9D9</color>
+    <color name="contact_msg_text_color">#5D6066</color>
+    <color name="message_timestamp_color">#999CA0</color>
+    <color name="author_color_background">#0171F4</color>
+
 </resources>

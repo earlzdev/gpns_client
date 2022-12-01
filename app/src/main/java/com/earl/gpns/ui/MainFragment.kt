@@ -18,9 +18,11 @@ import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentMainBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.HttpException
 import java.util.*
 
+@AndroidEntryPoint
 class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
 
     private lateinit var viewModel: MainFragmentViewModel
@@ -33,6 +35,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
         viewModel = ViewModelProvider(requireActivity())[MainFragmentViewModel::class.java]
         viewPager(requireContext())
         authenticate()
+        fetchUserInfo()
     }
 
     private fun viewPager(context: Context) {
@@ -62,6 +65,15 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
                 tab.text = getString(R.string.profile)
                 tab.setIcon(R.drawable.profile)
             }}.attach()
+    }
+
+    private fun fetchUserInfo() {
+        viewModel.fetchUserInfo(preferenceManager.getString(Keys.KEY_JWT) ?: "")
+        viewModel.observeUserInfoLiveData(this) {
+            preferenceManager.putString(Keys.KEY_NAME, it.provideName())
+            preferenceManager.putString(Keys.KEY_IMAGE, it.provideImage())
+            preferenceManager.putString(Keys.KEY_USER_ID, it.provideId())
+        }
     }
 
     private fun authenticate() {

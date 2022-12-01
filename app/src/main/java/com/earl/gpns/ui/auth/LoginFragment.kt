@@ -46,7 +46,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), AuthResultListener {
     }
 
     override fun <T> authorized(value: T) {
-        navigator.log("token ${value.toString()}")
         preferenceManager.putString(Keys.KEY_JWT, value.toString())
         navigator.hideProgressBar()
         navigator.mainFragment()

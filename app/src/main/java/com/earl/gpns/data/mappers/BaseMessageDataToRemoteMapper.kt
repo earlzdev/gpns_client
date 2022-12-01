@@ -1,0 +1,16 @@
+package com.earl.gpns.data.mappers
+
+import com.earl.gpns.data.retrofit.requests.MessageRemote
+import javax.inject.Inject
+
+class BaseMessageDataToRemoteMapper @Inject constructor() : MessageDataToRemoteMapper<MessageRemote> {
+
+    override fun map(
+        messageId: String,
+        roomId: String,
+        authorId: String,
+        timestamp: String,
+        messageText: String,
+        messageDate: String
+    ) = MessageRemote(messageId, roomId, authorId, timestamp, messageText, messageDate)
+}

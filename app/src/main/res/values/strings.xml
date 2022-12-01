@@ -18,4 +18,7 @@
     <string name="all_users">Все пользователи</string>
     <string name="user_name_example">Петр Васильев</string>
     <string name="_12_12_2022">Был в сети 12.12.2022</string>
+    <string name="_22_15">22:15</string>
+    <string name="hello_how_aure_you">hey, how r u?</string>
+    <string name="recycler_chat_header_example">26 ноября</string>
 </resources>
