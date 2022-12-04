@@ -1,6 +1,6 @@
 package com.earl.gpns.data.mappers
 
-import com.earl.gpns.data.retrofit.requests.MessageRemote
+import com.earl.gpns.data.models.remote.MessageRemote
 import javax.inject.Inject
 
 class BaseMessageDataToRemoteMapper @Inject constructor() : MessageDataToRemoteMapper<MessageRemote> {

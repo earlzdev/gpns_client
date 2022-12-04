@@ -9,17 +9,15 @@ import com.earl.gpns.data.local.AppDataBase
 import com.earl.gpns.data.local.RoomDb
 import com.earl.gpns.data.local.RoomsDao
 import com.earl.gpns.data.mappers.*
-import com.earl.gpns.data.models.MessageData
-import com.earl.gpns.data.models.NewRoomDtoData
-import com.earl.gpns.data.models.RoomData
-import com.earl.gpns.data.models.UserData
+import com.earl.gpns.data.models.*
 import com.earl.gpns.data.retrofit.Service
-import com.earl.gpns.data.retrofit.requests.MessageRemote
-import com.earl.gpns.data.retrofit.requests.NewRoomRequest
+import com.earl.gpns.data.models.remote.MessageRemote
+import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.MessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.models.MessageDomain
+import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.models.RoomDomain
 import com.earl.gpns.domain.models.UserDomain
 import com.earl.gpns.domain.repositories.DatabaseRepository
@@ -88,7 +86,9 @@ object AppModule {
         messageDomainToDataMapper: MessageDomainToDataMapper<MessageData>,
         messageDataToRemoteMapper: MessageDataToRemoteMapper<MessageRemote>,
         messageRemoteToDataMapper: MessageRemoteToDataMapper<MessageData>,
-        messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>
+        messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>,
+        lastMsgResponseToDataMapper: NewLastMsgResponseToDataMapper<NewLastMessageInRoomData>,
+        lastMsgDataToDomainMapper: NewLastMsgDataToDomainMapper<NewLastMessageInRoomDomain>
     ) : SocketsRepository {
         return BaseSocketRepository(
             socketHttpClient,
@@ -99,7 +99,9 @@ object AppModule {
             messageDomainToDataMapper,
             messageDataToRemoteMapper,
             messageRemoteToDataMapper,
-            messageDataToDomainMapper
+            messageDataToDomainMapper,
+            lastMsgResponseToDataMapper,
+            lastMsgDataToDomainMapper
         )
     }
 

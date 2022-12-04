@@ -16,6 +16,16 @@
         />
 
     <TextView
+        android:id="@+id/test_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/chat_chapter"
+        app:layout_constraintTop_toTopOf="@id/chat_chapter"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        />
+
+    <TextView
         android:id="@+id/chat_chapter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

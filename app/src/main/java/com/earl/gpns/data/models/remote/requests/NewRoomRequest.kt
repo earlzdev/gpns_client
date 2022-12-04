@@ -1,4 +1,4 @@
-package com.earl.gpns.data.retrofit.requests
+package com.earl.gpns.data.models.remote.requests
 
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable

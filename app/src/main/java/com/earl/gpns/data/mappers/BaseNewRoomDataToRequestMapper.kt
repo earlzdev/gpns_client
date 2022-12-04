@@ -1,6 +1,6 @@
 package com.earl.gpns.data.mappers
 
-import com.earl.gpns.data.retrofit.requests.NewRoomRequest
+import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import javax.inject.Inject
 
 class BaseNewRoomDataToRequestMapper @Inject constructor(): NewRoomDataToRequestMapper<NewRoomRequest> {

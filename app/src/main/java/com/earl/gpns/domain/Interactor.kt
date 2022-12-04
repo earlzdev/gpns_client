@@ -2,8 +2,9 @@ package com.earl.gpns.domain
 
 import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.core.SocketOperationResultListener
-import com.earl.gpns.data.retrofit.requests.LoginRequest
-import com.earl.gpns.data.retrofit.requests.RegisterRequest
+import com.earl.gpns.core.UpdateLastMessageInRoomCallback
+import com.earl.gpns.data.models.remote.requests.LoginRequest
+import com.earl.gpns.data.models.remote.requests.RegisterRequest
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain
@@ -32,7 +33,7 @@ interface Interactor {
 
     suspend fun closeChatSocketSession()
 
-    suspend fun observeNewRooms() : Flow<RoomDomain>
+    suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback) : Flow<RoomDomain?>
 
     suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain)
 
@@ -85,7 +86,8 @@ interface Interactor {
 
         override suspend fun fetchUserInfo(token: String) = repository.fetchUserInfo(token)
 
-        override suspend fun observeNewRooms() = socketRepository.observeNewRooms()
+        override suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback) =
+            socketRepository.observeNewRooms(callback)
 
         override suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain) {
             socketRepository.addRoom(token, newRoomDtoDomain)

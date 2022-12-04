@@ -15,6 +15,7 @@ interface NewRoomDtoUi {
         private val lastMessage: String,
         private val lastMessageAuthor: String
     ) : NewRoomDtoUi {
-        override fun <T> map(mapper: NewRoomUiToDomainMapper<T>) = mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor)
+        override fun <T> map(mapper: NewRoomUiToDomainMapper<T>) =
+            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor)
     }
 }

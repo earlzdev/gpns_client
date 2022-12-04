@@ -1,4 +1,4 @@
-package com.earl.gpns.data.retrofit.responses
+package com.earl.gpns.data.models.remote.responses
 
 import com.earl.gpns.data.mappers.UserResponseToDataMapper
 import com.google.gson.annotations.SerializedName

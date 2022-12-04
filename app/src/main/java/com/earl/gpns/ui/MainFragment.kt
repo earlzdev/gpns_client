@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -36,6 +37,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
         viewPager(requireContext())
         authenticate()
         fetchUserInfo()
+        backPressedCallback()
     }
 
     private fun viewPager(context: Context) {
@@ -91,6 +93,15 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
 
     override fun unknownError(e: Exception) {
         navigator.hideProgressBar()
+    }
+
+    private fun backPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navigator.exit()
+            }
+        }
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, callback)
     }
 
     companion object {

@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
-import com.earl.gpns.data.retrofit.requests.LoginRequest
+import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +39,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), AuthResultListener {
     }
 
     private fun login() {
-        viewModel.login(LoginRequest(
+        viewModel.login(
+            LoginRequest(
             binding.emailInput.text.toString(),
             binding.passwordInput.text.toString()
         ), this)
@@ -47,6 +48,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), AuthResultListener {
 
     override fun <T> authorized(value: T) {
         preferenceManager.putString(Keys.KEY_JWT, value.toString())
+        preferenceManager.putBoolean(Keys.KEY_IS_SIGNED_UP, true)
         navigator.hideProgressBar()
         navigator.mainFragment()
     }
