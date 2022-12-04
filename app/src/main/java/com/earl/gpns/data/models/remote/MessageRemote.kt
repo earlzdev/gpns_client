@@ -1,4 +1,4 @@
-package com.earl.gpns.data.retrofit.requests
+package com.earl.gpns.data.models.remote
 
 import com.earl.gpns.data.mappers.MessageRemoteToDataMapper
 import kotlinx.serialization.Serializable

@@ -24,4 +24,6 @@ interface NavigationContract {
     fun usersFragment()
 
     fun log(text: String)
+
+    fun exit()
 }

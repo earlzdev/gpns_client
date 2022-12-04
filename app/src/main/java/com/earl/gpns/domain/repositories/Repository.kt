@@ -2,10 +2,10 @@ package com.earl.gpns.domain.repositories
 
 import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.core.OperationResultListener
-import com.earl.gpns.data.retrofit.requests.LoginRequest
-import com.earl.gpns.data.retrofit.requests.NewRoomRequest
-import com.earl.gpns.data.retrofit.requests.RegisterRequest
-import com.earl.gpns.data.retrofit.responses.RoomResponse
+import com.earl.gpns.data.models.remote.requests.LoginRequest
+import com.earl.gpns.data.models.remote.requests.NewRoomRequest
+import com.earl.gpns.data.models.remote.requests.RegisterRequest
+import com.earl.gpns.data.models.remote.responses.RoomResponse
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain

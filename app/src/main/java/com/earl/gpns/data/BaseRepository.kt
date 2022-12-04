@@ -7,10 +7,10 @@ import com.earl.gpns.data.models.NewRoomDtoData
 import com.earl.gpns.data.models.RoomData
 import com.earl.gpns.data.models.UserData
 import com.earl.gpns.data.retrofit.Service
-import com.earl.gpns.data.retrofit.requests.LoginRequest
-import com.earl.gpns.data.retrofit.requests.NewRoomRequest
-import com.earl.gpns.data.retrofit.requests.RegisterRequest
-import com.earl.gpns.data.retrofit.requests.RoomTokenRequest
+import com.earl.gpns.data.models.remote.requests.LoginRequest
+import com.earl.gpns.data.models.remote.requests.NewRoomRequest
+import com.earl.gpns.data.models.remote.requests.RegisterRequest
+import com.earl.gpns.data.models.remote.requests.RoomTokenRequest
 import com.earl.gpns.domain.repositories.Repository
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.models.MessageDomain
@@ -35,7 +35,8 @@ class BaseRepository @Inject constructor(
         try {
             val registerOperationResult = service.register(registerRequest)
             if (registerOperationResult == KEY_SUCCESS) {
-                login(LoginRequest(
+                login(
+                    LoginRequest(
                     registerRequest.email,
                     registerRequest.password
                 ), callback)

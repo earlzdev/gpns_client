@@ -4,10 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.earl.gpns.core.SocketOperationResultListener
+import com.earl.gpns.core.UpdateLastMessageInRoomCallback
 import com.earl.gpns.domain.Interactor
+import com.earl.gpns.domain.mappers.MessageDomainToUiMapper
 import com.earl.gpns.domain.mappers.RoomDomainToUiMapper
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.ui.mappers.RoomDomainToNewRoomDomainMapper
+import com.earl.gpns.ui.models.MessageUi
 import com.earl.gpns.ui.models.RoomUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,10 +27,13 @@ class RoomsViewModel @Inject constructor(
     private val interactor: Interactor,
     private val roomDomainToUiMapper: RoomDomainToUiMapper<RoomUi>,
     private val roomDomainToNewRoomDomainMapper: RoomDomainToNewRoomDomainMapper<NewRoomDtoDomain>,
+    private val messageDomainToUiMapper: MessageDomainToUiMapper<MessageUi>
 ) : ViewModel() {
 
     private val rooms: MutableStateFlow<List<RoomUi>> = MutableStateFlow(emptyList())
     val _rooms = rooms.asStateFlow()
+//    private val messages: MutableStateFlow<MutableList<MessageUi>> = MutableStateFlow(mutableListOf())
+//    val _messages = messages.asStateFlow()
 
     private fun fetchRooms(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -38,16 +44,18 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    fun initChatSocket(token: String) {
+    fun initChatSocket(token: String, callback: UpdateLastMessageInRoomCallback) {
         fetchRooms(token)
         viewModelScope.launch(Dispatchers.IO) {
             when(interactor.initChatSocketSession(token)) {
                 is SocketOperationResultListener.Success -> {
-                    interactor.observeNewRooms().onEach { room ->
+                    interactor.observeNewRooms(callback).onEach { room ->
                         Log.d("tag", "initChatSocket: new room on rooms $room")
+                        if (room != null) {
                             rooms.value += room.map(roomDomainToUiMapper)
                             interactor.insertRoomIntoLocalDb(room.mapToNewRoomDto(roomDomainToNewRoomDomainMapper))
-                        }.collect()
+                        }
+                    }.collect()
                 }
                 is SocketOperationResultListener.Error -> {
                     Log.d("tag", "initChatSocket: fail")
@@ -67,6 +75,12 @@ class RoomsViewModel @Inject constructor(
     fun clearDatabase() {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.clearDatabase()
+        }
+    }
+
+    fun closeChatSocketSession() {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.closeChatSocketSession()
         }
     }
 }

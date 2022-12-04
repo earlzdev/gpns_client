@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.data.retrofit.requests.RegisterRequest
+import com.earl.gpns.core.Keys
+import com.earl.gpns.data.models.remote.requests.RegisterRequest
 import com.earl.gpns.databinding.FragmentRegistrationBinding
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.HttpException
@@ -35,7 +36,8 @@ class SignUpFragment : BaseFragment<FragmentRegistrationBinding>(), AuthResultLi
     }
 
     private fun register() {
-        viewModel.register(RegisterRequest(
+        viewModel.register(
+            RegisterRequest(
              binding.emailInput.text.toString(),
             binding.userNameInput.text.toString(),
             binding.userPasswordInput.text.toString()
@@ -45,6 +47,7 @@ class SignUpFragment : BaseFragment<FragmentRegistrationBinding>(), AuthResultLi
     override fun <T> authorized(value: T) {
         navigator.log("token ${value.toString()}")
         navigator.hideProgressBar()
+        preferenceManager.putBoolean(Keys.KEY_IS_SIGNED_UP, true)
         navigator.mainFragment()
     }
 

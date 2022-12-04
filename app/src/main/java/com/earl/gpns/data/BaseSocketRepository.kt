@@ -2,20 +2,24 @@ package com.earl.gpns.data
 
 import android.util.Log
 import com.earl.gpns.core.SocketOperationResultListener
+import com.earl.gpns.core.UpdateLastMessageInRoomCallback
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.MessageData
+import com.earl.gpns.data.models.NewLastMessageInRoomData
 import com.earl.gpns.data.models.NewRoomDtoData
 import com.earl.gpns.data.models.RoomData
-import com.earl.gpns.data.retrofit.requests.ChatSocketActionRequest
-import com.earl.gpns.data.retrofit.requests.MessageRemote
-import com.earl.gpns.data.retrofit.requests.NewRoomRequest
-import com.earl.gpns.data.retrofit.responses.RoomResponse
-import com.earl.gpns.domain.repositories.SocketsRepository
+import com.earl.gpns.data.models.remote.MessageRemote
+import com.earl.gpns.data.models.remote.requests.ChatSocketActionRequest
+import com.earl.gpns.data.models.remote.requests.NewRoomRequest
+import com.earl.gpns.data.models.remote.responses.NewLastMessageInRoomResponse
+import com.earl.gpns.data.models.remote.responses.RoomResponse
 import com.earl.gpns.domain.mappers.MessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.models.MessageDomain
+import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain
+import com.earl.gpns.domain.repositories.SocketsRepository
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
@@ -36,19 +40,22 @@ class BaseSocketRepository @Inject constructor(
     private val messageDomainToDataMapper: MessageDomainToDataMapper<MessageData>,
     private val messageDataToRemoteMapper: MessageDataToRemoteMapper<MessageRemote>,
     private val messageRemoteToDataMapper: MessageRemoteToDataMapper<MessageData>,
-    private val messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>
+    private val messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>,
+    private val lastMsgResponseToDataMapper: NewLastMsgResponseToDataMapper<NewLastMessageInRoomData>,
+    private val lastMsgDataToDomainMapper: NewLastMsgDataToDomainMapper<NewLastMessageInRoomDomain>,
 ) : SocketsRepository {
 
-    private var socket: WebSocketSession? = null
+    private var roomsSocket: WebSocketSession? = null
     private var messagingSocket: WebSocketSession? = null
+    private var usersOnlineSocket: WebSocketSession? = null
 
     override suspend fun initChatSocketSession(token: String): SocketOperationResultListener<Unit> {
         return try {
-            socket = socketClient.webSocketSession {
+            roomsSocket = socketClient.webSocketSession {
                 url(WebSocketService.Endpoints.Chat.url)
                 header("Authorization", "Bearer $token")
             }
-            if (socket?.isActive == true) {
+            if (roomsSocket?.isActive == true) {
                 SocketOperationResultListener.Success(Unit)
             } else {
                 SocketOperationResultListener.Error("Couldn't establish a connection")
@@ -72,24 +79,38 @@ class BaseSocketRepository @Inject constructor(
     }
 
     override suspend fun closeChatSocketSession() {
-        socket?.close()
+        roomsSocket?.close()
     }
 
     override suspend fun closeMessagingSocket() {
         messagingSocket?.close()
     }
 
-    override suspend fun observeNewRooms(): Flow<RoomDomain> {
+    override suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback): Flow<RoomDomain?> {
+        var json = ""
         return try {
-            socket?.incoming
+            roomsSocket?.incoming
                 ?.receiveAsFlow()
                 ?.filter { it is Frame.Text }
                 ?.map {
-                    val json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
-                    val roomResponse =  Json.decodeFromString<RoomResponse>(json)
-                    roomResponse.map(roomResponseToDataMapper).map(roomDataToDomainMapper)
+                    json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
+                    try {
+                        val roomResponse = Json.decodeFromString<RoomResponse>(json)
+                        Log.d("tag", "observeNewRooms: socket repository -> success returns room $roomResponse")
+                        return@map roomResponse.map(roomResponseToDataMapper).map(roomDataToDomainMapper)
+                    } catch (e: Exception) {
+                        val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
+                        Log.d("tag", "observeNewRooms: socket repository -> fail $e returns newLastMsg $newLastMessage")
+                        callback.update(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
+                        return@map null
+                    }
                 }!!
         } catch(e: Exception) {
+            e.printStackTrace()
+            val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
+            callback.update(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
+            flow {  }
+        } catch (e: Exception) {
             e.printStackTrace()
             flow {  }
         }
@@ -118,14 +139,22 @@ class BaseSocketRepository @Inject constructor(
             Json.encodeToString(newRoomRequest.map(newRoomDomainToDataMapper).mapToRequest(newRoomDataToRequestMapper))
         )
         val newRoomJson = Json.encodeToString(request)
-        socket?.send(Frame.Text(newRoomJson))
-        Log.d("tag", "addRoom: socket repository socket -> $socket, new room -> $newRoomRequest")
+        roomsSocket?.send(Frame.Text(newRoomJson))
+        Log.d("tag", "addRoom: socket repository socket -> $roomsSocket, new room -> $newRoomRequest")
     }
 
     override suspend fun sendMessage(message: MessageDomain, token: String) {
         try {
             val requestJson = Json.encodeToString(message.mapToData(messageDomainToDataMapper).mapToRemote(messageDataToRemoteMapper))
             messagingSocket?.send(Frame.Text(requestJson))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun updateLastMessage(message: MessageDomain, token: String) {
+        try {
+            // todo
         } catch (e: Exception) {
             e.printStackTrace()
         }

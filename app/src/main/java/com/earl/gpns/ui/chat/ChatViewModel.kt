@@ -61,7 +61,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun sendMessage(messageUi: MessageUi, token: String) {
-        Log.d("tag", "sendMessage: viewmodeol")
+        Log.d("tag", "sendMessage: viewmodel")
         viewModelScope.launch(Dispatchers.IO) {
             interactor.sendMessage(messageUi.mapToDomain(messageUiToDomainMapper), token)
         }
@@ -73,6 +73,7 @@ class ChatViewModel @Inject constructor(
             interactor.initMessagingSocket(token, roomId)
             interactor.observeNewMessages()
                 .onEach { message ->
+                    Log.d("tag", "initMessagingSocket: new messsage $message")
                     messages.value += message.mapToUi(messageDomainToUiMapper)
                 }.collect()
         }

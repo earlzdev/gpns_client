@@ -16,13 +16,19 @@ interface RoomUi : Same<RoomUi> {
 
     fun chatInfo() : ChatInfo
 
+    fun sameId(id: String) : Boolean
+
+    fun updateLastMessage(newMsg: String)
+
+    fun provideLastMessage() : String
+
     class Base(
-        val roomId: String,
-        val image: String,
-        val title: String,
-        val lastMessage: String,
-        val lastMessageAuthor: String,
-        val deletable: Boolean
+        private val roomId: String,
+        private val image: String,
+        private val title: String,
+        private var lastMessage: String,
+        private val lastMessageAuthor: String,
+        private val deletable: Boolean
     ) : RoomUi {
         override fun recyclerDetails(icon: RoundedImageView, name: TextView, lastMsg: TextView) {
             name.text = title
@@ -30,5 +36,13 @@ interface RoomUi : Same<RoomUi> {
         }
 
         override fun chatInfo() = ChatInfo(roomId, title, image)
+
+        override fun sameId(id: String) = id == roomId
+
+        override fun updateLastMessage(newMsg: String) {
+            lastMessage = newMsg
+        }
+
+        override fun provideLastMessage() = lastMessage
     }
 }

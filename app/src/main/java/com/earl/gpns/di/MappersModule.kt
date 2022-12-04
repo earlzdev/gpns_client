@@ -2,20 +2,13 @@ package com.earl.gpns.di
 
 import com.earl.gpns.data.local.RoomDb
 import com.earl.gpns.data.mappers.*
-import com.earl.gpns.data.models.MessageData
-import com.earl.gpns.data.models.NewRoomDtoData
-import com.earl.gpns.data.models.RoomData
-import com.earl.gpns.data.models.UserData
-import com.earl.gpns.data.retrofit.requests.MessageRemote
-import com.earl.gpns.data.retrofit.requests.NewRoomRequest
+import com.earl.gpns.data.models.*
+import com.earl.gpns.data.models.remote.MessageRemote
+import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import com.earl.gpns.domain.mappers.*
-import com.earl.gpns.domain.models.MessageDomain
-import com.earl.gpns.domain.models.NewRoomDtoDomain
-import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.models.UserDomain
+import com.earl.gpns.domain.models.*
 import com.earl.gpns.ui.mappers.*
 import com.earl.gpns.ui.models.MessageUi
-import com.earl.gpns.ui.models.NewRoomDtoUi
 import com.earl.gpns.ui.models.RoomUi
 import com.earl.gpns.ui.models.UserUi
 import dagger.Module
@@ -134,5 +127,17 @@ object MappersModule {
     @Singleton
     fun provideRoomDomainToNewRoomDomainMapper() : RoomDomainToNewRoomDomainMapper<NewRoomDtoDomain> {
         return BaseRoomDomainToNewRoomDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNewLastMsgResponseToDataMapper() : NewLastMsgResponseToDataMapper<NewLastMessageInRoomData> {
+        return BaseLastMsgResponseToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNewLastMsgDataToDomainMapper() : NewLastMsgDataToDomainMapper<NewLastMessageInRoomDomain> {
+        return BaseLastMsgDataToDomainMapper()
     }
 }

@@ -1,4 +1,4 @@
-package com.earl.gpns.ui
+package com.earl.gpns.ui.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,19 +9,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    private val interactor: Interactor
+class ProfileViewModel @Inject constructor(
+    private val interactor: Interactor,
 ) : ViewModel() {
 
-    fun closeSocketSession() {
-        viewModelScope.launch(Dispatchers.IO) {
-            interactor.closeChatSocketSession()
-        }
-    }
-
-    fun closeMessagingSocket() {
+    fun logOut() {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.closeMessagingSocket()
+            interactor.closeChatSocketSession()
+            interactor.clearDatabase()
         }
     }
 }

@@ -1,14 +1,17 @@
 package com.earl.gpns.ui.rooms
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.earl.gpns.databinding.RecyclerChatItemBinding
+import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.RoomUi
-import com.earl.gpns.ui.models.UserUi
+import okhttp3.internal.addHeaderLenient
+import java.util.*
 
 interface OnRoomClickListener {
     fun joinRoom(chatInfo: ChatInfo)
@@ -34,6 +37,18 @@ class RoomsRecyclerAdapter(
             clickListener.deleteRoom(item.chatInfo())
             true
         }
+    }
+
+    fun updateLastMessage(newLastMessage: NewLastMessageInRoomDomain, position: Int) {
+        val item = getItem(position)
+        item.updateLastMessage(newLastMessage.provideMessageText())
+        notifyItemChanged(position)
+    }
+
+    fun swap(position: Int, item: RoomUi) {
+        val list = currentList.toMutableList()
+        Collections.swap(list, position, 0)
+        this.submitList(list)
     }
 
     inner class ItemViewHolder(private val binding: RecyclerChatItemBinding) : RecyclerView.ViewHolder(binding.root) {

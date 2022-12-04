@@ -5,11 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
+import com.earl.gpns.core.UpdateLastMessageInRoomCallback
 import com.earl.gpns.databinding.FragmentChatBinding
 import com.earl.gpns.ui.OnBackPressedListener
 import com.earl.gpns.ui.models.ChatInfo
@@ -25,7 +27,7 @@ import java.util.*
 @AndroidEntryPoint
 class ChatFragment(
     private val chatInfo: ChatInfo,
-) : BaseFragment<FragmentChatBinding>(), OnBackPressedListener {
+) : BaseFragment<FragmentChatBinding>() {
 
     private lateinit var viewModel: ChatViewModel
     private var newRoomId = ""
@@ -40,6 +42,7 @@ class ChatFragment(
         initRoomId()
         initMessagingService()
         recycler()
+        backPressedCallback()
         binding.testBtn.setOnClickListener {
             if (!binding.testEdttext.text.isNullOrEmpty()) {
                 sendMessage()
@@ -140,10 +143,20 @@ class ChatFragment(
         }
     }
 
-    override fun onBackPressed() {
-        viewModel.closeMessagingSocket()
-        navigator.back()
+    private fun backPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewModel.closeMessagingSocket()
+                navigator.back()
+            }
+        }
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, callback)
     }
+
+//    override fun onBackPressed() {
+//        viewModel.closeMessagingSocket()
+//        navigator.back()
+//    }
 
     companion object {
 

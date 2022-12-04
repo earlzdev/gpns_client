@@ -10,11 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
+import com.earl.gpns.core.Keys
+import com.earl.gpns.core.SharedPreferenceManager
 import com.earl.gpns.ui.auth.LoginFragment
 import com.earl.gpns.ui.auth.SignUpFragment
 import com.earl.gpns.ui.auth.StartFragment
 import com.earl.gpns.ui.chat.ChatFragment
 import com.earl.gpns.ui.models.ChatInfo
+import com.earl.gpns.ui.rooms.RoomsFragment
 import com.earl.gpns.ui.usersFragment.FragmentUsers
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,12 +26,19 @@ class MainActivity : AppCompatActivity(), NavigationContract {
 
     var progressBar: Dialog? = null
     private lateinit var viewModel: MainViewModel
+    private lateinit var preferenceManager: SharedPreferenceManager
+    private val fragments: MutableList<Fragment> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        start()
+        preferenceManager = SharedPreferenceManager(this)
+        if (preferenceManager.getBoolean(Keys.KEY_IS_SIGNED_UP)) {
+            mainFragment()
+        } else {
+            start()
+        }
     }
 
     override fun start() {
@@ -73,26 +83,16 @@ class MainActivity : AppCompatActivity(), NavigationContract {
     }
 
     private fun showFragment(fragment: Fragment) {
+        fragments.add(fragment)
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_container, fragment)
             .addToBackStack(null)
             .commit()
     }
 
-    override fun onBackPressed() {
-        val fm: FragmentManager = supportFragmentManager
-        var backPressedListener: OnBackPressedListener? = null
-        for (fragment in fm.fragments) {
-            if (fragment is OnBackPressedListener) {
-                backPressedListener = fragment
-                break
-            }
-        }
-        if (backPressedListener != null) {
-            backPressedListener.onBackPressed()
-        } else {
-            super.onBackPressed()
-        }
+    override fun exit() {
+        viewModel.closeSocketSession()
+        finish()
     }
 
     override fun onDestroy() {

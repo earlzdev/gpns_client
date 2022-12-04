@@ -1,9 +1,10 @@
 package com.earl.gpns.data.retrofit
 
-import com.earl.gpns.data.retrofit.requests.*
-import com.earl.gpns.data.retrofit.responses.RoomResponse
-import com.earl.gpns.data.retrofit.responses.TokenResponse
-import com.earl.gpns.data.retrofit.responses.UserResponse
+import com.earl.gpns.data.models.remote.MessageRemote
+import com.earl.gpns.data.models.remote.requests.*
+import com.earl.gpns.data.models.remote.responses.RoomResponse
+import com.earl.gpns.data.models.remote.responses.TokenResponse
+import com.earl.gpns.data.models.remote.responses.UserResponse
 import retrofit2.http.*
 
 interface Service {
