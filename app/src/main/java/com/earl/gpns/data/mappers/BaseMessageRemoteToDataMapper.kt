@@ -11,6 +11,7 @@ class BaseMessageRemoteToDataMapper @Inject constructor(): MessageRemoteToDataMa
         authorId: String,
         timestamp: String,
         messageText: String,
-        messageDate: String
-    ) = MessageData.Base(messageId, roomId, authorId, timestamp, messageText, messageDate)
+        messageDate: String,
+        read: Int
+    ) = MessageData.Base(messageId, roomId, authorId, timestamp, messageText, messageDate, read)
 }

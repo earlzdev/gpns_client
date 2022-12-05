@@ -9,23 +9,29 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.core.UpdateLastMessageInRoomCallback
 import com.earl.gpns.databinding.FragmentRoomsBinding
+import com.earl.gpns.domain.mappers.NewLastMessageInRoomDomainToUiMapper
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.ui.models.ChatInfo
+import com.earl.gpns.ui.models.NewLastMessageInRoomUi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class RoomsFragment: BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, UpdateLastMessageInRoomCallback {
+class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, UpdateLastMessageInRoomCallback {
 
     private lateinit var viewModel: RoomsViewModel
     private lateinit var adapter: RoomsRecyclerAdapter
+    @Inject
+    lateinit var newLastMsgInRoomDomainToUiMapper: NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi>
 
     override fun viewBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentRoomsBinding.inflate(inflater, container, false)
@@ -42,6 +48,7 @@ class RoomsFragment: BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, 
             navigator.usersFragment()
         }
         binding.chatChapter.setOnClickListener {
+            // todo refactor !!!
             viewModel.clearDatabase()
             Toast.makeText(requireContext(), "Database cleared", Toast.LENGTH_SHORT).show()
         }
@@ -54,6 +61,7 @@ class RoomsFragment: BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, 
 
     override fun joinRoom(chatInfo: ChatInfo) {
         navigator.chat(chatInfo)
+        adapter.clearCounter(chatInfo)
     }
 
     override fun deleteRoom(chatInfo: ChatInfo) {
@@ -61,7 +69,7 @@ class RoomsFragment: BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, 
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
             chatInfo.roomId!!
         )
-        Toast.makeText(requireContext(), "Room deleted", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.room_with_this_user_successfully_removed), Toast.LENGTH_SHORT).show()
     }
 
     private fun recycler() {
@@ -71,7 +79,6 @@ class RoomsFragment: BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, 
             viewModel._rooms
                 .onEach {
                         rooms ->
-                    Log.d("tag", "recycler: new room $rooms")
                     adapter.submitList(rooms)
                 }
                 .collect()
@@ -79,27 +86,18 @@ class RoomsFragment: BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, 
         navigator.hideProgressBar()
     }
 
-    override fun update(newLastMessage: NewLastMessageInRoomDomain) {
-        Log.d("tag", "update: new last msg -> $newLastMessage")
+    override fun updateLastMessage(newLastMessage: NewLastMessageInRoomDomain) {
+        val newLastMsgUi = newLastMessage.mapToUi(newLastMsgInRoomDomainToUiMapper)
         lifecycleScope.launch(Dispatchers.Main) {
-            adapter.updateLastMessage(newLastMessage)
-            adapter.swapElements(newLastMessage)
-        }
-    }
-
-    private fun RoomsRecyclerAdapter.updateLastMessage(newLastMessage: NewLastMessageInRoomDomain) {
-        val room = this.currentList.find { it.sameId(newLastMessage.provideRoomId()) }
-        if (room != null) {
-            val position = this.currentList.indexOf(room)
-            this.updateLastMessage(newLastMessage, position)
-        }
-    }
-
-    private fun RoomsRecyclerAdapter.swapElements(newLastMessage: NewLastMessageInRoomDomain) {
-        val room = this.currentList.find { it.sameId(newLastMessage.provideRoomId()) }
-        if (room != null) {
-            val currentPosition = this.currentList.indexOf(room)
-            this.swap(currentPosition, room)
+            val room = adapter.currentList.find { it.sameId(newLastMsgUi.provideRoomId()) }
+            val currentPosition = adapter.currentList.indexOf(room)
+            if (room != null) {
+                adapter.updateLastMessage(newLastMsgUi.lastMessageForUpdate(), currentPosition)
+                adapter.swap(currentPosition)
+                if (!newLastMsgUi.isMessageRead()) {
+                    adapter.updateCounter(currentPosition)
+                }
+            }
         }
     }
 
@@ -115,6 +113,5 @@ class RoomsFragment: BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, 
     companion object {
 
         fun newInstance() = RoomsFragment()
-        private const val FIRST_POSITION = 1
     }
 }

@@ -101,14 +101,14 @@ class BaseSocketRepository @Inject constructor(
                     } catch (e: Exception) {
                         val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
                         Log.d("tag", "observeNewRooms: socket repository -> fail $e returns newLastMsg $newLastMessage")
-                        callback.update(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
+                        callback.updateLastMessage(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
                         return@map null
                     }
                 }!!
         } catch(e: Exception) {
             e.printStackTrace()
             val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
-            callback.update(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
+            callback.updateLastMessage(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
             flow {  }
         } catch (e: Exception) {
             e.printStackTrace()

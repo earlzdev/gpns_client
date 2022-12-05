@@ -7,6 +7,7 @@ interface NewLastMsgResponseToDataMapper<T> {
         authorName: String,
         authorImage: String,
         timestamp: String,
-        messageText: String
+        messageText: String,
+        read: Int
     ) : T
 }

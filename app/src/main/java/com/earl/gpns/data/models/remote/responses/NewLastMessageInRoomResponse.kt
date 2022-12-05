@@ -9,7 +9,8 @@ data class NewLastMessageInRoomResponse(
     val authorName: String,
     val authorImage: String,
     val timestamp: String,
-    val messageText: String
+    val messageText: String,
+    val read: Int
 ) {
-    fun <T> map(mapper: NewLastMsgResponseToDataMapper<T>) = mapper.map(roomId, authorName, authorImage, timestamp, messageText)
+    fun <T> map(mapper: NewLastMsgResponseToDataMapper<T>) = mapper.map(roomId, authorName, authorImage, timestamp, messageText, read)
 }

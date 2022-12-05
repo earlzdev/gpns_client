@@ -10,7 +10,8 @@ data class MessageRemote(
     val authorId: String,
     val timestamp: String,
     val messageText: String,
-    private val messageDate: String
+    val messageDate: String,
+    val read: Int
 ) {
-    fun <T> map(mapper: MessageRemoteToDataMapper<T>) = mapper.map(messageId, roomId, authorId, timestamp, messageText, messageDate)
+    fun <T> map(mapper: MessageRemoteToDataMapper<T>) = mapper.map(messageId, roomId, authorId, timestamp, messageText, messageDate, read)
 }

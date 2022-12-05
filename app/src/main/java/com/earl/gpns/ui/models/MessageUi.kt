@@ -28,11 +28,12 @@ interface MessageUi : Same<MessageUi> {
         private val authorId: String,
         private val timestamp: String,
         private val messageText: String,
-        private val messageData: String
+        private val messageData: String,
+        private val read: Int
     ) : MessageUi {
 
         override fun <T> mapToDomain(mapper: MessageUiToDomainMapper<T>) =
-            mapper.map(messageId, roomId, authorId, timestamp, messageText, messageData)
+            mapper.map(messageId, roomId, authorId, timestamp, messageText, messageData, read)
 
         override fun recyclerDetails(message: TextView, time: TextView) {
             message.text = messageText

@@ -8,6 +8,7 @@ interface MessageRemoteToDataMapper<T> {
         authorId: String,
         timestamp: String,
         messageText: String,
-        messageDate: String
+        messageDate: String,
+        read: Int
     ) : T
 }

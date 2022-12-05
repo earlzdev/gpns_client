@@ -12,6 +12,7 @@ class BaseMessageUiToDomainMapper @Inject constructor(): MessageUiToDomainMapper
         authorId: String,
         timestamp: String,
         messageText: String,
-        messageDate: String
-    ) = MessageDomain.Base(messageId, roomId, authorId, timestamp, messageText, messageDate)
+        messageDate: String,
+        read: Int
+    ) = MessageDomain.Base(messageId, roomId, authorId, timestamp, messageText, messageDate, read)
 }

@@ -1,6 +1,6 @@
-package com.earl.gpns.data.mappers
+package com.earl.gpns.domain.mappers
 
-interface NewLastMsgDataToDomainMapper<T> {
+interface NewLastMessageInRoomDomainToUiMapper<T> {
 
     fun map(
         roomId: String,
