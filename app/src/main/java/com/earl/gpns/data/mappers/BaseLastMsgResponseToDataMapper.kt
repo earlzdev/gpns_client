@@ -10,6 +10,7 @@ class BaseLastMsgResponseToDataMapper @Inject constructor(): NewLastMsgResponseT
         authorName: String,
         authorImage: String,
         timestamp: String,
-        messageText: String
-    ) = NewLastMessageInRoomData.Base(roomId, authorName, authorImage, timestamp, messageText)
+        messageText: String,
+        read: Int
+    ) = NewLastMessageInRoomData.Base(roomId, authorName, authorImage, timestamp, messageText, read)
 }

@@ -9,6 +9,7 @@ import com.earl.gpns.domain.mappers.*
 import com.earl.gpns.domain.models.*
 import com.earl.gpns.ui.mappers.*
 import com.earl.gpns.ui.models.MessageUi
+import com.earl.gpns.ui.models.NewLastMessageInRoomUi
 import com.earl.gpns.ui.models.RoomUi
 import com.earl.gpns.ui.models.UserUi
 import dagger.Module
@@ -139,5 +140,11 @@ object MappersModule {
     @Singleton
     fun provideNewLastMsgDataToDomainMapper() : NewLastMsgDataToDomainMapper<NewLastMessageInRoomDomain> {
         return BaseLastMsgDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNewLastMsgDomainToUiMapper() : NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi> {
+        return BaseNewLastMessageDomainToUiMapper()
     }
 }

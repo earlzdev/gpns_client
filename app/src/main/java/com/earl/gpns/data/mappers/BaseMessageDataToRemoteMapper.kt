@@ -11,6 +11,7 @@ class BaseMessageDataToRemoteMapper @Inject constructor() : MessageDataToRemoteM
         authorId: String,
         timestamp: String,
         messageText: String,
-        messageDate: String
-    ) = MessageRemote(messageId, roomId, authorId, timestamp, messageText, messageDate)
+        messageDate: String,
+        read: Int
+    ) = MessageRemote(messageId, roomId, authorId, timestamp, messageText, messageDate, read)
 }

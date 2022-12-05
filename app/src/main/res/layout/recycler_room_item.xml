@@ -45,20 +45,49 @@
         />
 
     <TextView
+        android:id="@+id/last_msg_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey_tab_unselected"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="@string/You_last_msg_author"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="@id/chat_last_msg"
+        app:layout_constraintBottom_toBottomOf="@id/chat_last_msg"
+        app:layout_constraintStart_toStartOf="@id/chat_name"
+        app:layout_constraintEnd_toStartOf="@id/chat_last_msg"
+        android:layout_marginEnd="5dp"
+        android:paddingEnd="5dp"
+        />
+
+    <TextView
         android:id="@+id/chat_last_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/last_msg_in_chat"
         android:fontFamily="@font/montserrat_regular"
         android:textColor="@color/grey_tab_unselected"
+        android:maxWidth="200dp"
         android:textSize="16sp"
         android:maxLines="1"
         android:ellipsize="end"
         android:singleLine="true"
         app:layout_constraintTop_toBottomOf="@id/chat_name"
-        app:layout_constraintStart_toStartOf="@id/chat_name"
+        app:layout_constraintStart_toEndOf="@id/last_msg_author"
         app:layout_constraintBottom_toBottomOf="@id/chat_image"
         android:layout_marginEnd="20dp"
+        />
+
+    <TextView
+        android:id="@+id/unreadMsgCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3"
+        android:textColor="@color/grey_tab_unselected"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="30dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

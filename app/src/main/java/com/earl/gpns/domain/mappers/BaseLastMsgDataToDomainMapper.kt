@@ -11,6 +11,7 @@ class BaseLastMsgDataToDomainMapper @Inject constructor(): NewLastMsgDataToDomai
         authorName: String,
         authorImage: String,
         timestamp: String,
-        messageText: String
-    ) = NewLastMessageInRoomDomain.Base(roomId, authorName, authorImage, timestamp, messageText)
+        messageText: String,
+        read: Int
+    ) = NewLastMessageInRoomDomain.Base(roomId, authorName, authorImage, timestamp, messageText, read)
 }

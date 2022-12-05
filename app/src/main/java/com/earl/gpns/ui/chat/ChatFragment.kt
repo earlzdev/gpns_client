@@ -93,7 +93,8 @@ class ChatFragment(
             preferenceManager.getString(Keys.KEY_USER_ID) ?: "",
             timeText,
             binding.testEdttext.text.toString(),
-            dateText
+            dateText,
+            MSG_UNREAD_KEY
         )
         viewModel.sendMessage(message, preferenceManager.getString(Keys.KEY_JWT) ?: "")
     }
@@ -134,7 +135,8 @@ class ChatFragment(
                 preferenceManager.getString(Keys.KEY_USER_ID) ?: "",
                 timeText,
                 binding.testEdttext.text.toString(),
-                dateText
+                dateText,
+                MSG_UNREAD_KEY
             )
             viewModel.sendMessage(
                 message,
@@ -161,5 +163,6 @@ class ChatFragment(
     companion object {
 
         fun newInstance(chatInfo: ChatInfo) = ChatFragment(chatInfo)
+        private const val MSG_UNREAD_KEY = 0
     }
 }

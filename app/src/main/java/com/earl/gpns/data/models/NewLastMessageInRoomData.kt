@@ -11,9 +11,10 @@ interface NewLastMessageInRoomData {
         private val authorName: String,
         private val authorImage: String,
         private val timestamp: String,
-        private val messageText: String
+        private val messageText: String,
+        private val read: Int
     ) : NewLastMessageInRoomData {
         override fun <T> map(mapper: NewLastMsgDataToDomainMapper<T>) =
-            mapper.map(roomId, authorName, authorImage, timestamp, messageText)
+            mapper.map(roomId, authorName, authorImage, timestamp, messageText, read)
     }
 }

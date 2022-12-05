@@ -15,12 +15,13 @@ interface MessageData {
         private val authorId: String,
         private val timestamp: String,
         private val messageText: String,
-        private val messageData: String
+        private val messageData: String,
+        private val read: Int
     ) : MessageData {
         override fun <T> mapToDomain(mapper: MessageDataToDomainMapper<T>) =
-            mapper.map(messageId, roomId, authorId, timestamp, messageText, messageData)
+            mapper.map(messageId, roomId, authorId, timestamp, messageText, messageData, read)
 
         override fun <T> mapToRemote(mapper: MessageDataToRemoteMapper<T>) =
-            mapper.map(messageId, roomId, authorId, timestamp, messageText, messageData)
+            mapper.map(messageId, roomId, authorId, timestamp, messageText, messageData, read)
     }
 }

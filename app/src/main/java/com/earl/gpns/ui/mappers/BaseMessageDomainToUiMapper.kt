@@ -12,6 +12,7 @@ class BaseMessageDomainToUiMapper @Inject constructor() : MessageDomainToUiMappe
         authorId: String,
         timestamp: String,
         messageText: String,
-        messageDate: String
-    ) = MessageUi.Base(messageId, roomId, authorId, timestamp, messageText, messageDate)
+        messageDate: String,
+        read: Int
+    ) = MessageUi.Base(messageId, roomId, authorId, timestamp, messageText, messageDate, read)
 }
