@@ -45,6 +45,7 @@ class RoomsRecyclerAdapter(
     }
 
     fun swap(position: Int) {
+        // todo need refactoring !!!
         val list = currentList.toMutableList()
         Collections.swap(list, position, STAT_POSITION)
         this.submitList(list)

@@ -65,4 +65,11 @@ interface Service {
         @Header("Authorization") token: String,
         @Body roomId: RoomTokenRequest
     )
+
+    @Headers("Content-Type: application/json")
+    @POST("/markMessagesAsRead")
+    suspend fun markMessagesAsRead(
+        @Header("Authorization") token: String,
+        @Body roomId: RoomTokenRequest
+    )
 }

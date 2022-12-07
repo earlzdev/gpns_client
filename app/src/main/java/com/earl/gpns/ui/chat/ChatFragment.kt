@@ -11,15 +11,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
-import com.earl.gpns.core.UpdateLastMessageInRoomCallback
+import com.earl.gpns.core.MarkMessageAsReadCallback
 import com.earl.gpns.databinding.FragmentChatBinding
-import com.earl.gpns.ui.OnBackPressedListener
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.MessageUi
 import com.earl.gpns.ui.models.NewRoomDtoUi
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,11 +28,13 @@ import java.util.*
 @AndroidEntryPoint
 class ChatFragment(
     private val chatInfo: ChatInfo,
-) : BaseFragment<FragmentChatBinding>() {
+) : BaseFragment<FragmentChatBinding>(), MarkMessageAsReadCallback {
 
     private lateinit var viewModel: ChatViewModel
     private var newRoomId = ""
     private var newRoomFlag = false
+    private lateinit var recyclerAdapter: ChatRecyclerAdapter
+    private var unreadMessagesIdsList = mutableListOf<String>()
 
     override fun viewBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentChatBinding.inflate(inflater, container, false)
@@ -63,7 +66,8 @@ class ChatFragment(
     private fun initMessagingService() {
         viewModel.initMessagingSocket(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
-            newRoomId
+            newRoomId,
+            this
         )
     }
 
@@ -84,7 +88,7 @@ class ChatFragment(
         viewModel.addNewRoomToLocalDatabase(request)
         val currentDate = Date()
         val timeFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val dateFormat: DateFormat = SimpleDateFormat("d MMMM", Locale.getDefault())
+        val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
         val timeText: String = timeFormat.format(currentDate)
         val dateText = dateFormat.format(currentDate)
         val message = MessageUi.Base(
@@ -100,15 +104,21 @@ class ChatFragment(
     }
 
     private fun recycler() {
-        val adapter = ChatRecyclerAdapter(preferenceManager.getString(Keys.KEY_USER_ID) ?: "")
-        binding.messagesRecycler.adapter = adapter
+        recyclerAdapter = ChatRecyclerAdapter(preferenceManager.getString(Keys.KEY_USER_ID) ?: "")
+        binding.messagesRecycler.adapter = recyclerAdapter
         val linearLayoutManager = LinearLayoutManager(requireContext())
         linearLayoutManager.stackFromEnd = true
         binding.messagesRecycler.layoutManager = linearLayoutManager
         lifecycleScope.launchWhenStarted {
             viewModel._messages
                 .onEach { messages ->
-                    adapter.submitList(messages)
+                    if (messages.isNotEmpty() && !messages.last().isAuthoredMessage(preferenceManager.getString(Keys.KEY_USER_ID) ?: "")) {
+                        val unreadMessagesList = messages.filter { !it.isMessageRead() }
+                        if (unreadMessagesList.isNotEmpty()) {
+                            markMessagesAsRead(newRoomId)
+                        }
+                    }
+                    recyclerAdapter.submitList(messages)
                     binding.messagesRecycler.layoutManager?.smoothScrollToPosition(
                         binding.messagesRecycler,
                         null,
@@ -119,6 +129,19 @@ class ChatFragment(
         }
     }
 
+    private fun markMessagesAsRead(roomId: String) {
+        viewModel.markMessagesAsRead(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            roomId
+        )
+    }
+
+    override fun markAsRead() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            recyclerAdapter.markMessagesAsRead()
+        }
+    }
+
     private fun sendMessage() {
         if (newRoomFlag) {
             addRoom()
@@ -126,7 +149,7 @@ class ChatFragment(
         } else {
             val currentDate = Date()
             val timeFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-            val dateFormat: DateFormat = SimpleDateFormat("d MMMM", Locale.getDefault())
+            val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
             val timeText: String = timeFormat.format(currentDate)
             val dateText = dateFormat.format(currentDate)
             val message = MessageUi.Base(
@@ -154,11 +177,6 @@ class ChatFragment(
         }
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, callback)
     }
-
-//    override fun onBackPressed() {
-//        viewModel.closeMessagingSocket()
-//        navigator.back()
-//    }
 
     companion object {
 

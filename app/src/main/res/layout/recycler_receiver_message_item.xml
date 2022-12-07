@@ -21,6 +21,17 @@
         android:layout_marginBottom="10dp"
         />
 
+    <FrameLayout
+        android:id="@+id/msg_read_indicator"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@drawable/unread_sender_msg_mark"
+        app:layout_constraintTop_toTopOf="@id/message_layout"
+        app:layout_constraintBottom_toBottomOf="@id/message_layout"
+        app:layout_constraintStart_toEndOf="@id/message_layout"
+        android:layout_marginStart="15dp"
+        />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/message_layout"
         android:layout_width="wrap_content"

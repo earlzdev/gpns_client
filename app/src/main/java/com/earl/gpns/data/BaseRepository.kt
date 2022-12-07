@@ -6,11 +6,8 @@ import com.earl.gpns.data.models.MessageData
 import com.earl.gpns.data.models.NewRoomDtoData
 import com.earl.gpns.data.models.RoomData
 import com.earl.gpns.data.models.UserData
+import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.retrofit.Service
-import com.earl.gpns.data.models.remote.requests.LoginRequest
-import com.earl.gpns.data.models.remote.requests.NewRoomRequest
-import com.earl.gpns.data.models.remote.requests.RegisterRequest
-import com.earl.gpns.data.models.remote.requests.RoomTokenRequest
 import com.earl.gpns.domain.repositories.Repository
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.models.MessageDomain
@@ -124,6 +121,14 @@ class BaseRepository @Inject constructor(
     override suspend fun removeRoom(token: String, roomId: String) {
         try {
             service.deleteRoom("Bearer $token", RoomTokenRequest(roomId))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun markMessagesAsRead(token: String, roomId: String) {
+        try {
+            service.markMessagesAsRead("Bearer $token", RoomTokenRequest(roomId))
         } catch (e: Exception) {
             e.printStackTrace()
         }

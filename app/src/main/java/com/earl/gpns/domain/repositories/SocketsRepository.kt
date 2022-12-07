@@ -1,5 +1,6 @@
 package com.earl.gpns.domain.repositories
 
+import com.earl.gpns.core.MarkMessageAsReadCallback
 import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.core.UpdateLastMessageInRoomCallback
 import com.earl.gpns.domain.models.MessageDomain
@@ -19,7 +20,7 @@ interface SocketsRepository {
 
     suspend fun sendMessage(message: MessageDomain, token: String)
 
-    suspend fun observeMessages() : Flow<MessageDomain>
+    suspend fun observeMessages(callback: MarkMessageAsReadCallback) : Flow<MessageDomain?>
 
     suspend fun initMessagingSocket(jwtToken: String, roomId: String)
 
