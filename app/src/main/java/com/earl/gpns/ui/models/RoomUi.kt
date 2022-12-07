@@ -21,8 +21,6 @@ interface RoomUi : Same<RoomUi> {
 
     fun updateLastMessage(lastMsg: LastMessageForUpdate)
 
-    fun provideLastMessage() : String
-
     fun updateUnreadMsgCount()
 
     fun clearUnreadMsgCounter()
@@ -60,8 +58,6 @@ interface RoomUi : Same<RoomUi> {
             lastMessageAuthor = lastMsg.authorName
 
         }
-
-        override fun provideLastMessage() = lastMessage
 
         override fun updateUnreadMsgCount() {
             unreadMsgCount += 1

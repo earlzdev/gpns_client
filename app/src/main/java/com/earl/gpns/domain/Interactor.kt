@@ -1,6 +1,7 @@
 package com.earl.gpns.domain
 
 import com.earl.gpns.core.AuthResultListener
+import com.earl.gpns.core.MarkMessageAsReadCallback
 import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.core.UpdateLastMessageInRoomCallback
 import com.earl.gpns.data.models.remote.requests.LoginRequest
@@ -41,7 +42,7 @@ interface Interactor {
 
     suspend fun sendMessage(message: MessageDomain, token: String)
 
-    suspend fun observeNewMessages() : Flow<MessageDomain>
+    suspend fun observeNewMessages(callback: MarkMessageAsReadCallback) : Flow<MessageDomain?>
 
     suspend fun initMessagingSocket(jwtToken: String, roomId: String)
 
@@ -54,6 +55,8 @@ interface Interactor {
     suspend fun deleteRoom(token: String, roomId: String)
 
     suspend fun clearDatabase()
+
+    suspend fun markMessagesAsRead(token: String, roomId: String)
 
     class Base @Inject constructor(
         private val repository: Repository,
@@ -100,7 +103,7 @@ interface Interactor {
             socketRepository.sendMessage(message, token)
         }
 
-        override suspend fun observeNewMessages() = socketRepository.observeMessages()
+        override suspend fun observeNewMessages(callback: MarkMessageAsReadCallback) = socketRepository.observeMessages(callback)
 
         override suspend fun initMessagingSocket(jwtToken: String, roomId: String) {
             socketRepository.initMessagingSocket(jwtToken, roomId)
@@ -123,6 +126,10 @@ interface Interactor {
 
         override suspend fun clearDatabase() {
             localDatabaseRepository.clearLocalDataBase()
+        }
+
+        override suspend fun markMessagesAsRead(token: String, roomId: String) {
+            repository.markMessagesAsRead(token, roomId)
         }
     }
 }

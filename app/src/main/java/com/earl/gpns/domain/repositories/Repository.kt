@@ -28,4 +28,6 @@ interface Repository {
     suspend fun fetchMessagesForRoom(token: String, roomId: String) : List<MessageDomain>
 
     suspend fun removeRoom(token: String, roomId: String)
+
+    suspend fun markMessagesAsRead(token: String, roomId: String)
 }
