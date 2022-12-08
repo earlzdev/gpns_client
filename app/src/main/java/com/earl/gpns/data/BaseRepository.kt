@@ -8,7 +8,7 @@ import com.earl.gpns.data.models.RoomData
 import com.earl.gpns.data.models.UserData
 import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.retrofit.Service
-import com.earl.gpns.domain.repositories.Repository
+import com.earl.gpns.domain.Repository
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.RoomDomain
@@ -129,6 +129,22 @@ class BaseRepository @Inject constructor(
     override suspend fun markMessagesAsRead(token: String, roomId: String) {
         try {
             service.markMessagesAsRead("Bearer $token", RoomTokenRequest(roomId))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String) {
+        try {
+            service.markAuthoredMessagesAsRead("Bearer $token", MarkAuthoredMessageAsReadRequest(roomId, authorName))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun updateLastMsgReadState(token: String, roomId: String) {
+        try {
+            service.updateLastMsgReadState("Bearer $token", RoomTokenRequest(roomId))
         } catch (e: Exception) {
             e.printStackTrace()
         }

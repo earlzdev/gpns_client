@@ -1,5 +1,6 @@
 package com.earl.gpns.data
 
+import com.earl.gpns.core.AuthoredMessageReadListener
 import com.earl.gpns.core.MarkMessageAsReadCallback
 import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.core.UpdateLastMessageInRoomCallback
@@ -13,6 +14,7 @@ import com.earl.gpns.data.models.remote.requests.ChatSocketActionRequest
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import com.earl.gpns.data.models.remote.responses.MessageIdResponse
 import com.earl.gpns.data.models.remote.responses.NewLastMessageInRoomResponse
+import com.earl.gpns.data.models.remote.responses.RoomIdResponse
 import com.earl.gpns.data.models.remote.responses.RoomResponse
 import com.earl.gpns.domain.mappers.MessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
@@ -20,7 +22,7 @@ import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.repositories.SocketsRepository
+import com.earl.gpns.domain.SocketsRepository
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
@@ -87,7 +89,7 @@ class BaseSocketRepository @Inject constructor(
         messagingSocket?.close()
     }
 
-    override suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback): Flow<RoomDomain?> {
+    override suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback, authoredMessagesReadCallback: AuthoredMessageReadListener): Flow<RoomDomain?> {
         var json = ""
         return try {
             roomsSocket?.incoming
@@ -99,8 +101,16 @@ class BaseSocketRepository @Inject constructor(
                         val roomResponse = Json.decodeFromString<RoomResponse>(json)
                         return@map roomResponse.map(roomResponseToDataMapper).map(roomDataToDomainMapper)
                     } catch (e: Exception) {
-                        val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
-                        callback.updateLastMessage(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
+                        try {
+                            val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
+                            callback.updateLastMessage(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
+                            return@map null
+                        } catch (e: Exception) {
+                            val markRoomAsRead = Json.decodeFromString<RoomIdResponse>(json)
+                            authoredMessagesReadCallback.markAuthoredMessageAsRead(markRoomAsRead.id)
+                            return@map null
+                        }
+                    } catch (e: Exception) {
                         return@map null
                     }
                 }!!

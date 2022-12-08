@@ -1,4 +1,4 @@
-package com.earl.gpns.domain.repositories
+package com.earl.gpns.domain
 
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain

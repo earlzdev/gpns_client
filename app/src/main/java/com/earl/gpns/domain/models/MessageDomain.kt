@@ -16,7 +16,7 @@ interface MessageDomain {
         private val timestamp: String,
         private val messageText: String,
         private val messageData: String,
-        private val read: Int
+        private val read: Int,
     ) : MessageDomain {
 
         override fun <T> mapToUi(mapper: MessageDomainToUiMapper<T>) =

@@ -8,6 +8,8 @@ interface RoomDbToDataMapper<T> {
         title: String,
         lastMessage: String,
         lastMessageAuthor: String,
-        deletable: Boolean
+        deletable: Boolean,
+        unreadMsgCounter: Int,
+        lastMsgRead: Int
     ) : T
 }

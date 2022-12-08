@@ -1,18 +1,12 @@
 package com.earl.gpns.domain
 
-import com.earl.gpns.core.AuthResultListener
-import com.earl.gpns.core.MarkMessageAsReadCallback
-import com.earl.gpns.core.SocketOperationResultListener
-import com.earl.gpns.core.UpdateLastMessageInRoomCallback
+import com.earl.gpns.core.*
 import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain
 import com.earl.gpns.domain.models.UserDomain
-import com.earl.gpns.domain.repositories.DatabaseRepository
-import com.earl.gpns.domain.repositories.Repository
-import com.earl.gpns.domain.repositories.SocketsRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -34,7 +28,7 @@ interface Interactor {
 
     suspend fun closeChatSocketSession()
 
-    suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback) : Flow<RoomDomain?>
+    suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback, authoredMessagesReadCallback: AuthoredMessageReadListener) : Flow<RoomDomain?>
 
     suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain)
 
@@ -57,6 +51,10 @@ interface Interactor {
     suspend fun clearDatabase()
 
     suspend fun markMessagesAsRead(token: String, roomId: String)
+
+    suspend fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String)
+
+    suspend fun updateLastMsgReadState(token: String, roomId: String)
 
     class Base @Inject constructor(
         private val repository: Repository,
@@ -89,8 +87,8 @@ interface Interactor {
 
         override suspend fun fetchUserInfo(token: String) = repository.fetchUserInfo(token)
 
-        override suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback) =
-            socketRepository.observeNewRooms(callback)
+        override suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback, authoredMessagesReadCallback: AuthoredMessageReadListener) =
+            socketRepository.observeNewRooms(callback, authoredMessagesReadCallback)
 
         override suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain) {
             socketRepository.addRoom(token, newRoomDtoDomain)
@@ -130,6 +128,18 @@ interface Interactor {
 
         override suspend fun markMessagesAsRead(token: String, roomId: String) {
             repository.markMessagesAsRead(token, roomId)
+        }
+
+        override suspend fun markAuthoredMessageAsRead(
+            token: String,
+            roomId: String,
+            authorName: String
+        ) {
+            repository.markAuthoredMessageAsRead(token, roomId, authorName)
+        }
+
+        override suspend fun updateLastMsgReadState(token: String, roomId: String) {
+            repository.updateLastMsgReadState(token, roomId)
         }
     }
 }

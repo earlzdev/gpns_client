@@ -1,4 +1,4 @@
-package com.earl.gpns.domain.repositories
+package com.earl.gpns.domain
 
 import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.core.OperationResultListener
@@ -30,4 +30,8 @@ interface Repository {
     suspend fun removeRoom(token: String, roomId: String)
 
     suspend fun markMessagesAsRead(token: String, roomId: String)
+
+    suspend fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String)
+
+    suspend fun updateLastMsgReadState(token: String, roomId: String)
 }

@@ -13,7 +13,9 @@ data class RoomDb(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "lastMessage") val lastMessage: String,
     @ColumnInfo(name = "lastMessageAuthor") val lastMessageAuthor: String,
-    @ColumnInfo(name = "deletable") val deletable: Boolean
+    @ColumnInfo(name = "deletable") val deletable: Boolean,
+    @ColumnInfo(name = "unreadMsgCounter") val unreadMsgCounter: Int,
+    @ColumnInfo(name = "lastMsgRead") val lastMsgRead: Int
 ) {
-    fun <T> map(mapper: RoomDbToDataMapper<T>) = mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable)
+    fun <T> map(mapper: RoomDbToDataMapper<T>) = mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead)
 }

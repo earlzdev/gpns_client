@@ -116,6 +116,7 @@ class ChatFragment(
                         val unreadMessagesList = messages.filter { !it.isMessageRead() }
                         if (unreadMessagesList.isNotEmpty()) {
                             markMessagesAsRead(newRoomId)
+                            navigator.log("chat recycler unread messages list is not empty and all marked as read")
                         }
                     }
                     recyclerAdapter.submitList(messages)
@@ -149,7 +150,7 @@ class ChatFragment(
         } else {
             val currentDate = Date()
             val timeFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-            val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+            val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()) // todo don't need anymore
             val timeText: String = timeFormat.format(currentDate)
             val dateText = dateFormat.format(currentDate)
             val message = MessageUi.Base(

@@ -20,9 +20,9 @@ import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.models.RoomDomain
 import com.earl.gpns.domain.models.UserDomain
-import com.earl.gpns.domain.repositories.DatabaseRepository
-import com.earl.gpns.domain.repositories.Repository
-import com.earl.gpns.domain.repositories.SocketsRepository
+import com.earl.gpns.domain.DatabaseRepository
+import com.earl.gpns.domain.Repository
+import com.earl.gpns.domain.SocketsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -131,7 +131,9 @@ object AppModule {
         app,
         AppDataBase::class.java,
         "database"
-    ).build()
+    )
+        .fallbackToDestructiveMigration()
+        .build()
 
     @Singleton
     @Provides

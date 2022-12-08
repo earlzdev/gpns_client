@@ -57,10 +57,26 @@ class RoomsRecyclerAdapter(
         notifyItemChanged(position)
     }
 
-    fun clearCounter(chatInfo: ChatInfo) {
-        val item = currentList.toMutableList().find { it.sameId(chatInfo.roomId ?: "") }
+    fun clearCounter(roomId: String) {
+//        val item = currentList.toMutableList().find { it.sameId(chatInfo.roomId ?: "") }
+        val item = currentList.toMutableList().find { it.sameId(roomId) }
         val position = currentList.indexOf(item)
         item?.clearUnreadMsgCounter()
+        notifyItemChanged(position)
+    }
+
+    fun showMessageUnreadIndicator(currentPosition: Int) {
+        if (currentList.isNotEmpty()) {
+            val item = getItem(currentPosition)
+            item.showUnreadMsgIndicator()
+            notifyItemChanged(currentPosition)
+        }
+    }
+
+    fun hideMessageAuthorUnreadIndicator(roomId: String) {
+        val item = currentList.find { it.sameId(roomId) }
+        val position = currentList.indexOf(item)
+        item?.hideAuthorMessageUnreadIndicator()
         notifyItemChanged(position)
     }
 
@@ -73,7 +89,23 @@ class RoomsRecyclerAdapter(
                 binding.unreadMsgCounter
             )
             binding.lastMsgAuthor.isVisible = !item.messageBelongsSender()
-            binding.unreadMsgCounter.isVisible = !item.isUnreadMsgCountNull()
+            binding.unreadMsgCounter.isVisible = !item.isUnreadMsgCountEqualsNull()
+
+            binding.lastMessageReadIndicator.isVisible = item.isLastMessageAuthorEqualsCurrentUser() && !item.isLastMsgRead()
+
+//            binding.lastMessageReadIndicator.isVisible = item.isLastMsgRead()
+
+//            if (binding.lastMsgAuthor.isVisible && !item.isUnreadMsgCountEqualsNull()) {
+//                binding.unreadMsgCounter.isVisible = false
+//                binding.lastMessageReadIndicator.isVisible = true
+//            }
+//            if (!item.messageBelongsSender() &&  !item.isUnreadMsgCountEqualsNull()) {
+//                binding.lastMessageReadIndicator.isVisible = true
+//                binding.unreadMsgCounter.isVisible = false
+//            } else if (!item.isUnreadMsgCountEqualsNull() && item.messageBelongsSender()) {
+//                binding.lastMessageReadIndicator.isVisible = false
+//                binding.unreadMsgCounter.isVisible = true
+//            }
         }
     }
 

@@ -11,6 +11,8 @@ class BaseRoomDbToDataMapper @Inject constructor() : RoomDbToDataMapper<RoomData
         title: String,
         lastMessage: String,
         lastMessageAuthor: String,
-        deletable: Boolean
-    ) = RoomData.Base(roomId, image, title, lastMessage, lastMessageAuthor, deletable)
+        deletable: Boolean,
+        unreadMsgCounter: Int,
+        lastMsgRead: Int
+    ) = RoomData.Base(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead)
 }

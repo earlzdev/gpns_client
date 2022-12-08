@@ -3,6 +3,7 @@ package com.earl.gpns.ui.rooms
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.earl.gpns.core.AuthoredMessageReadListener
 import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.core.UpdateLastMessageInRoomCallback
 import com.earl.gpns.domain.Interactor
@@ -32,8 +33,6 @@ class RoomsViewModel @Inject constructor(
 
     private val rooms: MutableStateFlow<List<RoomUi>> = MutableStateFlow(emptyList())
     val _rooms = rooms.asStateFlow()
-//    private val messages: MutableStateFlow<MutableList<MessageUi>> = MutableStateFlow(mutableListOf())
-//    val _messages = messages.asStateFlow()
 
     private fun fetchRooms(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -44,12 +43,12 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    fun initChatSocket(token: String, callback: UpdateLastMessageInRoomCallback) {
+    fun initChatSocket(token: String, callback: UpdateLastMessageInRoomCallback, authoredMessagesReadCallback: AuthoredMessageReadListener) {
         fetchRooms(token)
         viewModelScope.launch(Dispatchers.IO) {
             when(interactor.initChatSocketSession(token)) {
                 is SocketOperationResultListener.Success -> {
-                    interactor.observeNewRooms(callback).onEach { room ->
+                    interactor.observeNewRooms(callback, authoredMessagesReadCallback).onEach { room ->
                         Log.d("tag", "initChatSocket: new room on rooms $room")
                         if (room != null) {
                             rooms.value += room.map(roomDomainToUiMapper)
@@ -78,9 +77,15 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    fun closeChatSocketSession() {
+    fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.closeChatSocketSession()
+            interactor.markAuthoredMessageAsRead(token, roomId, authorName)
+        }
+    }
+
+    fun updateLastMsgReadState(token: String, roomId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.updateLastMsgReadState(token, roomId)
         }
     }
 }
