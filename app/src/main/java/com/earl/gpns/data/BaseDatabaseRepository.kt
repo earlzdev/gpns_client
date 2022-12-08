@@ -10,7 +10,7 @@ import com.earl.gpns.data.models.RoomData
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.repositories.DatabaseRepository
+import com.earl.gpns.domain.DatabaseRepository
 import javax.inject.Inject
 
 class BaseDatabaseRepository @Inject constructor(

@@ -12,9 +12,10 @@ interface RoomData {
         val title: String,
         val lastMessage: String,
         val lastMessageAuthor: String,
-        val deletable: Boolean
+        val deletable: Boolean,
+        val unreadMsgCounter: Int
     ) : RoomData {
         override fun <T> map(mapper: RoomDataToDomainMapper<T>) =
-            mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable)
+            mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter)
     }
 }

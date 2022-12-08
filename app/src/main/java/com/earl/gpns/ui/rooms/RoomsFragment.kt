@@ -1,7 +1,6 @@
 package com.earl.gpns.ui.rooms
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.earl.gpns.R
+import com.earl.gpns.core.AuthoredMessageReadListener
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.core.UpdateLastMessageInRoomCallback
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, UpdateLastMessageInRoomCallback {
+class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, UpdateLastMessageInRoomCallback, AuthoredMessageReadListener {
 
     private lateinit var viewModel: RoomsViewModel
     private lateinit var adapter: RoomsRecyclerAdapter
@@ -56,12 +56,17 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
 
     private fun initSession() {
         navigator.showProgressBar()
-        viewModel.initChatSocket(preferenceManager.getString(Keys.KEY_JWT) ?: "", this)
+        viewModel.initChatSocket(preferenceManager.getString(Keys.KEY_JWT) ?: "", this, this)
     }
 
     override fun joinRoom(chatInfo: ChatInfo) {
         navigator.chat(chatInfo)
-        adapter.clearCounter(chatInfo)
+        adapter.clearCounter(chatInfo.roomId ?: "")
+        viewModel.markAuthoredMessageAsRead(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            chatInfo.roomId ?: "",
+            chatInfo.chatTitle
+        )
     }
 
     override fun deleteRoom(chatInfo: ChatInfo) {
@@ -79,11 +84,26 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
             viewModel._rooms
                 .onEach {
                         rooms ->
+                    if (rooms.isNotEmpty()) {
+                        rooms.forEach {
+                            if (it.isLastMessageAuthorEqualsCurrentUser() && !it.isLastMsgRead()) {
+                                it.showUnreadMsgIndicator()
+                                it.clearUnreadMsgCounter()
+//                                adapter.showMessageUnreadIndicator(rooms.indexOf(it))
+                            }
+                        }
+                    }
                     adapter.submitList(rooms)
                 }
                 .collect()
         }
         navigator.hideProgressBar()
+    }
+
+    override fun markAuthoredMessageAsRead(roomId: String) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            adapter.hideMessageAuthorUnreadIndicator(roomId)
+        }
     }
 
     override fun updateLastMessage(newLastMessage: NewLastMessageInRoomDomain) {
@@ -94,12 +114,32 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
             if (room != null) {
                 adapter.updateLastMessage(newLastMsgUi.lastMessageForUpdate(), currentPosition)
                 adapter.swap(currentPosition)
-                if (!newLastMsgUi.isMessageRead()) {
+                if (!newLastMsgUi.isMessageRead()
+                    && newLastMsgUi.isAuthoredMessage(preferenceManager.getString(Keys.KEY_NAME) ?: "")) {
+                    adapter.showMessageUnreadIndicator(currentPosition)
+                    navigator.log("updateLastMessage authored unread message got")
+                } else if (!newLastMsgUi.isMessageRead()
+                    && !newLastMsgUi.isAuthoredMessage(preferenceManager.getString(Keys.KEY_NAME) ?: "")) {
                     adapter.updateCounter(currentPosition)
+                    navigator.log("updateLastMessage not authored unread message got")
+                } else if (newLastMsgUi.isMessageRead()){
+                    adapter.clearCounter(newLastMsgUi.provideRoomId())
+                    navigator.log("updateLastMessage read message got")
                 }
+//               if (!newLastMsgUi.isMessageRead()
+//                    && newLastMsgUi.isAuthoredMessage(preferenceManager.getString(Keys.KEY_NAME) ?: "")){
+//                    adapter.showMessageUnreadIndicator(currentPosition)
+//                   navigator.log("authored message got")
+//                }  else if (!newLastMsgUi.isMessageRead()) {
+//                    adapter.updateCounter(currentPosition)
+//                } else if (newLastMsgUi.isMessageRead()) {
+//                    adapter.clearCounter(newLastMsgUi.provideRoomId())
+//               }
             }
         }
     }
+
+
 
     private fun backPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {

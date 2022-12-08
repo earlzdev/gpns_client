@@ -1,5 +1,6 @@
 package com.earl.gpns.ui.chat
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,7 @@ class ChatRecyclerAdapter(
         currentList.filter { !it.isMessageRead() }.forEach {
             it.markMessageAsRead()
             notifyItemChanged(currentList.indexOf(it))
+            Log.d("tag", "markMessagesAsRead: in recycler message ${it.testprovidetext()} marked as read")
         }
     }
 

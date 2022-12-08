@@ -14,7 +14,5 @@ class BaseRoomDomainToNewRoomDomainMapper @Inject constructor() :
         lastMessage: String,
         lastMessageAuthor: String,
         deletable: Boolean
-    ) = NewRoomDtoDomain.Base(
-        roomId, title, image, lastMessageAuthor, lastMessageAuthor, lastMessage, lastMessageAuthor
-    )
+    ) = NewRoomDtoDomain.Base(roomId, title, image, lastMessageAuthor, lastMessageAuthor, lastMessage, lastMessageAuthor)
 }

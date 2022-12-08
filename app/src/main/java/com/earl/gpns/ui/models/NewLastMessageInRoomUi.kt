@@ -8,6 +8,8 @@ interface NewLastMessageInRoomUi {
 
     fun lastMessageForUpdate() : LastMessageForUpdate
 
+    fun isAuthoredMessage(name: String) : Boolean
+
     class Base(
         private val roomId: String,
         private val authorName: String,
@@ -22,5 +24,7 @@ interface NewLastMessageInRoomUi {
 
         override fun lastMessageForUpdate() =
             LastMessageForUpdate(authorImage, authorName, messageText, timestamp)
+
+        override fun isAuthoredMessage(name: String) = name == authorName
     }
 }

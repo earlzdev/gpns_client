@@ -25,9 +25,17 @@ interface RoomUi : Same<RoomUi> {
 
     fun clearUnreadMsgCounter()
 
-    fun isUnreadMsgCountNull() : Boolean
+    fun isUnreadMsgCountEqualsNull() : Boolean
 
     fun messageBelongsSender() : Boolean
+
+    fun isLastMsgRead() : Boolean
+
+    fun showUnreadMsgIndicator()
+
+    fun isLastMessageAuthorEqualsCurrentUser() : Boolean
+
+    fun hideAuthorMessageUnreadIndicator()
 
     class Base(
         private val roomId: String,
@@ -36,7 +44,8 @@ interface RoomUi : Same<RoomUi> {
         private var lastMessage: String,
         private var lastMessageAuthor: String,
         private val deletable: Boolean,
-        private var unreadMsgCount: Int
+        private var unreadMsgCounter: Int,
+        private var isLastMsgRead: Boolean
     ) : RoomUi {
         override fun recyclerDetails(
             icon: RoundedImageView,
@@ -46,7 +55,7 @@ interface RoomUi : Same<RoomUi> {
         ) {
             name.text = title
             lastMsg.text = lastMessage
-            unreadMsgCounter.text = unreadMsgCount.toString()
+            unreadMsgCounter.text = this.unreadMsgCounter.toString()
         }
 
         override fun chatInfo() = ChatInfo(roomId, title, image)
@@ -60,15 +69,27 @@ interface RoomUi : Same<RoomUi> {
         }
 
         override fun updateUnreadMsgCount() {
-            unreadMsgCount += 1
+            unreadMsgCounter += 1
         }
 
         override fun clearUnreadMsgCounter() {
-            unreadMsgCount = 0
+            unreadMsgCounter = 0
         }
 
-        override fun isUnreadMsgCountNull() = unreadMsgCount == 0
+        override fun isUnreadMsgCountEqualsNull() = unreadMsgCounter == 0
 
         override fun messageBelongsSender() = lastMessageAuthor == title
+
+        override fun isLastMsgRead() = isLastMsgRead
+
+        override fun showUnreadMsgIndicator() {
+            isLastMsgRead = false
+        }
+
+        override fun isLastMessageAuthorEqualsCurrentUser() = title != lastMessageAuthor
+
+        override fun hideAuthorMessageUnreadIndicator() {
+            isLastMsgRead = true
+        }
     }
 }

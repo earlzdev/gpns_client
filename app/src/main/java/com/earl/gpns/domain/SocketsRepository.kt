@@ -1,5 +1,6 @@
-package com.earl.gpns.domain.repositories
+package com.earl.gpns.domain
 
+import com.earl.gpns.core.AuthoredMessageReadListener
 import com.earl.gpns.core.MarkMessageAsReadCallback
 import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.core.UpdateLastMessageInRoomCallback
@@ -10,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SocketsRepository {
 
-    suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback) : Flow<RoomDomain?>
+    suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback, authoredMessagesReadCallback: AuthoredMessageReadListener) : Flow<RoomDomain?>
 
     suspend fun initChatSocketSession(token: String) : SocketOperationResultListener<Unit>
 
