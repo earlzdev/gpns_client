@@ -28,7 +28,10 @@ interface Interactor {
 
     suspend fun closeChatSocketSession()
 
-    suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback, authoredMessagesReadCallback: AuthoredMessageReadListener) : Flow<RoomDomain?>
+    suspend fun observeNewRooms(
+        callback: UpdateLastMessageInRoomCallback,
+        authoredMessagesReadCallback: LastMessageReadStateCallback,
+        removeRoomCallback: DeleteRoomCallback) : Flow<RoomDomain?>
 
     suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain)
 
@@ -55,6 +58,8 @@ interface Interactor {
     suspend fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String)
 
     suspend fun updateLastMsgReadState(token: String, roomId: String)
+
+    suspend fun hideRemovedRoom(roomId: String)
 
     class Base @Inject constructor(
         private val repository: Repository,
@@ -87,8 +92,11 @@ interface Interactor {
 
         override suspend fun fetchUserInfo(token: String) = repository.fetchUserInfo(token)
 
-        override suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback, authoredMessagesReadCallback: AuthoredMessageReadListener) =
-            socketRepository.observeNewRooms(callback, authoredMessagesReadCallback)
+        override suspend fun observeNewRooms(
+            callback: UpdateLastMessageInRoomCallback,
+            authoredMessagesReadCallback: LastMessageReadStateCallback,
+            removeRoomCallback: DeleteRoomCallback) =
+            socketRepository.observeNewRooms(callback, authoredMessagesReadCallback, removeRoomCallback)
 
         override suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain) {
             socketRepository.addRoom(token, newRoomDtoDomain)
@@ -140,6 +148,10 @@ interface Interactor {
 
         override suspend fun updateLastMsgReadState(token: String, roomId: String) {
             repository.updateLastMsgReadState(token, roomId)
+        }
+
+        override suspend fun hideRemovedRoom(roomId: String) {
+            localDatabaseRepository.deleteRoomFromLocalDb(roomId)
         }
     }
 }

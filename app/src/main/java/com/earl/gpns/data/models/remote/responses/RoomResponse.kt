@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RoomResponse(
+    @SerializedName("action") val action: String,
     @SerializedName("roomId") val roomId: String,
     @SerializedName("image") val image: String,
     @SerializedName("title") val title: String,
