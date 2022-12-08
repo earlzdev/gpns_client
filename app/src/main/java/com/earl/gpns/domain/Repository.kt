@@ -32,4 +32,6 @@ interface Repository {
     suspend fun markMessagesAsRead(token: String, roomId: String)
 
     suspend fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String)
+
+    suspend fun updateLastMsgReadState(token: String, roomId: String)
 }

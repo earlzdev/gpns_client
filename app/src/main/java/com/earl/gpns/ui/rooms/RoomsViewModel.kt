@@ -33,8 +33,6 @@ class RoomsViewModel @Inject constructor(
 
     private val rooms: MutableStateFlow<List<RoomUi>> = MutableStateFlow(emptyList())
     val _rooms = rooms.asStateFlow()
-//    private val messages: MutableStateFlow<MutableList<MessageUi>> = MutableStateFlow(mutableListOf())
-//    val _messages = messages.asStateFlow()
 
     private fun fetchRooms(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -85,9 +83,9 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-//    fun closeChatSocketSession() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            interactor.closeChatSocketSession()
-//        }
-//    }
+    fun updateLastMsgReadState(token: String, roomId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.updateLastMsgReadState(token, roomId)
+        }
+    }
 }

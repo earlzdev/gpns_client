@@ -67,6 +67,10 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
             chatInfo.roomId ?: "",
             chatInfo.chatTitle
         )
+        viewModel.updateLastMsgReadState(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            chatInfo.roomId ?: ""
+        )
     }
 
     override fun deleteRoom(chatInfo: ChatInfo) {
@@ -89,7 +93,6 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
                             if (it.isLastMessageAuthorEqualsCurrentUser() && !it.isLastMsgRead()) {
                                 it.showUnreadMsgIndicator()
                                 it.clearUnreadMsgCounter()
-//                                adapter.showMessageUnreadIndicator(rooms.indexOf(it))
                             }
                         }
                     }
@@ -126,15 +129,6 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
                     adapter.clearCounter(newLastMsgUi.provideRoomId())
                     navigator.log("updateLastMessage read message got")
                 }
-//               if (!newLastMsgUi.isMessageRead()
-//                    && newLastMsgUi.isAuthoredMessage(preferenceManager.getString(Keys.KEY_NAME) ?: "")){
-//                    adapter.showMessageUnreadIndicator(currentPosition)
-//                   navigator.log("authored message got")
-//                }  else if (!newLastMsgUi.isMessageRead()) {
-//                    adapter.updateCounter(currentPosition)
-//                } else if (newLastMsgUi.isMessageRead()) {
-//                    adapter.clearCounter(newLastMsgUi.provideRoomId())
-//               }
             }
         }
     }

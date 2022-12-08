@@ -54,6 +54,8 @@ interface Interactor {
 
     suspend fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String)
 
+    suspend fun updateLastMsgReadState(token: String, roomId: String)
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -134,6 +136,10 @@ interface Interactor {
             authorName: String
         ) {
             repository.markAuthoredMessageAsRead(token, roomId, authorName)
+        }
+
+        override suspend fun updateLastMsgReadState(token: String, roomId: String) {
+            repository.updateLastMsgReadState(token, roomId)
         }
     }
 }

@@ -16,10 +16,11 @@ interface RoomDomain {
         val lastMessage: String,
         val lastMessageAuthor: String,
         val deletable: Boolean,
-        private val unreadMsgCounter: Int
+        private val unreadMsgCounter: Int,
+        private val lastMsgRead: Int
     ) : RoomDomain {
         override fun <T> map(mapper: RoomDomainToUiMapper<T>) =
-            mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter)
+            mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead)
 
         override fun <T> mapToNewRoomDto(mapper: RoomDomainToNewRoomDomainMapper<T>) =
             mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable)

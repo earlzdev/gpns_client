@@ -142,6 +142,14 @@ class BaseRepository @Inject constructor(
         }
     }
 
+    override suspend fun updateLastMsgReadState(token: String, roomId: String) {
+        try {
+            service.updateLastMsgReadState("Bearer $token", RoomTokenRequest(roomId))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     companion object {
         private const val KEY_SUCCESS = "success"
     }

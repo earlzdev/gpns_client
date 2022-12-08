@@ -79,4 +79,11 @@ interface Service {
         @Header("Authorization") token: String,
         @Body request: MarkAuthoredMessageAsReadRequest
     )
+
+    @Headers("Content-Type: application/json")
+    @POST("/updateLastMsgReadState")
+    suspend fun updateLastMsgReadState(
+        @Header("Authorization") token: String,
+        @Body request: RoomTokenRequest
+    )
 }

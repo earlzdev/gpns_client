@@ -13,6 +13,7 @@ class BaseRoomDomainToUiMapper @Inject constructor() : RoomDomainToUiMapper<Room
         lastMessage: String,
         lastMessageAuthor: String,
         deletable: Boolean,
-        unreadMsgCounter: Int
-    ) = RoomUi.Base(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, false)
+        unreadMsgCounter: Int,
+        lastMsgRead: Int
+    ) = RoomUi.Base(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead == 1)
 }
