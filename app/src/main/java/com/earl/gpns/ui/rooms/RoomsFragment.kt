@@ -9,10 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.earl.gpns.R
-import com.earl.gpns.core.AuthoredMessageReadListener
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
-import com.earl.gpns.core.UpdateLastMessageInRoomCallback
+import com.earl.gpns.core.*
 import com.earl.gpns.databinding.FragmentRoomsBinding
 import com.earl.gpns.domain.mappers.NewLastMessageInRoomDomainToUiMapper
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
@@ -26,7 +23,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, UpdateLastMessageInRoomCallback, AuthoredMessageReadListener {
+class RoomsFragment :
+    BaseFragment<FragmentRoomsBinding>(),
+    OnRoomClickListener,
+    UpdateLastMessageInRoomCallback,
+    LastMessageReadStateCallback,
+    DeleteRoomCallback {
 
     private lateinit var viewModel: RoomsViewModel
     private lateinit var adapter: RoomsRecyclerAdapter
@@ -56,7 +58,12 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
 
     private fun initSession() {
         navigator.showProgressBar()
-        viewModel.initChatSocket(preferenceManager.getString(Keys.KEY_JWT) ?: "", this, this)
+        viewModel.initChatSocket(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            this,
+            this,
+            this
+        )
     }
 
     override fun joinRoom(chatInfo: ChatInfo) {
@@ -133,7 +140,14 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
         }
     }
 
-
+    override fun removeRoom(roomId: String, contactName: String) {
+        viewModel.hideDeletedRoom(roomId)
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (preferenceManager.getString(Keys.KEY_NAME) != contactName) {
+                Toast.makeText(requireContext(), "Пользователь $contactName удалил с Вами диалог", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     private fun backPressedCallback() {
         val callback = object : OnBackPressedCallback(true) {

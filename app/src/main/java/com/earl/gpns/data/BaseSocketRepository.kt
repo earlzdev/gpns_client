@@ -1,9 +1,6 @@
 package com.earl.gpns.data
 
-import com.earl.gpns.core.AuthoredMessageReadListener
-import com.earl.gpns.core.MarkMessageAsReadCallback
-import com.earl.gpns.core.SocketOperationResultListener
-import com.earl.gpns.core.UpdateLastMessageInRoomCallback
+import com.earl.gpns.core.*
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.MessageData
 import com.earl.gpns.data.models.NewLastMessageInRoomData
@@ -51,6 +48,7 @@ class BaseSocketRepository @Inject constructor(
     private var roomsSocket: WebSocketSession? = null
     private var messagingSocket: WebSocketSession? = null
     private var usersOnlineSocket: WebSocketSession? = null
+    private var groupsSocket: WebSocketSession? = null
 
     override suspend fun initChatSocketSession(token: String): SocketOperationResultListener<Unit> {
         return try {
@@ -89,7 +87,11 @@ class BaseSocketRepository @Inject constructor(
         messagingSocket?.close()
     }
 
-    override suspend fun observeNewRooms(callback: UpdateLastMessageInRoomCallback, authoredMessagesReadCallback: AuthoredMessageReadListener): Flow<RoomDomain?> {
+    override suspend fun observeNewRooms(
+        callback: UpdateLastMessageInRoomCallback,
+        updateLastMessageReadStateCallback: LastMessageReadStateCallback,
+        removeRoomCallback: DeleteRoomCallback
+    ): Flow<RoomDomain?> {
         var json = ""
         return try {
             roomsSocket?.incoming
@@ -99,7 +101,13 @@ class BaseSocketRepository @Inject constructor(
                     json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
                     try {
                         val roomResponse = Json.decodeFromString<RoomResponse>(json)
-                        return@map roomResponse.map(roomResponseToDataMapper).map(roomDataToDomainMapper)
+                        if (roomResponse.action == REMOVE_ROOM_KEY) {
+                            removeRoomCallback.removeRoom(roomResponse.roomId, roomResponse.title)
+                            return@map null
+                        } else {
+                            return@map roomResponse.map(roomResponseToDataMapper)
+                                .map(roomDataToDomainMapper)
+                        }
                     } catch (e: Exception) {
                         try {
                             val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
@@ -107,7 +115,7 @@ class BaseSocketRepository @Inject constructor(
                             return@map null
                         } catch (e: Exception) {
                             val markRoomAsRead = Json.decodeFromString<RoomIdResponse>(json)
-                            authoredMessagesReadCallback.markAuthoredMessageAsRead(markRoomAsRead.id)
+                            updateLastMessageReadStateCallback.markAuthoredMessageAsRead(markRoomAsRead.id)
                             return@map null
                         }
                     } catch (e: Exception) {
@@ -179,5 +187,6 @@ class BaseSocketRepository @Inject constructor(
     companion object {
 
         private const val ADD_ROOM_KEY = "addRoom"
+        private const val REMOVE_ROOM_KEY = "remove"
     }
 }

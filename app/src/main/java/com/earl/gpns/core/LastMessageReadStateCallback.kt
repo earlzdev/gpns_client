@@ -1,5 +1,5 @@
 package com.earl.gpns.core
 
-interface AuthoredMessageReadListener {
+interface LastMessageReadStateCallback {
     fun markAuthoredMessageAsRead(roomId: String)
 }
