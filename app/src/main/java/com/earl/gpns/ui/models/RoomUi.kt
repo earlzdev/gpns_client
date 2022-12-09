@@ -41,6 +41,8 @@ interface RoomUi : Same<RoomUi> {
 
     fun setUserOnline(online: Int, lastAuthDate: String)
 
+    fun testisonline() : Int
+
     class Base(
         private val roomId: String,
         private val image: String,
@@ -103,5 +105,7 @@ interface RoomUi : Same<RoomUi> {
             contactOnline = online
             contactLastAuth = lastAuthDate
         }
+
+        override fun testisonline() = contactOnline
     }
 }
