@@ -1,5 +1,6 @@
 package com.earl.gpns.data
 
+import android.util.Log
 import com.earl.gpns.core.*
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.MessageData
@@ -140,7 +141,8 @@ class BaseSocketRepository @Inject constructor(
 
     override suspend fun observeMessages(
         markMessageAsReadCallback: MarkMessageAsReadCallback,
-        setUserOnlineCallback: UpdateOnlineInChatCallback
+        setUserOnlineCallback: UpdateOnlineInChatCallback,
+        setTypingMessageCallback: IsUserTypingMessageCallback
     ): Flow<MessageDomain?> {
         return try {
             messagingSocket?.incoming
@@ -157,11 +159,17 @@ class BaseSocketRepository @Inject constructor(
                             setUserOnlineCallback.updateOnline(updateOnline.online, updateOnline.lastAuth)
                             return@map null
                         } catch (e: Exception) {
-                            val unreadMessageId = Json.decodeFromString<MessageIdResponse>(json)
-                            if (unreadMessageId.messageId != "") {
-                                markMessageAsReadCallback.markAsRead()
+                            try {
+                                val response = Json.decodeFromString<TypingMessageDtoResponse>(json)
+                                setTypingMessageCallback.isTypingMessage(response.typing)
+                                return@map null
+                            } catch (e: Exception) {
+                                val unreadMessageId = Json.decodeFromString<MessageIdResponse>(json)
+                                if (unreadMessageId.messageId != "") {
+                                    markMessageAsReadCallback.markAsRead()
+                                }
+                                return@map null
                             }
-                            return@map null
                         }
                     }
                 }!!

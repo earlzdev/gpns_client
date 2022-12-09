@@ -4,18 +4,18 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.earl.gpns.core.IsUserTypingMessageCallback
 import com.earl.gpns.core.MarkMessageAsReadCallback
 import com.earl.gpns.core.UpdateOnlineInChatCallback
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.MessageDomainToUiMapper
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.NewRoomDtoDomain
+import com.earl.gpns.domain.models.TypingMessageDtoDomain
 import com.earl.gpns.ui.mappers.MessageUiToDomainMapper
 import com.earl.gpns.ui.mappers.NewRoomUiToDomainMapper
-import com.earl.gpns.ui.models.MessageUi
-import com.earl.gpns.ui.models.NewRoomDtoUi
-import com.earl.gpns.ui.models.RoomUi
-import com.earl.gpns.ui.models.UserUi
+import com.earl.gpns.ui.mappers.TypingMessageDtoUiToDomainMapper
+import com.earl.gpns.ui.models.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +32,7 @@ class ChatViewModel @Inject constructor(
     private val newRoomUiToDomainMapper: NewRoomUiToDomainMapper<NewRoomDtoDomain>,
     private val messageDomainToUiMapper: MessageDomainToUiMapper<MessageUi>,
     private val messageUiToDomainMapper: MessageUiToDomainMapper<MessageDomain>,
+    private val typingMessageUiToDomainMapper: TypingMessageDtoUiToDomainMapper<TypingMessageDtoDomain>
 ): ViewModel() {
 
     private val messages: MutableStateFlow<List<MessageUi>> = MutableStateFlow(emptyList())
@@ -73,12 +74,13 @@ class ChatViewModel @Inject constructor(
         token: String,
         roomId: String,
         callback: MarkMessageAsReadCallback,
-        updateOnlineCallback: UpdateOnlineInChatCallback
+        updateOnlineCallback: UpdateOnlineInChatCallback,
+        setTypingMessageCallback: IsUserTypingMessageCallback
     ) {
         fetchMessagesForRoom(token, roomId)
         viewModelScope.launch(Dispatchers.IO) {
             interactor.initMessagingSocket(token, roomId)
-            interactor.observeNewMessages(callback, updateOnlineCallback)
+            interactor.observeNewMessages(callback, updateOnlineCallback, setTypingMessageCallback)
                 .onEach { message ->
                     if (message != null) {
                         messages.value += message.mapToUi(messageDomainToUiMapper)
@@ -90,6 +92,15 @@ class ChatViewModel @Inject constructor(
     fun markMessagesAsRead(token: String, roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.markMessagesAsRead(token, roomId)
+        }
+    }
+
+    fun sendTypeMessageResponse(token: String, response: TypingMessageDtoUi) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.sendTypingMessageRequest(
+                token,
+                response.map(typingMessageUiToDomainMapper)
+            )
         }
     }
 

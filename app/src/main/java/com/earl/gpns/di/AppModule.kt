@@ -13,6 +13,7 @@ import com.earl.gpns.data.models.*
 import com.earl.gpns.data.retrofit.Service
 import com.earl.gpns.data.models.remote.MessageRemote
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
+import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.MessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
@@ -23,6 +24,7 @@ import com.earl.gpns.domain.models.UserDomain
 import com.earl.gpns.domain.DatabaseRepository
 import com.earl.gpns.domain.Repository
 import com.earl.gpns.domain.SocketsRepository
+import com.earl.gpns.domain.mappers.TypingMessageDtoDomainToDataMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,7 +48,9 @@ object AppModule {
         newRoomDomainToDataMapper: NewRoomDomainToDataMapper<NewRoomDtoData>,
         newRoomDataToRequestMapper: NewRoomDataToRequestMapper<NewRoomRequest>,
         messageRemoteToDataMapper: MessageRemoteToDataMapper<MessageData>,
-        messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>
+        messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>,
+        typingMessageDomainToDataMapper: TypingMessageDtoDomainToDataMapper<TypingMessageDtoData>,
+        typingMessageDataToResponseMapper: TypingMessageDataToResponseMapper<TypingMessageDtoResponse>
     ) : Repository {
         return BaseRepository(
             service,
@@ -57,7 +61,9 @@ object AppModule {
             newRoomDomainToDataMapper,
             newRoomDataToRequestMapper,
             messageRemoteToDataMapper,
-            messageDataToDomainMapper
+            messageDataToDomainMapper,
+            typingMessageDomainToDataMapper,
+            typingMessageDataToResponseMapper
         )
     }
 

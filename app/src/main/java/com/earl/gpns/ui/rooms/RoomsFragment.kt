@@ -144,7 +144,7 @@ class RoomsFragment :
     }
 
     override fun removeRoom(roomId: String, contactName: String) {
-        viewModel.hideDeletedRoom(roomId)
+        viewModel.removeRoomFromDb(roomId)
         lifecycleScope.launch(Dispatchers.Main) {
             if (preferenceManager.getString(Keys.KEY_NAME) != contactName) {
                 Toast.makeText(requireContext(), "Пользователь $contactName удалил с Вами диалог", Toast.LENGTH_SHORT).show()

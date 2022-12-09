@@ -78,9 +78,9 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    fun hideDeletedRoom(roomId: String) {
+    fun removeRoomFromDb(roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.hideRemovedRoom(roomId)
+            interactor.deleteRoomFromDb(roomId)
             val deletedRoom = rooms.value.find { it.chatInfo().roomId == roomId }
             if (deletedRoom != null) {
                 rooms.value -= deletedRoom

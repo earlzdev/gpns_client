@@ -25,7 +25,8 @@ interface SocketsRepository {
 
     suspend fun observeMessages(
         markMessageAsReadCallback: MarkMessageAsReadCallback,
-        setUserOnlineCallback: UpdateOnlineInChatCallback
+        setUserOnlineCallback: UpdateOnlineInChatCallback,
+        setTypingMessageCallback: IsUserTypingMessageCallback
     ) : Flow<MessageDomain?>
 
     suspend fun initMessagingSocket(jwtToken: String, roomId: String)

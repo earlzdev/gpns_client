@@ -27,6 +27,7 @@
         android:layout_marginBottom="2dp"
         android:layout_marginEnd="2dp"
         android:background="@drawable/user_online_indicator"
+        android:visibility="gone"
         />
 
     <TextView

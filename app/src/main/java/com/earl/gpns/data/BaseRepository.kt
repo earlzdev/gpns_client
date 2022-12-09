@@ -3,16 +3,16 @@ package com.earl.gpns.data
 import android.util.Log
 import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.data.mappers.*
-import com.earl.gpns.data.models.MessageData
-import com.earl.gpns.data.models.NewRoomDtoData
-import com.earl.gpns.data.models.RoomData
-import com.earl.gpns.data.models.UserData
+import com.earl.gpns.data.models.*
 import com.earl.gpns.data.models.remote.requests.*
+import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.data.retrofit.Service
 import com.earl.gpns.domain.Repository
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
+import com.earl.gpns.domain.mappers.TypingMessageDtoDomainToDataMapper
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.RoomDomain
+import com.earl.gpns.domain.models.TypingMessageDtoDomain
 import com.earl.gpns.domain.models.UserDomain
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -26,7 +26,9 @@ class BaseRepository @Inject constructor(
     private val newRoomDomainToDataMapper: NewRoomDomainToDataMapper<NewRoomDtoData>,
     private val newRoomDataToRequestMapper: NewRoomDataToRequestMapper<NewRoomRequest>,
     private val messageRemoteToDataMapper: MessageRemoteToDataMapper<MessageData>,
-    private val messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>
+    private val messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>,
+    private val typingMessageDomainToDataMapper: TypingMessageDtoDomainToDataMapper<TypingMessageDtoData>,
+    private val typingMessageDataToResponseMapper: TypingMessageDataToResponseMapper<TypingMessageDtoResponse>
 ) : Repository {
 
     override suspend fun register(registerRequest: RegisterRequest, callback: AuthResultListener) {
@@ -150,6 +152,17 @@ class BaseRepository @Inject constructor(
     override suspend fun updateLastMsgReadState(token: String, roomId: String) {
         try {
             service.updateLastMsgReadState("Bearer $token", RoomTokenRequest(roomId))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun sendTypingMessageRequest(token: String, request: TypingMessageDtoDomain) {
+        try {
+            service.typingMessageRequest(
+                "Bearer $token",
+                request.map(typingMessageDomainToDataMapper).map(typingMessageDataToResponseMapper)
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         }

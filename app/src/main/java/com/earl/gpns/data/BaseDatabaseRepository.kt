@@ -1,5 +1,6 @@
 package com.earl.gpns.data
 
+import android.util.Log
 import com.earl.gpns.data.local.RoomDb
 import com.earl.gpns.data.local.RoomsDao
 import com.earl.gpns.data.mappers.NewRoomDataToDbMapper
@@ -30,7 +31,11 @@ class BaseDatabaseRepository @Inject constructor(
         .map { it.map(roomDataToDomainMapper) }
 
     override suspend fun deleteRoomFromLocalDb(roomId: String) {
-        roomsDao.deleteRoomFromDb(roomId)
+        try {
+            roomsDao.deleteRoomFromDb(roomId)
+        } catch (e: Exception) {
+            Log.d("tag", "deleteRoomFromLocalDb: EXCEPTION -> $e")
+        }
     }
 
     override suspend fun clearLocalDataBase() {

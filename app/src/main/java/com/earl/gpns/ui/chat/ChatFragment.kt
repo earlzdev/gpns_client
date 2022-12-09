@@ -1,23 +1,27 @@
 package com.earl.gpns.ui.chat
 
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.earl.gpns.R
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
-import com.earl.gpns.core.MarkMessageAsReadCallback
-import com.earl.gpns.core.UpdateOnlineInChatCallback
+import com.earl.gpns.core.*
 import com.earl.gpns.databinding.FragmentChatBinding
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.MessageUi
 import com.earl.gpns.ui.models.NewRoomDtoUi
+import com.earl.gpns.ui.models.TypingMessageDtoUi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -32,13 +36,15 @@ class ChatFragment(
     private val chatInfo: ChatInfo,
 ) : BaseFragment<FragmentChatBinding>(),
     MarkMessageAsReadCallback,
-    UpdateOnlineInChatCallback
+    UpdateOnlineInChatCallback,
+    IsUserTypingMessageCallback
 {
 
     private lateinit var viewModel: ChatViewModel
     private var newRoomId = ""
     private var newRoomFlag = false
     private lateinit var recyclerAdapter: ChatRecyclerAdapter
+    private var typingStarted = false
 
     override fun viewBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentChatBinding.inflate(inflater, container, false)
@@ -51,6 +57,7 @@ class ChatFragment(
         initMessagingService()
         recycler()
         backPressedCallback()
+        typingMessageListener()
         binding.testBtn.setOnClickListener {
             if (!binding.testEdttext.text.isNullOrEmpty()) {
                 sendMessage()
@@ -72,6 +79,7 @@ class ChatFragment(
         viewModel.initMessagingSocket(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
             newRoomId,
+            this,
             this,
             this
         )
@@ -191,16 +199,75 @@ class ChatFragment(
     }
 
     override fun updateOnline(online: Int, lastAuth: String) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                if (online == 1) {
-                    binding.userOnlineIndicator.isVisible = true
-                    binding.contactLastAuth.isVisible = false
-                } else {
-                    binding.userOnlineIndicator.isVisible = false
-                    binding.contactLastAuth.text = lastAuth
-                    binding.contactLastAuth.isVisible = true
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (online == 1) {
+                binding.userOnlineIndicator.isVisible = true
+                binding.contactLastAuth.isVisible = false
+            } else {
+                binding.userOnlineIndicator.isVisible = false
+                binding.contactLastAuth.text = lastAuth
+                binding.contactLastAuth.isVisible = true
+            }
+        }
+    }
+
+    override fun isTypingMessage(value: Int) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (value == 1) {
+                binding.isTyping.text = "${chatInfo.chatTitle} is typing..."
+                binding.isTyping.isVisible = true
+            } else {
+                binding.isTyping.isVisible = false
+            }
+        }
+    }
+
+    private fun typingMessageListener() {
+        binding.testEdttext.afterTextChangedDelayed {
+            navigator.log("TYPING STOPPED $it")
+        }
+    }
+
+    private fun EditText.afterTextChangedDelayed(afterTextChanged: (String) -> Unit) {
+        this.addTextChangedListener(object : TextWatcher {
+            var timer: CountDownTimer? = null
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (!typingStarted) {
+                    navigator.log("STARTED TYPING")
+                    viewModel.sendTypeMessageResponse(
+                        preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                        TypingMessageDtoUi.Base(
+                            newRoomId,
+                            preferenceManager.getString(Keys.KEY_NAME) ?: "",
+                            1
+                        )
+                    )
+                    typingStarted = true
                 }
             }
+
+            override fun afterTextChanged(editable: Editable?) {
+                timer?.cancel()
+                timer = object : CountDownTimer(1000, 1500) {
+                    override fun onTick(millisUntilFinished: Long) {}
+                    override fun onFinish() {
+                        afterTextChanged.invoke(editable.toString())
+                        viewModel.sendTypeMessageResponse(
+                            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                            TypingMessageDtoUi.Base(
+                                newRoomId,
+                                preferenceManager.getString(Keys.KEY_NAME) ?: "",
+                                0
+                            )
+                        )
+                        typingStarted = false
+                    }
+                }.start()
+            }
+        })
     }
 
     private fun backPressedCallback() {

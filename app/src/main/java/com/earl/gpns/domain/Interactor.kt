@@ -3,10 +3,7 @@ package com.earl.gpns.domain
 import com.earl.gpns.core.*
 import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
-import com.earl.gpns.domain.models.MessageDomain
-import com.earl.gpns.domain.models.NewRoomDtoDomain
-import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.models.UserDomain
+import com.earl.gpns.domain.models.*
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -43,7 +40,8 @@ interface Interactor {
 
     suspend fun observeNewMessages(
         callback: MarkMessageAsReadCallback,
-        setUserOnlineCallback: UpdateOnlineInChatCallback
+        setUserOnlineCallback: UpdateOnlineInChatCallback,
+        setTypingMessageCallback: IsUserTypingMessageCallback
     ) : Flow<MessageDomain?>
 
     suspend fun initMessagingSocket(jwtToken: String, roomId: String)
@@ -64,7 +62,9 @@ interface Interactor {
 
     suspend fun updateLastMsgReadState(token: String, roomId: String)
 
-    suspend fun hideRemovedRoom(roomId: String)
+    suspend fun deleteRoomFromDb(roomId: String)
+
+    suspend fun sendTypingMessageRequest(token: String, response: TypingMessageDtoDomain)
 
     class Base @Inject constructor(
         private val repository: Repository,
@@ -123,10 +123,12 @@ interface Interactor {
 
         override suspend fun observeNewMessages(
             callback: MarkMessageAsReadCallback,
-            setUserOnlineCallback: UpdateOnlineInChatCallback
+            setUserOnlineCallback: UpdateOnlineInChatCallback,
+            setTypingMessageCallback: IsUserTypingMessageCallback
         ) = socketRepository.observeMessages(
             callback,
-            setUserOnlineCallback
+            setUserOnlineCallback,
+            setTypingMessageCallback
         )
 
         override suspend fun initMessagingSocket(jwtToken: String, roomId: String) {
@@ -168,8 +170,15 @@ interface Interactor {
             repository.updateLastMsgReadState(token, roomId)
         }
 
-        override suspend fun hideRemovedRoom(roomId: String) {
+        override suspend fun deleteRoomFromDb(roomId: String) {
             localDatabaseRepository.deleteRoomFromLocalDb(roomId)
+        }
+
+        override suspend fun sendTypingMessageRequest(
+            token: String,
+            response: TypingMessageDtoDomain
+        ) {
+            repository.sendTypingMessageRequest(token, response)
         }
     }
 }
