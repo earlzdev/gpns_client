@@ -3,10 +3,7 @@ package com.earl.gpns.domain
 import com.earl.gpns.core.*
 import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
-import com.earl.gpns.domain.models.MessageDomain
-import com.earl.gpns.domain.models.NewRoomDtoDomain
-import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.models.UserDomain
+import com.earl.gpns.domain.models.*
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -31,7 +28,9 @@ interface Interactor {
     suspend fun observeNewRooms(
         callback: UpdateLastMessageInRoomCallback,
         authoredMessagesReadCallback: LastMessageReadStateCallback,
-        removeRoomCallback: DeleteRoomCallback) : Flow<RoomDomain?>
+        removeRoomCallback: DeleteRoomCallback,
+        updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
+    ) : Flow<RoomDomain?>
 
     suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain)
 
@@ -39,7 +38,11 @@ interface Interactor {
 
     suspend fun sendMessage(message: MessageDomain, token: String)
 
-    suspend fun observeNewMessages(callback: MarkMessageAsReadCallback) : Flow<MessageDomain?>
+    suspend fun observeNewMessages(
+        callback: MarkMessageAsReadCallback,
+        setUserOnlineCallback: UpdateOnlineInChatCallback,
+        setTypingMessageCallback: IsUserTypingMessageCallback
+    ) : Flow<MessageDomain?>
 
     suspend fun initMessagingSocket(jwtToken: String, roomId: String)
 
@@ -59,7 +62,9 @@ interface Interactor {
 
     suspend fun updateLastMsgReadState(token: String, roomId: String)
 
-    suspend fun hideRemovedRoom(roomId: String)
+    suspend fun deleteRoomFromDb(roomId: String)
+
+    suspend fun sendTypingMessageRequest(token: String, response: TypingMessageDtoDomain)
 
     class Base @Inject constructor(
         private val repository: Repository,
@@ -95,8 +100,15 @@ interface Interactor {
         override suspend fun observeNewRooms(
             callback: UpdateLastMessageInRoomCallback,
             authoredMessagesReadCallback: LastMessageReadStateCallback,
-            removeRoomCallback: DeleteRoomCallback) =
-            socketRepository.observeNewRooms(callback, authoredMessagesReadCallback, removeRoomCallback)
+            removeRoomCallback: DeleteRoomCallback,
+            updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
+        ) =
+            socketRepository.observeNewRooms(
+                callback,
+                authoredMessagesReadCallback,
+                removeRoomCallback,
+                updateUserOnlineInRoomCallback
+            )
 
         override suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain) {
             socketRepository.addRoom(token, newRoomDtoDomain)
@@ -109,7 +121,15 @@ interface Interactor {
             socketRepository.sendMessage(message, token)
         }
 
-        override suspend fun observeNewMessages(callback: MarkMessageAsReadCallback) = socketRepository.observeMessages(callback)
+        override suspend fun observeNewMessages(
+            callback: MarkMessageAsReadCallback,
+            setUserOnlineCallback: UpdateOnlineInChatCallback,
+            setTypingMessageCallback: IsUserTypingMessageCallback
+        ) = socketRepository.observeMessages(
+            callback,
+            setUserOnlineCallback,
+            setTypingMessageCallback
+        )
 
         override suspend fun initMessagingSocket(jwtToken: String, roomId: String) {
             socketRepository.initMessagingSocket(jwtToken, roomId)
@@ -150,8 +170,15 @@ interface Interactor {
             repository.updateLastMsgReadState(token, roomId)
         }
 
-        override suspend fun hideRemovedRoom(roomId: String) {
+        override suspend fun deleteRoomFromDb(roomId: String) {
             localDatabaseRepository.deleteRoomFromLocalDb(roomId)
+        }
+
+        override suspend fun sendTypingMessageRequest(
+            token: String,
+            response: TypingMessageDtoDomain
+        ) {
+            repository.sendTypingMessageRequest(token, response)
         }
     }
 }

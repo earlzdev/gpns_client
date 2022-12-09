@@ -98,8 +98,6 @@ abstract class BaseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             item.recyclerDetails(binding.messageText, binding.timestamp)
             if (isSameDate) binding.dateHeader.visibility = View.GONE
             else { binding.dateHeader.text = item.provideDate() }
-
-            binding.msgReadIndicator.isVisible = !item.isMessageRead()
         }
     }
 }

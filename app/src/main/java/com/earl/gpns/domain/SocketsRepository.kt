@@ -9,9 +9,10 @@ import kotlinx.coroutines.flow.Flow
 interface SocketsRepository {
 
     suspend fun observeNewRooms(
-        callback: UpdateLastMessageInRoomCallback,
+        updateLastMessageInRoomCallback: UpdateLastMessageInRoomCallback,
         updateLastMessageReadStateCallback: LastMessageReadStateCallback,
-        removeRoomCallback: DeleteRoomCallback
+        removeRoomCallback: DeleteRoomCallback,
+        updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
     ) : Flow<RoomDomain?>
 
     suspend fun initChatSocketSession(token: String) : SocketOperationResultListener<Unit>
@@ -22,7 +23,11 @@ interface SocketsRepository {
 
     suspend fun sendMessage(message: MessageDomain, token: String)
 
-    suspend fun observeMessages(callback: MarkMessageAsReadCallback) : Flow<MessageDomain?>
+    suspend fun observeMessages(
+        markMessageAsReadCallback: MarkMessageAsReadCallback,
+        setUserOnlineCallback: UpdateOnlineInChatCallback,
+        setTypingMessageCallback: IsUserTypingMessageCallback
+    ) : Flow<MessageDomain?>
 
     suspend fun initMessagingSocket(jwtToken: String, roomId: String)
 

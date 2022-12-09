@@ -1,5 +1,6 @@
 package com.earl.gpns.ui.rooms
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -57,8 +58,15 @@ class RoomsRecyclerAdapter(
         notifyItemChanged(position)
     }
 
+    fun changeUserOnlineInRoom(roomId: String, online: Int, lastAuthDate: String) {
+        val item = currentList.toMutableList().find { it.sameId(roomId) }
+        Log.d("tag", "updateOnline: in adapter  online ${online}")
+        val position = currentList.indexOf(item)
+        item?.setUserOnline(online, lastAuthDate)
+        notifyItemChanged(position)
+    }
+
     fun clearCounter(roomId: String) {
-//        val item = currentList.toMutableList().find { it.sameId(chatInfo.roomId ?: "") }
         val item = currentList.toMutableList().find { it.sameId(roomId) }
         val position = currentList.indexOf(item)
         item?.clearUnreadMsgCounter()
@@ -90,22 +98,8 @@ class RoomsRecyclerAdapter(
             )
             binding.lastMsgAuthor.isVisible = !item.messageBelongsSender()
             binding.unreadMsgCounter.isVisible = !item.isUnreadMsgCountEqualsNull()
-
             binding.lastMessageReadIndicator.isVisible = item.isLastMessageAuthorEqualsCurrentUser() && !item.isLastMsgRead()
-
-//            binding.lastMessageReadIndicator.isVisible = item.isLastMsgRead()
-
-//            if (binding.lastMsgAuthor.isVisible && !item.isUnreadMsgCountEqualsNull()) {
-//                binding.unreadMsgCounter.isVisible = false
-//                binding.lastMessageReadIndicator.isVisible = true
-//            }
-//            if (!item.messageBelongsSender() &&  !item.isUnreadMsgCountEqualsNull()) {
-//                binding.lastMessageReadIndicator.isVisible = true
-//                binding.unreadMsgCounter.isVisible = false
-//            } else if (!item.isUnreadMsgCountEqualsNull() && item.messageBelongsSender()) {
-//                binding.lastMessageReadIndicator.isVisible = false
-//                binding.unreadMsgCounter.isVisible = true
-//            }
+            binding.userOnlineIndicator.isVisible = item.isUserOnline()
         }
     }
 

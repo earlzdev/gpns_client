@@ -10,6 +10,8 @@ interface RoomResponseToDataMapper<T> {
         lastMessageAuthor: String,
         deletable: Boolean,
         unreadMsgCounter: Int,
-        lastMsgRead: Int
+        lastMsgRead: Int,
+        contactIsOnline: Int,
+        contactLastAuth : String
     ) : T
 }

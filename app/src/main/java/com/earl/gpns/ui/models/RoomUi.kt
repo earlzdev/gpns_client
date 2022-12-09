@@ -37,6 +37,10 @@ interface RoomUi : Same<RoomUi> {
 
     fun hideAuthorMessageUnreadIndicator()
 
+    fun isUserOnline() : Boolean
+
+    fun setUserOnline(online: Int, lastAuthDate: String)
+
     class Base(
         private val roomId: String,
         private val image: String,
@@ -45,7 +49,9 @@ interface RoomUi : Same<RoomUi> {
         private var lastMessageAuthor: String,
         private val deletable: Boolean,
         private var unreadMsgCounter: Int,
-        private var isLastMsgRead: Boolean
+        private var isLastMsgRead: Boolean,
+        private var contactOnline: Int,
+        private var contactLastAuth: String
     ) : RoomUi {
         override fun recyclerDetails(
             icon: RoundedImageView,
@@ -58,14 +64,13 @@ interface RoomUi : Same<RoomUi> {
             unreadMsgCounter.text = this.unreadMsgCounter.toString()
         }
 
-        override fun chatInfo() = ChatInfo(roomId, title, image)
+        override fun chatInfo() = ChatInfo(roomId, title, image, contactOnline, contactLastAuth)
 
         override fun sameId(id: String) = id == roomId
 
         override fun updateLastMessage(lastMsg: LastMessageForUpdate) {
             lastMessage = lastMsg.messageText
             lastMessageAuthor = lastMsg.authorName
-
         }
 
         override fun updateUnreadMsgCount() {
@@ -90,6 +95,13 @@ interface RoomUi : Same<RoomUi> {
 
         override fun hideAuthorMessageUnreadIndicator() {
             isLastMsgRead = true
+        }
+
+        override fun isUserOnline() = contactOnline == 1
+
+        override fun setUserOnline(online: Int, lastAuthDate: String) {
+            contactOnline = online
+            contactLastAuth = lastAuthDate
         }
     }
 }

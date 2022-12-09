@@ -12,6 +12,8 @@ class BaseNewRoomDataToRequestMapper @Inject constructor(): NewRoomDataToRequest
         author: String,
         contact: String,
         lastMessage: String,
-        lastMessageAuthor: String
-    ) = NewRoomRequest(roomId, name, image, author, contact, lastMessage, lastMessageAuthor)
+        lastMessageAuthor: String,
+        contactIsOnline: Int,
+        contactLastAuth: String
+    ) = NewRoomRequest(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth)
 }

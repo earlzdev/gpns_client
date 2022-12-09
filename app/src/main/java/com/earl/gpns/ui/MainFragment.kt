@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,8 +36,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[MainFragmentViewModel::class.java]
         viewPager(requireContext())
-        authenticate()
         fetchUserInfo()
+        authenticate()
         backPressedCallback()
     }
 
@@ -73,6 +74,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
         viewModel.fetchUserInfo(preferenceManager.getString(Keys.KEY_JWT) ?: "")
         viewModel.observeUserInfoLiveData(this) {
             preferenceManager.putString(Keys.KEY_NAME, it.provideName())
+            Log.d("tag", "fetchUserInfo: tve name -> ${it.provideName()}")
             preferenceManager.putString(Keys.KEY_IMAGE, it.provideImage())
             preferenceManager.putString(Keys.KEY_USER_ID, it.provideId())
         }

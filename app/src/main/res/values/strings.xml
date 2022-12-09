@@ -23,4 +23,6 @@
     <string name="recycler_chat_header_example">26 ноября</string>
     <string name="You_last_msg_author">Вы: </string>
     <string name="room_with_this_user_successfully_removed">Диалог с этим пользователем удалён</string>
+    <string name="online_string">online</string>
+    <string name="typing_string">Typing...</string>
 </resources>

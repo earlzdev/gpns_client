@@ -2,6 +2,7 @@ package com.earl.gpns.data.models
 
 import com.earl.gpns.data.mappers.NewRoomDataToDbMapper
 import com.earl.gpns.data.mappers.NewRoomDataToRequestMapper
+import com.google.gson.annotations.SerializedName
 
 interface NewRoomDtoData {
 
@@ -16,12 +17,14 @@ interface NewRoomDtoData {
         private val author: String,
         private val contact: String,
         private val lastMessage: String,
-        private val lastMessageAuthor: String
+        private val lastMessageAuthor: String,
+        private val contactIsOnline: Int,
+        private val contactLastAuth: String
     ) : NewRoomDtoData {
         override fun <T> mapToRequest(mapper: NewRoomDataToRequestMapper<T>) =
-            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor)
+            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth)
 
         override fun <T> mapToDb(mapper: NewRoomDataToDbMapper<T>) =
-            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor)
+            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth)
     }
 }

@@ -12,6 +12,8 @@ class BaseNewRoomDataToDbMapper @Inject constructor() : NewRoomDataToDbMapper<Ro
         author: String,
         contact: String,
         lastMessage: String,
-        lastMessageAuthor: String
-    ) = RoomDb(0, roomId, image, contact, lastMessage, lastMessageAuthor, true, 1, 0)
+        lastMessageAuthor: String,
+        contactIsOnline: Int,
+        contactLastAuth: String
+    ) = RoomDb(0, roomId, image, contact, lastMessage, lastMessageAuthor, true, 1, 0, contactIsOnline, contactLastAuth)
 }

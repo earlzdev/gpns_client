@@ -6,10 +6,7 @@ import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
 import com.earl.gpns.data.models.remote.responses.RoomResponse
-import com.earl.gpns.domain.models.MessageDomain
-import com.earl.gpns.domain.models.NewRoomDtoDomain
-import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.models.UserDomain
+import com.earl.gpns.domain.models.*
 
 interface Repository {
 
@@ -34,4 +31,6 @@ interface Repository {
     suspend fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String)
 
     suspend fun updateLastMsgReadState(token: String, roomId: String)
+
+    suspend fun sendTypingMessageRequest(token: String, request: TypingMessageDtoDomain)
 }

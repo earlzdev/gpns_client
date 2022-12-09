@@ -5,6 +5,7 @@ import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
 import com.earl.gpns.data.models.remote.MessageRemote
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
+import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.domain.mappers.*
 import com.earl.gpns.domain.models.*
 import com.earl.gpns.ui.mappers.*
@@ -146,5 +147,23 @@ object MappersModule {
     @Singleton
     fun provideNewLastMsgDomainToUiMapper() : NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi> {
         return BaseNewLastMessageDomainToUiMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTypingMessageDtoUiToDomainMapper() : TypingMessageDtoUiToDomainMapper<TypingMessageDtoDomain> {
+        return BaseTypingMessageUiToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTypingMessageDtoDomainToDataMapper() : TypingMessageDtoDomainToDataMapper<TypingMessageDtoData> {
+        return BaseTypingMessageDtoDomainToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTypingMessageDtoDataToResponseMapper() : TypingMessageDataToResponseMapper<TypingMessageDtoResponse> {
+        return BaseTypingMessageDataToResponseMapper()
     }
 }

@@ -46,8 +46,9 @@ class SignUpFragment : BaseFragment<FragmentRegistrationBinding>(), AuthResultLi
 
     override fun <T> authorized(value: T) {
         navigator.log("token ${value.toString()}")
-        navigator.hideProgressBar()
+        preferenceManager.putString(Keys.KEY_JWT, value.toString())
         preferenceManager.putBoolean(Keys.KEY_IS_SIGNED_UP, true)
+        navigator.hideProgressBar()
         navigator.mainFragment()
     }
 

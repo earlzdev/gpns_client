@@ -4,6 +4,7 @@ import com.earl.gpns.data.models.remote.MessageRemote
 import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.models.remote.responses.RoomResponse
 import com.earl.gpns.data.models.remote.responses.TokenResponse
+import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.data.models.remote.responses.UserResponse
 import retrofit2.http.*
 
@@ -85,5 +86,12 @@ interface Service {
     suspend fun updateLastMsgReadState(
         @Header("Authorization") token: String,
         @Body request: RoomTokenRequest
+    )
+
+    @Headers("Content-Type: application/json")
+    @POST("/typingMessageRequest")
+    suspend fun typingMessageRequest(
+        @Header("Authorization") token: String,
+        @Body request: TypingMessageDtoResponse
     )
 }

@@ -1,5 +1,6 @@
 package com.earl.gpns.data
 
+import android.util.Log
 import com.earl.gpns.core.*
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.MessageData
@@ -9,17 +10,14 @@ import com.earl.gpns.data.models.RoomData
 import com.earl.gpns.data.models.remote.MessageRemote
 import com.earl.gpns.data.models.remote.requests.ChatSocketActionRequest
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
-import com.earl.gpns.data.models.remote.responses.MessageIdResponse
-import com.earl.gpns.data.models.remote.responses.NewLastMessageInRoomResponse
-import com.earl.gpns.data.models.remote.responses.RoomIdResponse
-import com.earl.gpns.data.models.remote.responses.RoomResponse
+import com.earl.gpns.data.models.remote.responses.*
+import com.earl.gpns.domain.SocketsRepository
 import com.earl.gpns.domain.mappers.MessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.SocketsRepository
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
@@ -47,8 +45,9 @@ class BaseSocketRepository @Inject constructor(
 
     private var roomsSocket: WebSocketSession? = null
     private var messagingSocket: WebSocketSession? = null
+    private var groupsMessagingSocket: WebSocketSession? = null
     private var usersOnlineSocket: WebSocketSession? = null
-    private var groupsSocket: WebSocketSession? = null
+    private var searchSocket: WebSocketSession? = null
 
     override suspend fun initChatSocketSession(token: String): SocketOperationResultListener<Unit> {
         return try {
@@ -88,9 +87,10 @@ class BaseSocketRepository @Inject constructor(
     }
 
     override suspend fun observeNewRooms(
-        callback: UpdateLastMessageInRoomCallback,
+        updateLastMessageInRoomCallback: UpdateLastMessageInRoomCallback,
         updateLastMessageReadStateCallback: LastMessageReadStateCallback,
-        removeRoomCallback: DeleteRoomCallback
+        removeRoomCallback: DeleteRoomCallback,
+        updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
     ): Flow<RoomDomain?> {
         var json = ""
         return try {
@@ -111,12 +111,18 @@ class BaseSocketRepository @Inject constructor(
                     } catch (e: Exception) {
                         try {
                             val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
-                            callback.updateLastMessage(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
+                            updateLastMessageInRoomCallback.updateLastMessage(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
                             return@map null
                         } catch (e: Exception) {
-                            val markRoomAsRead = Json.decodeFromString<RoomIdResponse>(json)
-                            updateLastMessageReadStateCallback.markAuthoredMessageAsRead(markRoomAsRead.id)
-                            return@map null
+                            try {
+                                val updateOnline = Json.decodeFromString<SetUserOnlineInRoom>(json)
+                                updateUserOnlineInRoomCallback.updateOnline(updateOnline.roomId, updateOnline.online, updateOnline.lastAuthDate)
+                                return@map null
+                            } catch (e: Exception) {
+                                val markRoomAsRead = Json.decodeFromString<RoomIdResponse>(json)
+                                updateLastMessageReadStateCallback.markAuthoredMessageAsRead(markRoomAsRead.id)
+                                return@map null
+                            }
                         }
                     } catch (e: Exception) {
                         return@map null
@@ -125,7 +131,7 @@ class BaseSocketRepository @Inject constructor(
         } catch(e: Exception) {
             e.printStackTrace()
             val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
-            callback.updateLastMessage(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
+            updateLastMessageInRoomCallback.updateLastMessage(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
             flow {  }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -133,7 +139,11 @@ class BaseSocketRepository @Inject constructor(
         }
     }
 
-    override suspend fun observeMessages(callback: MarkMessageAsReadCallback): Flow<MessageDomain?> {
+    override suspend fun observeMessages(
+        markMessageAsReadCallback: MarkMessageAsReadCallback,
+        setUserOnlineCallback: UpdateOnlineInChatCallback,
+        setTypingMessageCallback: IsUserTypingMessageCallback
+    ): Flow<MessageDomain?> {
         return try {
             messagingSocket?.incoming
                 ?.receiveAsFlow()
@@ -144,11 +154,23 @@ class BaseSocketRepository @Inject constructor(
                         val messageRemote =  Json.decodeFromString<MessageRemote>(json)
                         return@map messageRemote.map(messageRemoteToDataMapper).mapToDomain(messageDataToDomainMapper)
                     } catch (e: Exception) {
-                        val unreadMessageId = Json.decodeFromString<MessageIdResponse>(json)
-                        if (unreadMessageId.messageId != "") {
-                            callback.markAsRead()
+                        try {
+                            val updateOnline = Json.decodeFromString<SetUserOnlineInMessaging>(json)
+                            setUserOnlineCallback.updateOnline(updateOnline.online, updateOnline.lastAuth)
+                            return@map null
+                        } catch (e: Exception) {
+                            try {
+                                val response = Json.decodeFromString<TypingMessageDtoResponse>(json)
+                                setTypingMessageCallback.isTypingMessage(response.typing)
+                                return@map null
+                            } catch (e: Exception) {
+                                val unreadMessageId = Json.decodeFromString<MessageIdResponse>(json)
+                                if (unreadMessageId.messageId != "") {
+                                    markMessageAsReadCallback.markAsRead()
+                                }
+                                return@map null
+                            }
                         }
-                        return@map null
                     }
                 }!!
         } catch(e: Exception) {

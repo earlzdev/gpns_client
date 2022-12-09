@@ -6,6 +6,7 @@ interface UserDomainToUiMapper<T> {
         userId: String,
         image: String,
         username: String,
-        online: String
+        online: Int,
+        lastAuth: String
     ) : T
 }

@@ -8,6 +8,8 @@ interface NewRoomDomainToDataMapper <T> {
         author: String,
         contact: String,
         lastMessage: String,
-        lastMessageAuthor: String
+        lastMessageAuthor: String,
+        contactIsOnline: Int,
+        contactLastAuth: String
     ) : T
 }
