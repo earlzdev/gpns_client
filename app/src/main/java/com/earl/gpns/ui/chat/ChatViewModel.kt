@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.earl.gpns.core.MarkMessageAsReadCallback
+import com.earl.gpns.core.UpdateOnlineInChatCallback
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.MessageDomainToUiMapper
 import com.earl.gpns.domain.models.MessageDomain
@@ -68,11 +69,16 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun initMessagingSocket(token: String, roomId: String, callback: MarkMessageAsReadCallback) {
+    fun initMessagingSocket(
+        token: String,
+        roomId: String,
+        callback: MarkMessageAsReadCallback,
+        updateOnlineCallback: UpdateOnlineInChatCallback
+    ) {
         fetchMessagesForRoom(token, roomId)
         viewModelScope.launch(Dispatchers.IO) {
             interactor.initMessagingSocket(token, roomId)
-            interactor.observeNewMessages(callback)
+            interactor.observeNewMessages(callback, updateOnlineCallback)
                 .onEach { message ->
                     if (message != null) {
                         messages.value += message.mapToUi(messageDomainToUiMapper)

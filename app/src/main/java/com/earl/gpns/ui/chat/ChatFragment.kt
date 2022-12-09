@@ -1,17 +1,19 @@
 package com.earl.gpns.ui.chat
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.core.MarkMessageAsReadCallback
+import com.earl.gpns.core.UpdateOnlineInChatCallback
 import com.earl.gpns.databinding.FragmentChatBinding
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.MessageUi
@@ -28,13 +30,15 @@ import java.util.*
 @AndroidEntryPoint
 class ChatFragment(
     private val chatInfo: ChatInfo,
-) : BaseFragment<FragmentChatBinding>(), MarkMessageAsReadCallback {
+) : BaseFragment<FragmentChatBinding>(),
+    MarkMessageAsReadCallback,
+    UpdateOnlineInChatCallback
+{
 
     private lateinit var viewModel: ChatViewModel
     private var newRoomId = ""
     private var newRoomFlag = false
     private lateinit var recyclerAdapter: ChatRecyclerAdapter
-    private var unreadMessagesIdsList = mutableListOf<String>()
 
     override fun viewBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentChatBinding.inflate(inflater, container, false)
@@ -43,6 +47,7 @@ class ChatFragment(
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[ChatViewModel::class.java]
         initRoomId()
+        initChatInfo()
         initMessagingService()
         recycler()
         backPressedCallback()
@@ -67,6 +72,7 @@ class ChatFragment(
         viewModel.initMessagingSocket(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
             newRoomId,
+            this,
             this
         )
     }
@@ -79,7 +85,9 @@ class ChatFragment(
             preferenceManager.getString(Keys.KEY_NAME) ?: "",
             chatInfo.chatTitle,
             binding.testEdttext.text.toString(),
-            preferenceManager.getString(Keys.KEY_NAME) ?: ""
+            preferenceManager.getString(Keys.KEY_NAME) ?: "",
+            1,
+            ""
         )
         viewModel.addRoom(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
@@ -167,6 +175,32 @@ class ChatFragment(
                 preferenceManager.getString(Keys.KEY_JWT) ?: ""
             )
         }
+    }
+
+    private fun initChatInfo() {
+        binding.contactName.text = chatInfo.chatTitle
+        binding.userAvatar.setImageResource(R.drawable.default_avatar)
+        if (chatInfo.userOnline == 1) {
+            binding.userOnlineIndicator.isVisible = true
+            binding.contactLastAuth.isVisible = false
+        } else {
+            binding.userOnlineIndicator.isVisible = false
+            binding.contactLastAuth.text = chatInfo.userLastAuth
+            binding.contactLastAuth.isVisible = true
+        }
+    }
+
+    override fun updateOnline(online: Int, lastAuth: String) {
+            lifecycleScope.launch(Dispatchers.Main) {
+                if (online == 1) {
+                    binding.userOnlineIndicator.isVisible = true
+                    binding.contactLastAuth.isVisible = false
+                } else {
+                    binding.userOnlineIndicator.isVisible = false
+                    binding.contactLastAuth.text = lastAuth
+                    binding.contactLastAuth.isVisible = true
+                }
+            }
     }
 
     private fun backPressedCallback() {

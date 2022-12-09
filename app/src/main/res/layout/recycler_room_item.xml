@@ -18,6 +18,17 @@
         android:layout_marginStart="20dp"
         />
 
+    <FrameLayout
+        android:id="@+id/user_online_indicator"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        app:layout_constraintBottom_toBottomOf="@id/chat_image"
+        app:layout_constraintEnd_toEndOf="@id/chat_image"
+        android:layout_marginBottom="2dp"
+        android:layout_marginEnd="2dp"
+        android:background="@drawable/user_online_indicator"
+        />
+
     <TextView
         android:id="@+id/chat_name"
         android:layout_width="wrap_content"

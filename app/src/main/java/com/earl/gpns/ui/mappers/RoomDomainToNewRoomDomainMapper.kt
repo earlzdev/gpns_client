@@ -9,5 +9,7 @@ interface RoomDomainToNewRoomDomainMapper<T> {
         lastMessage: String,
         lastMessageAuthor: String,
         deletable: Boolean,
+        contactIsOnline: Int,
+        contactLastAuth: String
     ) : T
 }

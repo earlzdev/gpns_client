@@ -10,8 +10,9 @@ interface UserDomain {
         private val userId: String,
         private val image: String,
         private val username: String,
-        private val online: String,
+        private val online: Int,
+        private val lastAuth: String,
     ) : UserDomain {
-        override fun <T> map(mapper: UserDomainToUiMapper<T>) = mapper.map(userId, image, username, online)
+        override fun <T> map(mapper: UserDomainToUiMapper<T>) = mapper.map(userId, image, username, online, lastAuth)
     }
 }

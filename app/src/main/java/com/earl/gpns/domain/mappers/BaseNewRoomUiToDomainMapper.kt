@@ -13,8 +13,10 @@ class BaseNewRoomUiToDomainMapper @Inject constructor() : NewRoomUiToDomainMappe
         author: String,
         contact: String,
         lastMessage: String,
-        lastMessageAuthor: String
+        lastMessageAuthor: String,
+        contactIsOnline: Int,
+        contactLastAuth: String
     ) = NewRoomDtoDomain.Base(
-        roomId, name, image, author, contact, lastMessage, lastMessageAuthor
+        roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth
     )
 }

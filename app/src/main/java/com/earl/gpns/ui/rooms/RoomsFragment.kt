@@ -1,6 +1,7 @@
 package com.earl.gpns.ui.rooms
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +29,8 @@ class RoomsFragment :
     OnRoomClickListener,
     UpdateLastMessageInRoomCallback,
     LastMessageReadStateCallback,
-    DeleteRoomCallback {
+    DeleteRoomCallback,
+    UpdateOnlineInRoomCallback {
 
     private lateinit var viewModel: RoomsViewModel
     private lateinit var adapter: RoomsRecyclerAdapter
@@ -44,7 +46,7 @@ class RoomsFragment :
         initSession()
         recycler()
         backPressedCallback()
-        binding.testUsername.text = preferenceManager.getString(Keys.KEY_NAME) ?: ""
+        binding.testUsername.text = preferenceManager.getString(Keys.KEY_NAME)
         binding.newMsgBtn.setOnClickListener {
             navigator.showProgressBar()
             navigator.usersFragment()
@@ -60,6 +62,7 @@ class RoomsFragment :
         navigator.showProgressBar()
         viewModel.initChatSocket(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            this,
             this,
             this,
             this
@@ -146,6 +149,13 @@ class RoomsFragment :
             if (preferenceManager.getString(Keys.KEY_NAME) != contactName) {
                 Toast.makeText(requireContext(), "Пользователь $contactName удалил с Вами диалог", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    override fun updateOnline(roomId: String, online: Int, lastAuthDate: String) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            adapter.changeUserOnlineInRoom(roomId, online, lastAuthDate)
+            Log.d("tag", "updateOnline: in room fragment done")
         }
     }
 

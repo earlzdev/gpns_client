@@ -16,7 +16,10 @@ data class RoomResponse(
     @SerializedName("deletable") val deletable: Boolean,
     @SerializedName("unreadMsgCounter") val unreadMsgCounter: Int,
     @SerializedName("lastMsgRead") val lastMsgRead: Int,
+    @SerializedName("contactIsOnline") val contactIsOnline: Int,
+    @SerializedName("contactLastAuth") val contactLastAuth: String,
+
 ) {
     fun map(mapper: RoomResponseToDataMapper<RoomData>) =
-        mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead)
+        mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead, contactIsOnline, contactLastAuth)
 }

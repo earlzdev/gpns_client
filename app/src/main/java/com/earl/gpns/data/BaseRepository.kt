@@ -1,5 +1,6 @@
 package com.earl.gpns.data
 
+import android.util.Log
 import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.MessageData
@@ -52,6 +53,7 @@ class BaseRepository @Inject constructor(
     override suspend fun login(loginRequest: LoginRequest, callback: AuthResultListener) {
         try {
             val token = service.login(loginRequest)
+            Log.d("tag", "login: token -> ${token.token}")
             callback.authorized(token.token)
         } catch (e: HttpException) {
             e.printStackTrace()
@@ -97,10 +99,13 @@ class BaseRepository @Inject constructor(
 
     override suspend fun fetchUserInfo(token: String): UserDomain? {
         return try {
-            service.fetchUserInfo("Bearer $token")
+           val result =  service.fetchUserInfo("Bearer $token")
                 .map(userResponseToDataMapper)
                 .map(userDataToDomainMapper)
+            Log.d("tag", "fetchUserInfo: repository -> $result")
+            result
         } catch (e: Exception) {
+            Log.d("tag", "fetchUserInfo: exceptoin -> $e")
             e.printStackTrace()
             null
         }

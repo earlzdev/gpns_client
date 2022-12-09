@@ -31,7 +31,9 @@ interface Interactor {
     suspend fun observeNewRooms(
         callback: UpdateLastMessageInRoomCallback,
         authoredMessagesReadCallback: LastMessageReadStateCallback,
-        removeRoomCallback: DeleteRoomCallback) : Flow<RoomDomain?>
+        removeRoomCallback: DeleteRoomCallback,
+        updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
+    ) : Flow<RoomDomain?>
 
     suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain)
 
@@ -39,7 +41,10 @@ interface Interactor {
 
     suspend fun sendMessage(message: MessageDomain, token: String)
 
-    suspend fun observeNewMessages(callback: MarkMessageAsReadCallback) : Flow<MessageDomain?>
+    suspend fun observeNewMessages(
+        callback: MarkMessageAsReadCallback,
+        setUserOnlineCallback: UpdateOnlineInChatCallback
+    ) : Flow<MessageDomain?>
 
     suspend fun initMessagingSocket(jwtToken: String, roomId: String)
 
@@ -95,8 +100,15 @@ interface Interactor {
         override suspend fun observeNewRooms(
             callback: UpdateLastMessageInRoomCallback,
             authoredMessagesReadCallback: LastMessageReadStateCallback,
-            removeRoomCallback: DeleteRoomCallback) =
-            socketRepository.observeNewRooms(callback, authoredMessagesReadCallback, removeRoomCallback)
+            removeRoomCallback: DeleteRoomCallback,
+            updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
+        ) =
+            socketRepository.observeNewRooms(
+                callback,
+                authoredMessagesReadCallback,
+                removeRoomCallback,
+                updateUserOnlineInRoomCallback
+            )
 
         override suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain) {
             socketRepository.addRoom(token, newRoomDtoDomain)
@@ -109,7 +121,13 @@ interface Interactor {
             socketRepository.sendMessage(message, token)
         }
 
-        override suspend fun observeNewMessages(callback: MarkMessageAsReadCallback) = socketRepository.observeMessages(callback)
+        override suspend fun observeNewMessages(
+            callback: MarkMessageAsReadCallback,
+            setUserOnlineCallback: UpdateOnlineInChatCallback
+        ) = socketRepository.observeMessages(
+            callback,
+            setUserOnlineCallback
+        )
 
         override suspend fun initMessagingSocket(jwtToken: String, roomId: String) {
             socketRepository.initMessagingSocket(jwtToken, roomId)
