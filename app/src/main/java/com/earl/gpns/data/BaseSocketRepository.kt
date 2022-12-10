@@ -1,6 +1,5 @@
 package com.earl.gpns.data
 
-import android.util.Log
 import com.earl.gpns.core.*
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.MessageData
@@ -22,6 +21,7 @@ import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import kotlinx.serialization.decodeFromString
@@ -92,6 +92,7 @@ class BaseSocketRepository @Inject constructor(
         removeRoomCallback: DeleteRoomCallback,
         updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
     ): Flow<RoomDomain?> {
+        // coroutine suspend
         var json = ""
         return try {
             roomsSocket?.incoming

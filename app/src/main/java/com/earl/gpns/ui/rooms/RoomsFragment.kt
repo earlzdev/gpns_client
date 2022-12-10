@@ -24,8 +24,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RoomsFragment :
-    BaseFragment<FragmentRoomsBinding>(),
+class RoomsFragment : BaseFragment<FragmentRoomsBinding>(),
     OnRoomClickListener,
     UpdateLastMessageInRoomCallback,
     LastMessageReadStateCallback,

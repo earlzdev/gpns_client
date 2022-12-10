@@ -48,7 +48,7 @@ class RoomsRecyclerAdapter(
     fun swap(position: Int) {
         // todo need refactoring !!!
         val list = currentList.toMutableList()
-        Collections.swap(list, position, STAT_POSITION)
+        Collections.swap(list, position, START_POSITION)
         this.submitList(list)
     }
 
@@ -100,12 +100,13 @@ class RoomsRecyclerAdapter(
             binding.unreadMsgCounter.isVisible = !item.isUnreadMsgCountEqualsNull()
             binding.lastMessageReadIndicator.isVisible = item.isLastMessageAuthorEqualsCurrentUser() && !item.isLastMsgRead()
             binding.userOnlineIndicator.isVisible = item.isUserOnline()
+            Log.d("tag", "bind: online -> ${item.testisonline()}")
         }
     }
 
     companion object Diff : DiffUtil.ItemCallback<RoomUi>() {
         override fun areItemsTheSame(oldItem: RoomUi, newItem: RoomUi) = oldItem.same(newItem)
         override fun areContentsTheSame(oldItem: RoomUi, newItem: RoomUi) = oldItem.equals(newItem)
-        private const val STAT_POSITION = 0
+        private const val START_POSITION = 0
     }
 }
