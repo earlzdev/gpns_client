@@ -92,6 +92,7 @@ class BaseSocketRepository @Inject constructor(
         removeRoomCallback: DeleteRoomCallback,
         updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
     ): Flow<RoomDomain?> {
+        // coroutine suspend
         var json = ""
         return try {
             roomsSocket?.incoming
