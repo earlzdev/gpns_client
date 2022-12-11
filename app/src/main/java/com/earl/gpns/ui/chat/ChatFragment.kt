@@ -132,7 +132,6 @@ class ChatFragment(
                         val unreadMessagesList = messages.filter { !it.isMessageRead() }
                         if (unreadMessagesList.isNotEmpty()) {
                             markMessagesAsRead(newRoomId)
-                            navigator.log("chat recycler unread messages list is not empty and all marked as read")
                         }
                     }
                     recyclerAdapter.submitList(messages)
