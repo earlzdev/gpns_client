@@ -86,7 +86,20 @@ interface Interactor {
 
         override suspend fun fetchUsers(token: String) = repository.fetchUsers(token)
 
-        override suspend fun fetchRooms(token: String) = repository.fetchRooms(token)
+        override suspend fun fetchRooms(token: String): List<RoomDomain> {
+            val remoteList = repository.fetchRooms(token)
+            val localDbList = localDatabaseRepository.fetchRoomsListFromLocalDb()
+            if (remoteList.isEmpty()) {
+                localDatabaseRepository.clearLocalDataBase()
+            } else {
+                remoteList.forEach {
+                    if(!localDbList.contains(it)){
+                        localDatabaseRepository.deleteRoomFromLocalDb(it.provideId())
+                    }
+                }
+            }
+            return remoteList
+        }
 
         override suspend fun initChatSocketSession(token: String) =
             socketRepository.initChatSocketSession(token)
@@ -174,10 +187,7 @@ interface Interactor {
             localDatabaseRepository.deleteRoomFromLocalDb(roomId)
         }
 
-        override suspend fun sendTypingMessageRequest(
-            token: String,
-            response: TypingMessageDtoDomain
-        ) {
+        override suspend fun sendTypingMessageRequest(token: String, response: TypingMessageDtoDomain) {
             repository.sendTypingMessageRequest(token, response)
         }
     }

@@ -9,6 +9,8 @@ interface RoomDomain {
 
     fun <T> mapToNewRoomDto(mapper: RoomDomainToNewRoomDomainMapper<T>) : T
 
+    fun provideId() : String
+
     class Base(
         private val roomId: String,
         private val image: String,
@@ -26,5 +28,7 @@ interface RoomDomain {
 
         override fun <T> mapToNewRoomDto(mapper: RoomDomainToNewRoomDomainMapper<T>) =
             mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, contactIsOnline, contactLastAuth)
+
+        override fun provideId() = roomId
     }
 }
