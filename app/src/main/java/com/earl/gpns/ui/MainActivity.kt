@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
 import com.earl.gpns.core.Keys
@@ -17,7 +16,6 @@ import com.earl.gpns.ui.auth.SignUpFragment
 import com.earl.gpns.ui.auth.StartFragment
 import com.earl.gpns.ui.chat.ChatFragment
 import com.earl.gpns.ui.models.ChatInfo
-import com.earl.gpns.ui.rooms.RoomsFragment
 import com.earl.gpns.ui.usersFragment.FragmentUsers
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,6 +30,8 @@ class MainActivity : AppCompatActivity(), NavigationContract {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//        val test = AuthorMessage(this)
+//        setContentView(test)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         preferenceManager = SharedPreferenceManager(this)
         if (preferenceManager.getBoolean(Keys.KEY_IS_SIGNED_UP)) {
