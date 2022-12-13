@@ -58,11 +58,15 @@ class ChatFragment(
         recycler()
         backPressedCallback()
         typingMessageListener()
-        binding.testBtn.setOnClickListener {
-            if (!binding.testEdttext.text.isNullOrEmpty()) {
+        binding.sendMsgBtn.setOnClickListener {
+            if (!binding.msgEdittext.text.isNullOrEmpty()) {
                 sendMessage()
-                binding.testEdttext.text.clear()
+                binding.msgEdittext.text.clear()
             }
+        }
+        binding.backBtn.setOnClickListener {
+            viewModel.closeMessagingSocket()
+            navigator.back()
         }
     }
 
@@ -92,9 +96,9 @@ class ChatFragment(
             chatInfo.chatImage,
             preferenceManager.getString(Keys.KEY_NAME) ?: "",
             chatInfo.chatTitle,
-            binding.testEdttext.text.toString(),
+            binding.msgEdittext.text.toString(),
             preferenceManager.getString(Keys.KEY_NAME) ?: "",
-            1,
+            chatInfo.userOnline,
             ""
         )
         viewModel.addRoom(
@@ -112,7 +116,7 @@ class ChatFragment(
             newRoomId,
             preferenceManager.getString(Keys.KEY_USER_ID) ?: "",
             timeText,
-            binding.testEdttext.text.toString(),
+            binding.msgEdittext.text.toString(),
             dateText,
             MSG_UNREAD_KEY
         )
@@ -173,7 +177,7 @@ class ChatFragment(
                 newRoomId,
                 preferenceManager.getString(Keys.KEY_USER_ID) ?: "",
                 timeText,
-                binding.testEdttext.text.toString(),
+                binding.msgEdittext.text.toString(),
                 dateText,
                 MSG_UNREAD_KEY
             )
@@ -188,22 +192,24 @@ class ChatFragment(
         binding.contactName.text = chatInfo.chatTitle
         binding.userAvatar.setImageResource(R.drawable.default_avatar)
         if (chatInfo.userOnline == 1) {
-            binding.userOnlineIndicator.isVisible = true
+            binding.onlineIndicator.isVisible = true
             binding.contactLastAuth.isVisible = false
+            Log.d("tag", "initChatInfo: last uath : ${chatInfo.userOnline} ${chatInfo.userLastAuth}")
         } else {
-            binding.userOnlineIndicator.isVisible = false
+            binding.onlineIndicator.isVisible = false
             binding.contactLastAuth.text = chatInfo.userLastAuth
             binding.contactLastAuth.isVisible = true
+            Log.d("tag", "initChatInfo: last uath : ${chatInfo.userLastAuth}")
         }
     }
 
     override fun updateOnline(online: Int, lastAuth: String) {
         lifecycleScope.launch(Dispatchers.Main) {
             if (online == 1) {
-                binding.userOnlineIndicator.isVisible = true
+                binding.onlineIndicator.isVisible = true
                 binding.contactLastAuth.isVisible = false
             } else {
-                binding.userOnlineIndicator.isVisible = false
+                binding.onlineIndicator.isVisible = false
                 binding.contactLastAuth.text = lastAuth
                 binding.contactLastAuth.isVisible = true
             }
@@ -213,6 +219,7 @@ class ChatFragment(
     override fun isTypingMessage(value: Int) {
         lifecycleScope.launch(Dispatchers.Main) {
             if (value == 1) {
+                binding.contactLastAuth.isVisible = false
                 binding.isTyping.text = "${chatInfo.chatTitle} is typing..."
                 binding.isTyping.isVisible = true
             } else {
@@ -222,7 +229,7 @@ class ChatFragment(
     }
 
     private fun typingMessageListener() {
-        binding.testEdttext.afterTextChangedDelayed {
+        binding.msgEdittext.afterTextChangedDelayed {
             navigator.log("TYPING STOPPED $it")
         }
     }

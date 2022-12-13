@@ -12,7 +12,8 @@ interface RoomUi : Same<RoomUi> {
         icon: RoundedImageView,
         name: TextView,
         lastMsg: TextView,
-        unreadMsgCounter: TextView
+        unreadMsgCounter: TextView,
+        lastMsgTimestamp: TextView
     )
 
     fun chatInfo() : ChatInfo
@@ -59,7 +60,8 @@ interface RoomUi : Same<RoomUi> {
             icon: RoundedImageView,
             name: TextView,
             lastMsg: TextView,
-            unreadMsgCounter: TextView
+            unreadMsgCounter: TextView,
+            lastMsgTimestamp: TextView
         ) {
             name.text = title
             lastMsg.text = lastMessage
