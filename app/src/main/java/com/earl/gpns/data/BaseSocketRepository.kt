@@ -180,6 +180,7 @@ class BaseSocketRepository @Inject constructor(
     }
 
     override suspend fun addRoom(token: String, newRoomRequest: NewRoomDtoDomain) {
+        // remove cuz dont need anymore and we fetch rooms by baserep
         val request = ChatSocketActionRequest(
             ADD_ROOM_KEY,
             token,

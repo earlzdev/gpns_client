@@ -19,17 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="10dp"
-        />
-
-    <FrameLayout
-        android:id="@+id/msg_read_indicator"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:background="@drawable/unread_sender_msg_mark"
-        app:layout_constraintTop_toTopOf="@id/message_layout"
-        app:layout_constraintBottom_toBottomOf="@id/message_layout"
-        app:layout_constraintEnd_toStartOf="@id/message_layout"
-        android:layout_marginEnd="15dp"
+        android:textColor="@color/white"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -67,7 +57,30 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="25dp"
+            />
+
+        <ImageView
+            android:id="@+id/msg_read_indicator"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/msg_read_indicator"
+            app:layout_constraintStart_toEndOf="@id/timestamp"
+            app:layout_constraintBottom_toBottomOf="@id/timestamp"
+            app:layout_constraintTop_toTopOf="@id/timestamp"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <ImageView
+            android:id="@+id/msg_unread_indicator"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/msg_unread_indicator"
+            app:layout_constraintStart_toEndOf="@id/timestamp"
+            app:layout_constraintBottom_toBottomOf="@id/timestamp"
+            app:layout_constraintTop_toTopOf="@id/timestamp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

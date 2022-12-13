@@ -10,10 +10,7 @@ import com.earl.gpns.data.retrofit.Service
 import com.earl.gpns.domain.Repository
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.mappers.TypingMessageDtoDomainToDataMapper
-import com.earl.gpns.domain.models.MessageDomain
-import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.models.TypingMessageDtoDomain
-import com.earl.gpns.domain.models.UserDomain
+import com.earl.gpns.domain.models.*
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -122,6 +119,14 @@ class BaseRepository @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
+        }
+    }
+
+    override suspend fun addNewRoom(token: String, newRoomRequest: NewRoomDtoDomain) {
+        try {
+            service.addRoom("Bearer $token", newRoomRequest.map(newRoomDomainToDataMapper).mapToRequest(newRoomDataToRequestMapper))
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

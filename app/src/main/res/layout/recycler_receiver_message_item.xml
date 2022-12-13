@@ -19,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="10dp"
+        android:textColor="@color/white"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/_22_15"
-            android:textColor="@color/message_timestamp_color"
+            android:textColor="@color/contact_msg_text_color"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@id/message_text"
             app:layout_constraintBottom_toBottomOf="parent"

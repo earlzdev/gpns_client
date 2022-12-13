@@ -33,4 +33,6 @@ interface Repository {
     suspend fun updateLastMsgReadState(token: String, roomId: String)
 
     suspend fun sendTypingMessageRequest(token: String, request: TypingMessageDtoDomain)
+
+    suspend fun addNewRoom(token: String, newRoomRequest: NewRoomDtoDomain)
 }

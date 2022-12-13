@@ -94,11 +94,17 @@ class RoomsRecyclerAdapter(
                 binding.chatImage,
                 binding.chatName,
                 binding.chatLastMsg,
-                binding.unreadMsgCounter
+                binding.unreadMsgCounter,
+                binding.timestamp
             )
             binding.lastMsgAuthor.isVisible = !item.messageBelongsSender()
-            binding.unreadMsgCounter.isVisible = !item.isUnreadMsgCountEqualsNull()
-            binding.lastMessageReadIndicator.isVisible = item.isLastMessageAuthorEqualsCurrentUser() && !item.isLastMsgRead()
+            if (item.isLastMessageAuthorEqualsCurrentUser()) {
+                binding.unreadMsgCounter.isVisible = false
+            } else {
+                binding.unreadMsgCounter.isVisible = !item.isUnreadMsgCountEqualsNull()
+            }
+            binding.lastMessageUnreadIndicator.isVisible = item.isLastMessageAuthorEqualsCurrentUser() && !item.isLastMsgRead()
+            binding.lastMessageReadIndicator.isVisible = item.isLastMessageAuthorEqualsCurrentUser() && item.isLastMsgRead()
             binding.userOnlineIndicator.isVisible = item.isUserOnline()
             Log.d("tag", "bind: online -> ${item.testisonline()}")
         }

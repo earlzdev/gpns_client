@@ -78,7 +78,8 @@ abstract class BaseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             if (isSameDate) binding.dateHeader.visibility = View.GONE
             else { binding.dateHeader.text = item.provideDate() }
 
-            binding.msgReadIndicator.isVisible = !item.isMessageRead()
+            binding.msgUnreadIndicator.isVisible = !item.isMessageRead()
+            binding.msgReadIndicator.isVisible = item.isMessageRead()
 
 //        // Omit user profile picture in case of repeated message
 //        if (isSameUser && isSameDate) {

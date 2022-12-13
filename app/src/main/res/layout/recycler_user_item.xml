@@ -8,14 +8,25 @@
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/user_avatar"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:src="@drawable/default_avatar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:scaleType="centerCrop"
         app:riv_oval="true"
         android:layout_marginStart="20dp"
+        />
+
+    <ImageView
+        android:id="@+id/online_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/online_dot"
+        app:layout_constraintBottom_toBottomOf="@id/user_avatar"
+        app:layout_constraintEnd_toEndOf="@id/user_avatar"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="4dp"
         />
 
     <TextView
@@ -25,7 +36,7 @@
         android:text="@string/user_name_example"
         android:fontFamily="@font/montesserat_medium"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="16sp"
         app:layout_constraintTop_toTopOf="@id/user_avatar"
         app:layout_constraintStart_toEndOf="@id/user_avatar"
         app:layout_constraintBottom_toTopOf="@id/user_last_seen"
@@ -39,7 +50,7 @@
         android:text="@string/_12_12_2022"
         android:fontFamily="@font/montserrat_regular"
         android:textColor="@color/grey_tab_unselected"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:maxLines="1"
         android:ellipsize="end"
         android:singleLine="true"
@@ -47,6 +58,16 @@
         app:layout_constraintStart_toStartOf="@id/user_name"
         app:layout_constraintBottom_toBottomOf="@id/user_avatar"
         android:layout_marginEnd="20dp"
+        />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/start_dialog_btn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="30dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
