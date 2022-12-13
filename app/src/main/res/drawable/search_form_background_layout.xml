@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- drawable/chat.xml -->
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
@@ -15,10 +14,14 @@
             android:pathData="M0 0H360V800H0V0Z"
             />
 
-        <path
-            android:pathData="M0 0V800H360V0"
-            android:fillColor="#1A1B1F"
-            />
+            <clip-path
+                android:pathData="M0 0H360V800H0V0Z"
+                />
+
+            <path
+                android:pathData="M0 0V800H360V0"
+                android:fillColor="#E6050505"
+                />
 
     </group>
 

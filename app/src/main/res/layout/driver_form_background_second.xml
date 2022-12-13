@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/search_form_background">
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/search_form_background_layout" />
+
+
+    <TextView
+        android:id="@+id/driver_form_second_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/driver_form_second_text"
+        android:textColor="@color/white"
+        android:fontFamily="@font/montesserat_medium"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/driver_car_model"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/driver_car"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/driver_form_second_text"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        />
+
+    <TextView
+        android:id="@+id/driver_car_color"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/driver_car_color"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/driver_car_model"
+        app:layout_constraintStart_toStartOf="@id/driver_car_model"
+        android:layout_marginTop="30dp"
+        />
+
+
+    <TextView
+        android:id="@+id/driver_car_count_of_passengers"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/driver_car_count_of_passengeres"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/driver_car_color"
+        app:layout_constraintStart_toStartOf="@id/driver_car_model"
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/driver_car_gos_nomer"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/driver_car_gos_number"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/driver_car_count_of_passengers"
+        app:layout_constraintStart_toStartOf="@id/driver_car_model"
+        android:layout_marginTop="30dp"
+        />
+
+    <View
+        android:id="@+id/separate_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_tab_unselected"
+        app:layout_constraintTop_toBottomOf="@id/driver_car_gos_nomer"
+        app:layout_constraintBottom_toTopOf="@id/trip_price"
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/trip_price"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/trip_price"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/separate_view"
+        app:layout_constraintStart_toStartOf="@id/driver_car_model"
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/driver_comment"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/driver_comment"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/trip_price"
+        app:layout_constraintStart_toStartOf="@id/driver_car_model"
+        android:layout_marginTop="30dp"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/finish_driver_form"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="@string/finish_driver_form"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="17sp"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/driver_comment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/search_btn_background"
+        android:layout_marginHorizontal="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
