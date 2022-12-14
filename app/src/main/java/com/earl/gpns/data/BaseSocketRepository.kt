@@ -20,6 +20,7 @@ import com.earl.gpns.domain.models.RoomDomain
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
+import io.ktor.util.reflect.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.*
@@ -145,6 +146,11 @@ class BaseSocketRepository @Inject constructor(
         setTypingMessageCallback: IsUserTypingMessageCallback
     ): Flow<MessageDomain?> {
         return try {
+            messagingSocket?.incoming?.consumeEach {
+                if (it is Frame.Text) {
+
+                }
+            }
             messagingSocket?.incoming
                 ?.receiveAsFlow()
                 ?.filter { it is Frame.Text }
@@ -179,29 +185,10 @@ class BaseSocketRepository @Inject constructor(
         }
     }
 
-    override suspend fun addRoom(token: String, newRoomRequest: NewRoomDtoDomain) {
-        // remove cuz dont need anymore and we fetch rooms by baserep
-        val request = ChatSocketActionRequest(
-            ADD_ROOM_KEY,
-            token,
-            Json.encodeToString(newRoomRequest.map(newRoomDomainToDataMapper).mapToRequest(newRoomDataToRequestMapper))
-        )
-        val newRoomJson = Json.encodeToString(request)
-        roomsSocket?.send(Frame.Text(newRoomJson))
-    }
-
     override suspend fun sendMessage(message: MessageDomain, token: String) {
         try {
             val requestJson = Json.encodeToString(message.mapToData(messageDomainToDataMapper).mapToRemote(messageDataToRemoteMapper))
             messagingSocket?.send(Frame.Text(requestJson))
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    override suspend fun updateLastMessage(message: MessageDomain, token: String) {
-        try {
-
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -154,7 +154,7 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(),
     override fun updateOnline(roomId: String, online: Int, lastAuthDate: String) {
         lifecycleScope.launch(Dispatchers.Main) {
             adapter.changeUserOnlineInRoom(roomId, online, lastAuthDate)
-            Log.d("tag", "updateOnline: in room fragment done")
+            Log.d("tag", "updateOnline: in room fragment done -> $online")
         }
     }
 

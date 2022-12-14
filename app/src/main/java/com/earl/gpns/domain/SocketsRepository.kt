@@ -19,8 +19,6 @@ interface SocketsRepository {
 
     suspend fun closeChatSocketSession()
 
-    suspend fun addRoom(token: String, newRoomRequest: NewRoomDtoDomain)
-
     suspend fun sendMessage(message: MessageDomain, token: String)
 
     suspend fun observeMessages(
@@ -32,6 +30,4 @@ interface SocketsRepository {
     suspend fun initMessagingSocket(jwtToken: String, roomId: String)
 
     suspend fun closeMessagingSocket()
-
-    suspend fun updateLastMessage(message: MessageDomain, token: String)
 }
