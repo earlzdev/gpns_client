@@ -220,7 +220,7 @@ class ChatFragment(
         lifecycleScope.launch(Dispatchers.Main) {
             if (value == 1) {
                 binding.contactLastAuth.isVisible = false
-                binding.isTyping.text = "${chatInfo.chatTitle} is typing..."
+                binding.isTyping.text = "Печатает..."
                 binding.isTyping.isVisible = true
             } else {
                 binding.isTyping.isVisible = false
@@ -242,7 +242,6 @@ class ChatFragment(
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (!typingStarted) {
-                    navigator.log("STARTED TYPING")
                     viewModel.sendTypeMessageResponse(
                         preferenceManager.getString(Keys.KEY_JWT) ?: "",
                         TypingMessageDtoUi.Base(

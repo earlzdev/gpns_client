@@ -124,7 +124,6 @@ interface Interactor {
             )
 
         override suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain) {
-//            socketRepository.addRoom(token, newRoomDtoDomain)
             repository.addNewRoom(token, newRoomDtoDomain)
         }
 
