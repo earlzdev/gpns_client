@@ -56,4 +56,25 @@
     <string name="day_schedule_example">Дневной 8:30 - 17:30</string>
     <string name="look_trip">Смотреть подробнее</string>
     <string name="search_for_compnaions">Поиск попутчиков</string>
+    <string name="companion_form_text">Анкета попутчика</string>
+    <string name="from_where_could_driver_catch">Откуда можно меня забрать?</string>
+    <string name="companion_go_to">Еду на:</string>
+    <string name="companion_actuial_trip_time">Буду попутчиком в течение:</string>
+    <string name="companion_able_to_pay_for_trip">Готов(а) платить на поездку:</string>
+    <string name="companion_form_comment">Комментарий попутчика:</string>
+    <string name="companion_role">Попутчик</string>
+    <string name="comp_comf_to_catch">Удобно забрать:</string>
+    <string name="be_comp_in_time">Будет попутчиком в течение:</string>
+    <string name="suggest_place_in_ur_car">Предложить место в Вашем авто</string>
+    <string name="dirver_role">Водитель</string>
+    <string name="driver_leave_from">Выезжает от:</string>
+    <string name="driver_leave_at">в:</string>
+    <string name="driver_able_to_catch_comp_form">Может забрать попутчиков от:</string>
+    <string name="driver_goues_to">Едет на:</string>
+    <string name="driver_able_to_visit_also">Может заехать по пути:</string>
+    <string name="driver_able_to_drive_in_turn">Готов ездить по очереди с другим водителем:</string>
+    <string name="drives_in_trip_in_time">Ездит по маршруту в течении:</string>
+    <string name="driver_car_avaliable_places">Осталось мест:</string>
+    <string name="driver_trip_price">Цена поездки:</string>
+    <string name="suggest_to_drive_together">Предложить ездить вместе</string>
 </resources>
