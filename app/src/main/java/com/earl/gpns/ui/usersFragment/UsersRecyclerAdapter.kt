@@ -32,7 +32,7 @@ class UsersRecyclerAdapter(
 
     inner class ItemViewHolder(private val binding: RecyclerUserItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: UserUi) {
-            item.recyclerDetails(binding.userAvatar, binding.userName, binding.userLastSeen)
+            item.recyclerDetails(binding.userAvatar, binding.userName, binding.userLastSeen, binding.onlineIndicator)
         }
     }
 

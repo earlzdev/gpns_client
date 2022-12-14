@@ -99,6 +99,9 @@ class BaseSocketRepository @Inject constructor(
                 ?.receiveAsFlow()
                 ?.filter { it is Frame.Text }
                 ?.map {
+
+
+
                     json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
                     try {
                         val roomResponse = Json.decodeFromString<RoomResponse>(json)
@@ -146,11 +149,6 @@ class BaseSocketRepository @Inject constructor(
         setTypingMessageCallback: IsUserTypingMessageCallback
     ): Flow<MessageDomain?> {
         return try {
-            messagingSocket?.incoming?.consumeEach {
-                if (it is Frame.Text) {
-
-                }
-            }
             messagingSocket?.incoming
                 ?.receiveAsFlow()
                 ?.filter { it is Frame.Text }
