@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/search_form_background">
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/search_form_background_layout"
+        />
+
+    <TextView
+        android:id="@+id/companion_form_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/companion_form_text"
+        android:textColor="@color/white"
+        android:fontFamily="@font/montesserat_medium"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/companion_from"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/from_where_could_driver_catch"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/companion_form_text"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        />
+
+    <TextView
+        android:id="@+id/companion_drive_to"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/companion_go_to"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/companion_from"
+        app:layout_constraintStart_toStartOf="@id/companion_from"
+        android:layout_marginTop="30dp"
+        />
+
+
+    <TextView
+        android:id="@+id/companion_schedule"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/schedule"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/companion_drive_to"
+        app:layout_constraintStart_toStartOf="@id/companion_from"
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/companion_actual_trip_time"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/companion_actuial_trip_time"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/companion_schedule"
+        app:layout_constraintStart_toStartOf="@id/companion_from"
+        android:layout_marginTop="30dp"
+        />
+
+    <View
+        android:id="@+id/separate_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_tab_unselected"
+        app:layout_constraintTop_toBottomOf="@id/companion_actual_trip_time"
+        app:layout_constraintBottom_toTopOf="@id/companion_price"
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/companion_price"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/companion_able_to_pay_for_trip"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/separate_view"
+        app:layout_constraintStart_toStartOf="@id/companion_from"
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/companion_form_comment"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/companion_form_comment"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/companion_price"
+        app:layout_constraintStart_toStartOf="@id/companion_from"
+        android:layout_marginTop="30dp"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/finish_driver_form"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="@string/finish_driver_form"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="17sp"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/companion_form_comment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/search_btn_background"
+        android:layout_marginHorizontal="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
