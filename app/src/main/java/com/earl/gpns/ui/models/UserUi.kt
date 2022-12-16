@@ -7,6 +7,13 @@ import androidx.core.view.isVisible
 import com.earl.gpns.R
 import com.earl.gpns.core.Same
 import com.makeramen.roundedimageview.RoundedImageView
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 interface UserUi : Same<UserUi> {
 
@@ -44,15 +51,30 @@ interface UserUi : Same<UserUi> {
             val context = imageView.context
             name.text = username
             if (online == 0) {
-                lastSeen.text = lastAuth
+                val currentDate = Date()
+                val simpleDateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+                val standardFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+                val dateText = simpleDateFormat.format(currentDate)
+                val lastAuthDate = LocalDateTime.parse(lastAuth, standardFormatter)
+                val dayOfYearFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+                val dayOfMonthFormatter = DateTimeFormatter.ofPattern("d MMMM")
+                val timeOfDayFormatter = DateTimeFormatter.ofPattern("HH:mm")
+                val currentDateText = LocalDateTime.parse(dateText, standardFormatter)
+                if (lastAuthDate.format(dayOfMonthFormatter) == currentDateText.format(dayOfMonthFormatter)) {
+                    Log.d("tag", "recyclerDetails: days are equals")
+                    lastSeen.text = "Был(а) в сети в ${lastAuthDate.format(timeOfDayFormatter)}"
+                } else if (lastAuthDate.format(dayOfYearFormatter) == currentDateText.format(dayOfYearFormatter)) {
+                    Log.d("tag", "recyclerDetails: years are equals")
+                    lastSeen.text = "Был(а) в сети ${lastAuthDate.format(dayOfMonthFormatter)}"
+                } else {
+                    lastSeen.text = "Был(а) в сети ${lastAuthDate.format(dayOfYearFormatter)}"
+                }
                 onlineIndicator.isVisible = false
                 lastSeen.setTextColor(context.getColor(R.color.grey_tab_unselected))
-                Log.d("tag", "recyclerDetails: user is not online")
             } else {
                 onlineIndicator.isVisible = true
                 lastSeen.text = context.getString(R.string.online_string)
                 lastSeen.setTextColor(context.getColor(R.color.green))
-                Log.d("tag", "recyclerDetails: user is online")
             }
         }
 

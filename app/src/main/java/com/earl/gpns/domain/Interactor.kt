@@ -4,6 +4,9 @@ import com.earl.gpns.core.*
 import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
 import com.earl.gpns.domain.models.*
+import com.earl.gpns.domain.webSocketActions.*
+import com.earl.gpns.domain.webSocketActions.services.MessagingSocketActionsService
+import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -25,12 +28,7 @@ interface Interactor {
 
     suspend fun closeChatSocketSession()
 
-    suspend fun observeNewRooms(
-        callback: UpdateLastMessageInRoomCallback,
-        authoredMessagesReadCallback: LastMessageReadStateCallback,
-        removeRoomCallback: DeleteRoomCallback,
-        updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
-    ) : Flow<RoomDomain?>
+    suspend fun observeNewRooms(roomsService: RoomsObservingSocketService) : Flow<RoomDomain?>
 
     suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain)
 
@@ -38,11 +36,7 @@ interface Interactor {
 
     suspend fun sendMessage(message: MessageDomain, token: String)
 
-    suspend fun observeNewMessages(
-        callback: MarkMessageAsReadCallback,
-        setUserOnlineCallback: UpdateOnlineInChatCallback,
-        setTypingMessageCallback: IsUserTypingMessageCallback
-    ) : Flow<MessageDomain?>
+    suspend fun observeNewMessages(service: MessagingSocketActionsService) : Flow<MessageDomain?>
 
     suspend fun initMessagingSocket(jwtToken: String, roomId: String)
 
@@ -110,18 +104,8 @@ interface Interactor {
 
         override suspend fun fetchUserInfo(token: String) = repository.fetchUserInfo(token)
 
-        override suspend fun observeNewRooms(
-            callback: UpdateLastMessageInRoomCallback,
-            authoredMessagesReadCallback: LastMessageReadStateCallback,
-            removeRoomCallback: DeleteRoomCallback,
-            updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
-        ) =
-            socketRepository.observeNewRooms(
-                callback,
-                authoredMessagesReadCallback,
-                removeRoomCallback,
-                updateUserOnlineInRoomCallback
-            )
+        override suspend fun observeNewRooms(roomsService: RoomsObservingSocketService) =
+            socketRepository.observeNewRooms(roomsService)
 
         override suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain) {
             repository.addNewRoom(token, newRoomDtoDomain)
@@ -134,15 +118,8 @@ interface Interactor {
             socketRepository.sendMessage(message, token)
         }
 
-        override suspend fun observeNewMessages(
-            callback: MarkMessageAsReadCallback,
-            setUserOnlineCallback: UpdateOnlineInChatCallback,
-            setTypingMessageCallback: IsUserTypingMessageCallback
-        ) = socketRepository.observeMessages(
-            callback,
-            setUserOnlineCallback,
-            setTypingMessageCallback
-        )
+        override suspend fun observeNewMessages(service: MessagingSocketActionsService) =
+            socketRepository.observeMessages(service)
 
         override suspend fun initMessagingSocket(jwtToken: String, roomId: String) {
             socketRepository.initMessagingSocket(jwtToken, roomId)

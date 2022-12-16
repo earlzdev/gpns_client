@@ -1,13 +1,7 @@
 package com.earl.gpns.ui
 
-import android.util.Log
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.earl.gpns.core.AuthResultListener
-import com.earl.gpns.core.OperationResultListener
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.UserDomainToUiMapper
 import com.earl.gpns.ui.models.UserUi
@@ -35,7 +29,9 @@ class MainFragmentViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val info = interactor.fetchUserInfo(token)?.map(userDomainToUiMapper)
             withContext(Dispatchers.Main) {
-                userInfoLiveData.value = info!!
+                if (info != null) {
+                    userInfoLiveData.value = info
+                }
             }
         }
     }

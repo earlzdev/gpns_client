@@ -4,14 +4,15 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.earl.gpns.core.IsUserTypingMessageCallback
-import com.earl.gpns.core.MarkMessageAsReadCallback
-import com.earl.gpns.core.UpdateOnlineInChatCallback
+import com.earl.gpns.domain.webSocketActions.UpdateUserTypingMessageState
+import com.earl.gpns.domain.webSocketActions.MarkMessageAsReadInChat
+import com.earl.gpns.domain.webSocketActions.UpdateUserOnlineStatusInChat
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.MessageDomainToUiMapper
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.TypingMessageDtoDomain
+import com.earl.gpns.domain.webSocketActions.services.MessagingSocketActionsService
 import com.earl.gpns.ui.mappers.MessageUiToDomainMapper
 import com.earl.gpns.ui.mappers.NewRoomUiToDomainMapper
 import com.earl.gpns.ui.mappers.TypingMessageDtoUiToDomainMapper
@@ -73,14 +74,12 @@ class ChatViewModel @Inject constructor(
     fun initMessagingSocket(
         token: String,
         roomId: String,
-        callback: MarkMessageAsReadCallback,
-        updateOnlineCallback: UpdateOnlineInChatCallback,
-        setTypingMessageCallback: IsUserTypingMessageCallback
+        service: MessagingSocketActionsService
     ) {
         fetchMessagesForRoom(token, roomId)
         viewModelScope.launch(Dispatchers.IO) {
             interactor.initMessagingSocket(token, roomId)
-            interactor.observeNewMessages(callback, updateOnlineCallback, setTypingMessageCallback)
+            interactor.observeNewMessages(service)
                 .onEach { message ->
                     if (message != null) {
                         messages.value += message.mapToUi(messageDomainToUiMapper)
