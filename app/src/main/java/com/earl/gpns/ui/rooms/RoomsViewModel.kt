@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.earl.gpns.core.*
-import com.earl.gpns.domain.Interactor
+import com.earl.gpns.domain.*
 import com.earl.gpns.domain.mappers.MessageDomainToUiMapper
 import com.earl.gpns.domain.mappers.RoomDomainToUiMapper
 import com.earl.gpns.domain.models.NewRoomDtoDomain
+import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
 import com.earl.gpns.ui.mappers.RoomDomainToNewRoomDomainMapper
+import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.MessageUi
 import com.earl.gpns.ui.models.RoomUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,21 +45,13 @@ class RoomsViewModel @Inject constructor(
 
     fun initChatSocket(
         token: String,
-        callback: UpdateLastMessageInRoomCallback,
-        authoredMessagesReadCallback: LastMessageReadStateCallback,
-        removeRoomCallback: DeleteRoomCallback,
-        updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
+        roomsService: RoomsObservingSocketService
     ) {
         fetchRooms(token)
         viewModelScope.launch(Dispatchers.IO) {
             when(interactor.initChatSocketSession(token)) {
                 is SocketOperationResultListener.Success -> {
-                    interactor.observeNewRooms(
-                        callback,
-                        authoredMessagesReadCallback,
-                        removeRoomCallback,
-                        updateUserOnlineInRoomCallback
-                    ).onEach { room ->
+                    interactor.observeNewRooms(roomsService).onEach { room ->
                         Log.d("tag", "initChatSocket: new room on rooms $room")
                         if (room != null) {
                             rooms.value += room.map(roomDomainToUiMapper)
@@ -78,7 +72,7 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    fun removeRoomFromDb(roomId: String) {
+    fun removeDeletedByAnotherUserRoomFromDb(roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.deleteRoomFromDb(roomId)
             val deletedRoom = rooms.value.find { it.chatInfo().roomId == roomId }
@@ -94,13 +88,20 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String) {
+    fun joinRoom(token: String, chatInfo: ChatInfo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            markAuthoredMessageAsRead(token, chatInfo.roomId!!, chatInfo.chatTitle)
+            updateLastMsgReadState(token, chatInfo.roomId)
+        }
+    }
+
+    private fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.markAuthoredMessageAsRead(token, roomId, authorName)
         }
     }
 
-    fun updateLastMsgReadState(token: String, roomId: String) {
+    private fun updateLastMsgReadState(token: String, roomId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.updateLastMsgReadState(token, roomId)
         }

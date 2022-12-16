@@ -30,7 +30,7 @@
         />
 
     <ImageView
-        android:id="@+id/new_msg_btn"
+        android:id="@+id/new_form_btn"
         android:layout_width="32dp"
         android:layout_height="32dp"
         app:layout_constraintTop_toTopOf="@id/search_chapter"

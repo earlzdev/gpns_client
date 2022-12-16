@@ -25,5 +25,17 @@ interface NavigationContract {
 
     fun log(text: String)
 
+    fun newSearchForm()
+
+    fun startFirstDriverForm()
+
+    fun startSecondDriverForm()
+
+    fun startCompanionForm()
+
+    fun driverFormDetails()
+
+    fun companionFormDetails()
+
     fun exit()
 }

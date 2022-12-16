@@ -1,7 +1,6 @@
 package com.earl.gpns.ui.rooms
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,29 +9,27 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.earl.gpns.R
-import com.earl.gpns.core.*
+import com.earl.gpns.core.BaseFragment
+import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentRoomsBinding
 import com.earl.gpns.domain.mappers.NewLastMessageInRoomDomainToUiMapper
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
+import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.NewLastMessageInRoomUi
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RoomsFragment : BaseFragment<FragmentRoomsBinding>(),
-    OnRoomClickListener,
-    UpdateLastMessageInRoomCallback,
-    LastMessageReadStateCallback,
-    DeleteRoomCallback,
-    UpdateOnlineInRoomCallback {
+class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
+    RoomsObservingSocketService {
 
     private lateinit var viewModel: RoomsViewModel
     private lateinit var adapter: RoomsRecyclerAdapter
+    @Inject
+    lateinit var roomController: RoomsObservingSocketController
     @Inject
     lateinit var newLastMsgInRoomDomainToUiMapper: NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi>
 
@@ -43,9 +40,14 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(),
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[RoomsViewModel::class.java]
         initSession()
+        initClickListeners()
         recycler()
+        initRoomController()
         backPressedCallback()
-        binding.testUsername.text = preferenceManager.getString(Keys.KEY_NAME)
+        binding.testUsername.text = preferenceManager.getString(Keys.KEY_NAME) // todo don't forget to remove then...
+    }
+
+    private fun initClickListeners() {
         binding.newMsgBtn.setOnClickListener {
             navigator.showProgressBar()
             navigator.usersFragment()
@@ -57,13 +59,17 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(),
         }
     }
 
+    private fun initRoomController() {
+        roomController = RoomsObservingSocketController.Base(newLastMsgInRoomDomainToUiMapper)
+        roomController.setPreferenceManager(preferenceManager)
+        roomController.setRecyclerAdapter(adapter)
+        roomController.setViewModel(viewModel)
+    }
+
     private fun initSession() {
         navigator.showProgressBar()
         viewModel.initChatSocket(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
-            this,
-            this,
-            this,
             this
         )
     }
@@ -71,15 +77,19 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(),
     override fun joinRoom(chatInfo: ChatInfo) {
         navigator.chat(chatInfo)
         adapter.clearCounter(chatInfo.roomId ?: "")
-        viewModel.markAuthoredMessageAsRead(
+        viewModel.joinRoom(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
-            chatInfo.roomId ?: "",
-            chatInfo.chatTitle
+            chatInfo
         )
-        viewModel.updateLastMsgReadState(
-            preferenceManager.getString(Keys.KEY_JWT) ?: "",
-            chatInfo.roomId ?: ""
-        )
+//        viewModel.markAuthoredMessageAsRead(
+//            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+//            chatInfo.roomId ?: "",
+//            chatInfo.chatTitle
+//        )
+//        viewModel.updateLastMsgReadState(
+//            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+//            chatInfo.roomId ?: ""
+//        )
     }
 
     override fun deleteRoom(chatInfo: ChatInfo) {
@@ -112,50 +122,24 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(),
         navigator.hideProgressBar()
     }
 
-    override fun markAuthoredMessageAsRead(roomId: String) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            adapter.hideMessageAuthorUnreadIndicator(roomId)
-        }
+    override fun removeDeletedByAnotherUserRoomFromDb(roomId: String, contactName: String) {
+        roomController.removeDeletedByAnotherUserRoomFromDb(roomId, contactName)
     }
 
-    override fun updateLastMessage(newLastMessage: NewLastMessageInRoomDomain) {
-        val newLastMsgUi = newLastMessage.mapToUi(newLastMsgInRoomDomainToUiMapper)
-        lifecycleScope.launch(Dispatchers.Main) {
-            val room = adapter.currentList.find { it.sameId(newLastMsgUi.provideRoomId()) }
-            val currentPosition = adapter.currentList.indexOf(room)
-            if (room != null) {
-                adapter.updateLastMessage(newLastMsgUi.lastMessageForUpdate(), currentPosition)
-                adapter.swap(currentPosition)
-                if (!newLastMsgUi.isMessageRead()
-                    && newLastMsgUi.isAuthoredMessage(preferenceManager.getString(Keys.KEY_NAME) ?: "")) {
-                    adapter.showMessageUnreadIndicator(currentPosition)
-                    navigator.log("updateLastMessage authored unread message got")
-                } else if (!newLastMsgUi.isMessageRead()
-                    && !newLastMsgUi.isAuthoredMessage(preferenceManager.getString(Keys.KEY_NAME) ?: "")) {
-                    adapter.updateCounter(currentPosition)
-                    navigator.log("updateLastMessage not authored unread message got")
-                } else if (newLastMsgUi.isMessageRead()){
-                    adapter.clearCounter(newLastMsgUi.provideRoomId())
-                    navigator.log("updateLastMessage read message got")
-                }
-            }
-        }
+    override fun updateLastMessageInRoom(newLastMessage: NewLastMessageInRoomDomain) {
+        roomController.updateLastMessageInRoom(newLastMessage)
     }
 
-    override fun removeRoom(roomId: String, contactName: String) {
-        viewModel.removeRoomFromDb(roomId)
-        lifecycleScope.launch(Dispatchers.Main) {
-            if (preferenceManager.getString(Keys.KEY_NAME) != contactName) {
-                Toast.makeText(requireContext(), "Пользователь $contactName удалил с Вами диалог", Toast.LENGTH_SHORT).show()
-            }
-        }
+    override fun updateLastMessageInRoomReadState(roomId: String) {
+        roomController.updateLastMessageInRoomReadState(roomId)
     }
 
-    override fun updateOnline(roomId: String, online: Int, lastAuthDate: String) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            adapter.changeUserOnlineInRoom(roomId, online, lastAuthDate)
-            Log.d("tag", "updateOnline: in room fragment done -> $online")
-        }
+    override fun updateUserOnlineInRoomObserving(
+        roomId: String,
+        online: Int,
+        lastAuthDate: String
+    ) {
+        roomController.updateUserOnlineInRoomObserving(roomId, online, lastAuthDate)
     }
 
     private fun backPressedCallback() {

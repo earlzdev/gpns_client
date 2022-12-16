@@ -2,6 +2,7 @@ package com.earl.gpns.ui.models
 
 import android.widget.TextView
 import com.earl.gpns.core.Same
+import com.earl.gpns.ui.rooms.RoomsObservingSocketController
 import com.makeramen.roundedimageview.RoundedImageView
 
 interface RoomUi : Same<RoomUi> {
@@ -42,6 +43,8 @@ interface RoomUi : Same<RoomUi> {
 
     fun setUserOnline(online: Int, lastAuthDate: String)
 
+    fun setRoomController(controller: RoomsObservingSocketController)
+
     fun testisonline() : Int
 
     class Base(
@@ -54,8 +57,15 @@ interface RoomUi : Same<RoomUi> {
         private var unreadMsgCounter: Int,
         private var isLastMsgRead: Boolean,
         private var contactOnline: Int,
-        private var contactLastAuth: String
+        private var contactLastAuth: String,
     ) : RoomUi {
+
+        private var control : RoomsObservingSocketController? = null
+
+        override fun setRoomController(controller: RoomsObservingSocketController) {
+            control = controller
+        }
+
         override fun recyclerDetails(
             icon: RoundedImageView,
             name: TextView,

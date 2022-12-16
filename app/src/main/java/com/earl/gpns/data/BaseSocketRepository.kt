@@ -1,28 +1,29 @@
 package com.earl.gpns.data
 
-import com.earl.gpns.core.*
+import android.util.Log
+import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.MessageData
 import com.earl.gpns.data.models.NewLastMessageInRoomData
 import com.earl.gpns.data.models.NewRoomDtoData
 import com.earl.gpns.data.models.RoomData
 import com.earl.gpns.data.models.remote.MessageRemote
-import com.earl.gpns.data.models.remote.requests.ChatSocketActionRequest
+import com.earl.gpns.data.models.remote.RoomObservingSocketModel
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
-import com.earl.gpns.data.models.remote.responses.*
+import com.earl.gpns.data.models.remote.responses.RoomIdResponse
+import com.earl.gpns.data.models.remote.responses.RoomResponse
 import com.earl.gpns.domain.SocketsRepository
 import com.earl.gpns.domain.mappers.MessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
-import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain
+import com.earl.gpns.domain.webSocketActions.services.MessagingSocketActionsService
+import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
-import io.ktor.util.reflect.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
 import kotlinx.serialization.decodeFromString
@@ -42,6 +43,7 @@ class BaseSocketRepository @Inject constructor(
     private val messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>,
     private val lastMsgResponseToDataMapper: NewLastMsgResponseToDataMapper<NewLastMessageInRoomData>,
     private val lastMsgDataToDomainMapper: NewLastMsgDataToDomainMapper<NewLastMessageInRoomDomain>,
+    private val socketActionsParser: SocketActionsParser
 ) : SocketsRepository {
 
     private var roomsSocket: WebSocketSession? = null
@@ -87,95 +89,79 @@ class BaseSocketRepository @Inject constructor(
         messagingSocket?.close()
     }
 
-    override suspend fun observeNewRooms(
-        updateLastMessageInRoomCallback: UpdateLastMessageInRoomCallback,
-        updateLastMessageReadStateCallback: LastMessageReadStateCallback,
-        removeRoomCallback: DeleteRoomCallback,
-        updateUserOnlineInRoomCallback: UpdateOnlineInRoomCallback
-    ): Flow<RoomDomain?> {
-        var json = ""
+    override suspend fun observeNewRooms(roomsService: RoomsObservingSocketService): Flow<RoomDomain?> {
         return try {
             roomsSocket?.incoming
                 ?.receiveAsFlow()
                 ?.filter { it is Frame.Text }
                 ?.map {
-                    json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
-                    try {
-                        val roomResponse = Json.decodeFromString<RoomResponse>(json)
-                        if (roomResponse.action == REMOVE_ROOM_KEY) {
-                            removeRoomCallback.removeRoom(roomResponse.roomId, roomResponse.title)
+                    val json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
+                    val socketModel = Json.decodeFromString<RoomObservingSocketModel>(json)
+                    socketActionsParser.setRoomObservingService(roomsService)
+                    when (socketModel.action) {
+                        REMOVE_DELETED_BY_ANOTHER_USER_ROOM -> {
+                            socketActionsParser.removeDeletedByAnotherUserRoomFromDb(socketModel.value)
                             return@map null
-                        } else {
-                            return@map roomResponse.map(roomResponseToDataMapper)
-                                .map(roomDataToDomainMapper)
                         }
-                    } catch (e: Exception) {
-                        try {
-                            val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
-                            updateLastMessageInRoomCallback.updateLastMessage(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
+                        NEW_ROOM -> {
+                            val newRoom = Json.decodeFromString<RoomResponse>(socketModel.value)
+                            return@map newRoom.map(roomResponseToDataMapper).map(roomDataToDomainMapper)
+                        }
+                        UPDATE_LAST_MESSAGE_IN_ROOM -> {
+                            socketActionsParser.updateLastMessageInRoom(socketModel.value)
                             return@map null
-                        } catch (e: Exception) {
-                            try {
-                                val updateOnline = Json.decodeFromString<SetUserOnlineInRoom>(json)
-                                updateUserOnlineInRoomCallback.updateOnline(updateOnline.roomId, updateOnline.online, updateOnline.lastAuthDate)
-                                return@map null
-                            } catch (e: Exception) {
-                                val markRoomAsRead = Json.decodeFromString<RoomIdResponse>(json)
-                                updateLastMessageReadStateCallback.markAuthoredMessageAsRead(markRoomAsRead.id)
-                                return@map null
-                            }
                         }
-                    } catch (e: Exception) {
-                        return@map null
+                        UPDATE_LAST_MESSAGE_READ_STATE -> {
+                            socketActionsParser.updateLastMessageInRoomReadState(socketModel.value)
+                            return@map null
+                        }
+                        UPDATE_USER_ONLINE_IN_ROOM -> {
+                            socketActionsParser.updateUserOnlineInRoomObserving(socketModel.value)
+                            return@map null
+                        }
+                        else -> {
+                            val value = Json.decodeFromString<RoomIdResponse>(socketModel.value)
+                            // todo test and don't need
+                            return@map null
+                        }
                     }
                 }!!
-        } catch(e: Exception) {
-            e.printStackTrace()
-            val newLastMessage = Json.decodeFromString<NewLastMessageInRoomResponse>(json)
-            updateLastMessageInRoomCallback.updateLastMessage(newLastMessage.map(lastMsgResponseToDataMapper).map(lastMsgDataToDomainMapper))
-            flow {  }
         } catch (e: Exception) {
             e.printStackTrace()
             flow {  }
         }
     }
 
-    override suspend fun observeMessages(
-        markMessageAsReadCallback: MarkMessageAsReadCallback,
-        setUserOnlineCallback: UpdateOnlineInChatCallback,
-        setTypingMessageCallback: IsUserTypingMessageCallback
-    ): Flow<MessageDomain?> {
+    override suspend fun observeMessages(service: MessagingSocketActionsService): Flow<MessageDomain?> {
         return try {
-            messagingSocket?.incoming?.consumeEach {
-                if (it is Frame.Text) {
-
-                }
-            }
             messagingSocket?.incoming
                 ?.receiveAsFlow()
                 ?.filter { it is Frame.Text }
                 ?.map {
                     val json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
-                    try {
-                        val messageRemote =  Json.decodeFromString<MessageRemote>(json)
-                        return@map messageRemote.map(messageRemoteToDataMapper).mapToDomain(messageDataToDomainMapper)
-                    } catch (e: Exception) {
-                        try {
-                            val updateOnline = Json.decodeFromString<SetUserOnlineInMessaging>(json)
-                            setUserOnlineCallback.updateOnline(updateOnline.online, updateOnline.lastAuth)
+                    Log.d("tag", "observeMessages: json -> ${json}")
+                    val socketModel = Json.decodeFromString<RoomObservingSocketModel>(json)
+                    socketActionsParser.setMessagingSocketActionsService(service)
+                    Log.d("tag", "observeMessages: action -> ${socketModel.action} value -> ${socketModel.value}")
+                    when(socketModel.action) {
+                        NEW_MESSAGE -> {
+                            val messageRemote =  Json.decodeFromString<MessageRemote>(socketModel.value)
+                            return@map messageRemote.map(messageRemoteToDataMapper).mapToDomain(messageDataToDomainMapper)
+                        }
+                        UPDATE_USER_TYPING_MESSAGE_STATE -> {
+                            socketActionsParser.updateUserTypingMessageState(socketModel.value)
                             return@map null
-                        } catch (e: Exception) {
-                            try {
-                                val response = Json.decodeFromString<TypingMessageDtoResponse>(json)
-                                setTypingMessageCallback.isTypingMessage(response.typing)
-                                return@map null
-                            } catch (e: Exception) {
-                                val unreadMessageId = Json.decodeFromString<MessageIdResponse>(json)
-                                if (unreadMessageId.messageId != "") {
-                                    markMessageAsReadCallback.markAsRead()
-                                }
-                                return@map null
-                            }
+                        }
+                        UPDATE_USER_ONLINE_STATUS_IN_CHAT -> {
+                            socketActionsParser.updateUserOnlineStatusInChat(socketModel.value)
+                            return@map null
+                        }
+                        MARK_MESSAGE_AS_READ_IN_CHAT -> {
+                            socketActionsParser.markMessagesAsReadInChat(socketModel.value)
+                            return@map null
+                        }
+                        else -> {
+                            return@map null
                         }
                     }
                 }!!
@@ -196,7 +182,14 @@ class BaseSocketRepository @Inject constructor(
 
     companion object {
 
-        private const val ADD_ROOM_KEY = "addRoom"
-        private const val REMOVE_ROOM_KEY = "remove"
+        private const val REMOVE_DELETED_BY_ANOTHER_USER_ROOM = "REMOVE_DELETED_BY_ANOTHER_USER_ROOM"
+        private const val NEW_ROOM = "NEW_ROOM"
+        private const val UPDATE_LAST_MESSAGE_IN_ROOM = "UPDATE_LAST_MESSAGE_IN_ROOM"
+        private const val UPDATE_LAST_MESSAGE_READ_STATE = "UPDATE_LAST_MESSAGE_READ_STATE"
+        private const val UPDATE_USER_ONLINE_IN_ROOM = "UPDATE_USER_ONLINE_IN_ROOM"
+        private const val UPDATE_USER_TYPING_MESSAGE_STATE = "UPDATE_USER_TYPING_MESSAGE_STATE"
+        private const val UPDATE_USER_ONLINE_STATUS_IN_CHAT = "UPDATE_USER_ONLINE_STATUS_IN_CHAT"
+        private const val MARK_MESSAGE_AS_READ_IN_CHAT = "MARK_MESSAGE_AS_READ_IN_CHAT"
+        private const val NEW_MESSAGE = "NEW_MESSAGE"
     }
 }

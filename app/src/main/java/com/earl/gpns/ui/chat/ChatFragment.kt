@@ -3,7 +3,6 @@ package com.earl.gpns.ui.chat
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,8 +15,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.earl.gpns.R
-import com.earl.gpns.core.*
+import com.earl.gpns.core.BaseFragment
+import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentChatBinding
+import com.earl.gpns.domain.webSocketActions.services.MessagingSocketActionsService
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.MessageUi
 import com.earl.gpns.ui.models.NewRoomDtoUi
@@ -29,16 +30,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @AndroidEntryPoint
 class ChatFragment(
     private val chatInfo: ChatInfo,
-) : BaseFragment<FragmentChatBinding>(),
-    MarkMessageAsReadCallback,
-    UpdateOnlineInChatCallback,
-    IsUserTypingMessageCallback
-{
+) : BaseFragment<FragmentChatBinding>(), MessagingSocketActionsService {
 
     private lateinit var viewModel: ChatViewModel
     private var newRoomId = ""
@@ -81,12 +80,7 @@ class ChatFragment(
 
     private fun initMessagingService() {
         viewModel.initMessagingSocket(
-            preferenceManager.getString(Keys.KEY_JWT) ?: "",
-            newRoomId,
-            this,
-            this,
-            this
-        )
+            preferenceManager.getString(Keys.KEY_JWT) ?: "", newRoomId, this)
     }
 
     private fun addRoom() {
@@ -99,7 +93,7 @@ class ChatFragment(
             binding.msgEdittext.text.toString(),
             preferenceManager.getString(Keys.KEY_NAME) ?: "",
             chatInfo.userOnline,
-            ""
+            chatInfo.userLastAuth
         )
         viewModel.addRoom(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
@@ -156,7 +150,7 @@ class ChatFragment(
         )
     }
 
-    override fun markAsRead() {
+    override fun markMessageAsReadInChat() {
         lifecycleScope.launch(Dispatchers.Main) {
             recyclerAdapter.markMessagesAsRead()
         }
@@ -194,29 +188,48 @@ class ChatFragment(
         if (chatInfo.userOnline == 1) {
             binding.onlineIndicator.isVisible = true
             binding.contactLastAuth.isVisible = false
-            Log.d("tag", "initChatInfo: last uath : ${chatInfo.userOnline} ${chatInfo.userLastAuth}")
         } else {
             binding.onlineIndicator.isVisible = false
-            binding.contactLastAuth.text = chatInfo.userLastAuth
+            val currentDate = Date()
+            val standardFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+            val simpleDateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+            val dateText = simpleDateFormat.format(currentDate)
+            val currentDateText = LocalDateTime.parse(dateText, standardFormatter)
+            val dayOfYearFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+            val dayOfMonthFormatter = DateTimeFormatter.ofPattern("d MMMM")
+            val timeOfDayFormatter = DateTimeFormatter.ofPattern("HH:mm")
+            val lastAuthDate = LocalDateTime.parse(chatInfo.userLastAuth, standardFormatter)
+            if (lastAuthDate.format(dayOfMonthFormatter) == currentDateText.format(dayOfMonthFormatter)) {
+                Log.d("tag", "recyclerDetails: days are equals")
+                binding.contactLastAuth.text = "Был(а) в сети в ${lastAuthDate.format(timeOfDayFormatter)}"
+            } else if (lastAuthDate.format(dayOfYearFormatter) == currentDateText.format(dayOfYearFormatter)) {
+                Log.d("tag", "recyclerDetails: years are equals")
+                binding.contactLastAuth.text = "Был(а) в сети ${lastAuthDate.format(dayOfMonthFormatter)}"
+            } else {
+                binding.contactLastAuth.text = "Был(а) в сети ${lastAuthDate.format(dayOfYearFormatter)}"
+            }
             binding.contactLastAuth.isVisible = true
-            Log.d("tag", "initChatInfo: last uath : ${chatInfo.userLastAuth}")
+            Log.d("tag", "initChatInfo: last auth : ${chatInfo.userLastAuth}")
         }
     }
 
-    override fun updateOnline(online: Int, lastAuth: String) {
+    override fun updateUserOnlineInChat(online: Int, lastAuth: String) {
         lifecycleScope.launch(Dispatchers.Main) {
             if (online == 1) {
                 binding.onlineIndicator.isVisible = true
                 binding.contactLastAuth.isVisible = false
             } else {
                 binding.onlineIndicator.isVisible = false
-                binding.contactLastAuth.text = lastAuth
+                val standardFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+                val lastAuthDate = LocalDateTime.parse(lastAuth, standardFormatter)
+                val timeOfDayFormatter = DateTimeFormatter.ofPattern("HH:mm")
+                binding.contactLastAuth.text = "Был(а) в сети в ${lastAuthDate.format(timeOfDayFormatter)}"
                 binding.contactLastAuth.isVisible = true
             }
         }
     }
 
-    override fun isTypingMessage(value: Int) {
+    override fun updateUserTypingMessageState(value: Int) {
         lifecycleScope.launch(Dispatchers.Main) {
             if (value == 1) {
                 binding.contactLastAuth.isVisible = false

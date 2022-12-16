@@ -11,6 +11,8 @@ import com.earl.gpns.databinding.RecyclerRoomItemBinding
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.LastMessageForUpdate
 import com.earl.gpns.ui.models.RoomUi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import java.util.*
 
 interface OnRoomClickListener {
@@ -37,6 +39,15 @@ class RoomsRecyclerAdapter(
             clickListener.deleteRoom(item.chatInfo())
             true
         }
+    }
+
+    override fun onBindViewHolder(
+        holder: ItemViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+        // todo ???
     }
 
     fun updateLastMessage(messageForUpdate: LastMessageForUpdate,  position: Int) {
@@ -114,5 +125,26 @@ class RoomsRecyclerAdapter(
         override fun areItemsTheSame(oldItem: RoomUi, newItem: RoomUi) = oldItem.same(newItem)
         override fun areContentsTheSame(oldItem: RoomUi, newItem: RoomUi) = oldItem.equals(newItem)
         private const val START_POSITION = 0
+    }
+}
+
+class LockDiffUtil(
+    private val old: List<RoomUi>,
+    private val new: List<RoomUi>
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = old.size
+
+    override fun getNewListSize(): Int = new.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+        old[oldItemPosition].same(new[newItemPosition])
+
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+        old[oldItemPosition] == new[newItemPosition]
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        // todo ???
+        return super.getChangePayload(oldItemPosition, newItemPosition)
     }
 }
