@@ -77,4 +77,6 @@
     <string name="driver_car_avaliable_places">Осталось мест:</string>
     <string name="driver_trip_price">Цена поездки:</string>
     <string name="suggest_to_drive_together">Предложить ездить вместе</string>
+    <string name="common_chat_string">Общий чат</string>
+    <string name="you">Вы: </string>
 </resources>

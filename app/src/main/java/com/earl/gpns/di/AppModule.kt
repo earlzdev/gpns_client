@@ -6,27 +6,25 @@ import com.earl.gpns.data.BaseDatabaseRepository
 import com.earl.gpns.data.BaseRepository
 import com.earl.gpns.data.BaseSocketRepository
 import com.earl.gpns.data.SocketActionsParser
-import com.earl.gpns.data.local.AppDataBase
-import com.earl.gpns.data.local.RoomDb
-import com.earl.gpns.data.local.RoomsDao
+import com.earl.gpns.data.localDb.AppDataBase
+import com.earl.gpns.data.localDb.GroupsDao
+import com.earl.gpns.data.localDb.RoomDb
+import com.earl.gpns.data.localDb.RoomsDao
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
+import com.earl.gpns.data.models.remote.GroupMessageRemote
 import com.earl.gpns.data.models.remote.MessageRemote
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
+import com.earl.gpns.data.models.remote.requests.TypingStatusInGroupRequest
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.data.retrofit.Service
 import com.earl.gpns.domain.DatabaseRepository
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.Repository
 import com.earl.gpns.domain.SocketsRepository
-import com.earl.gpns.domain.mappers.MessageDomainToDataMapper
-import com.earl.gpns.domain.mappers.NewLastMessageInRoomDomainToUiMapper
-import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
-import com.earl.gpns.domain.mappers.TypingMessageDtoDomainToDataMapper
-import com.earl.gpns.domain.models.MessageDomain
-import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
-import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.models.UserDomain
+import com.earl.gpns.domain.mappers.*
+import com.earl.gpns.domain.models.*
+import com.earl.gpns.ui.models.GroupLastMessageUi
 import com.earl.gpns.ui.models.NewLastMessageInRoomUi
 import com.earl.gpns.ui.rooms.RoomsObservingSocketController
 import dagger.Module
@@ -54,7 +52,13 @@ object AppModule {
         messageRemoteToDataMapper: MessageRemoteToDataMapper<MessageData>,
         messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>,
         typingMessageDomainToDataMapper: TypingMessageDtoDomainToDataMapper<TypingMessageDtoData>,
-        typingMessageDataToResponseMapper: TypingMessageDataToResponseMapper<TypingMessageDtoResponse>
+        typingMessageDataToResponseMapper: TypingMessageDataToResponseMapper<TypingMessageDtoResponse>,
+        groupRemoteToDataMapper: GroupRemoteToDataMapper<GroupData>,
+        groupDataToDomainMapper: GroupDataToDomainMapper<GroupDomain>,
+        groupMessageRemoteToDataMapper: GroupMessageRemoteToDataMapper<GroupMessageData>,
+        groupMessageDataToDomainMapper: GroupMessageDataToDomainMapper<GroupMessageDomain>,
+        groupTypingStatusDomainToDataMapper: GroupTypingStatusDomainToDataMapper<GroupTypingStatusData>,
+        groupTypingStatusDataToRequestMapper: GroupTypingStatusDataToRequestMapper<TypingStatusInGroupRequest>
     ) : Repository {
         return BaseRepository(
             service,
@@ -67,7 +71,13 @@ object AppModule {
             messageRemoteToDataMapper,
             messageDataToDomainMapper,
             typingMessageDomainToDataMapper,
-            typingMessageDataToResponseMapper
+            typingMessageDataToResponseMapper,
+            groupRemoteToDataMapper,
+            groupDataToDomainMapper,
+            groupMessageRemoteToDataMapper,
+            groupMessageDataToDomainMapper,
+            groupTypingStatusDomainToDataMapper,
+            groupTypingStatusDataToRequestMapper
         )
     }
 
@@ -99,7 +109,11 @@ object AppModule {
         messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>,
         lastMsgResponseToDataMapper: NewLastMsgResponseToDataMapper<NewLastMessageInRoomData>,
         lastMsgDataToDomainMapper: NewLastMsgDataToDomainMapper<NewLastMessageInRoomDomain>,
-        socketActionsParser: SocketActionsParser
+        socketActionsParser: SocketActionsParser,
+        groupMessageRemoteToDataMapper: GroupMessageRemoteToDataMapper<GroupMessageData>,
+        groupMessageDataToDomainMapper: GroupMessageDataToDomainMapper<GroupMessageDomain>,
+        groupMessageDomainToDataMapper: GroupMessageDomainToDataMapper<GroupMessageData>,
+        groupMessageDataToRemoteMapper: GroupMessageDataToRemoteMapper<GroupMessageRemote>
     ) : SocketsRepository {
         return BaseSocketRepository(
             socketHttpClient,
@@ -113,7 +127,11 @@ object AppModule {
             messageDataToDomainMapper,
             lastMsgResponseToDataMapper,
             lastMsgDataToDomainMapper,
-            socketActionsParser
+            socketActionsParser,
+            groupMessageRemoteToDataMapper,
+            groupMessageDataToDomainMapper,
+            groupMessageDomainToDataMapper,
+            groupMessageDataToRemoteMapper
         )
     }
 
@@ -121,17 +139,23 @@ object AppModule {
     @Singleton
     fun provideDatabaseRepository(
         roomsDao: RoomsDao,
+        groupsDao: GroupsDao,
         newRoomDataToDbMapper: NewRoomDataToDbMapper<RoomDb>,
         newRoomDomainToDataMapper: NewRoomDomainToDataMapper<NewRoomDtoData>,
         roomDbToDataMapper: RoomDbToDataMapper<RoomData>,
-        roomDataToDomainMapper: RoomDataToDomainMapper<RoomDomain>
+        roomDataToDomainMapper: RoomDataToDomainMapper<RoomDomain>,
+        groupMessagesCounterDbToDataMapper: GroupMessagesCounterDbToDataMapper<GroupMessagesCounterData>,
+        groupMessagesCounterDataToDomainMapper: GroupMessagesCounterDataToDomainMapper<GroupMessagesCounterDomain>
     ) : DatabaseRepository {
         return BaseDatabaseRepository(
             roomsDao,
+            groupsDao,
             newRoomDataToDbMapper,
             newRoomDomainToDataMapper,
             roomDbToDataMapper,
-            roomDataToDomainMapper
+            roomDataToDomainMapper,
+            groupMessagesCounterDbToDataMapper,
+            groupMessagesCounterDataToDomainMapper
         )
     }
 
@@ -153,11 +177,17 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideGroupsMessagesCounterDao(db: AppDataBase) = db.groupsDao()
+
+    @Singleton
+    @Provides
     fun provideRoomObserveController(
-        newLastMsgInRoomDomainToUiMapper: NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi>
+        newLastMsgInRoomDomainToUiMapper: NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi>,
+        groupLastMessageDomainToUiMapper: GroupLastMessageDomainToUiMapper<GroupLastMessageUi>
     ) : RoomsObservingSocketController {
         return RoomsObservingSocketController.Base(
-            newLastMsgInRoomDomainToUiMapper
+            newLastMsgInRoomDomainToUiMapper,
+            groupLastMessageDomainToUiMapper
         )
     }
 }

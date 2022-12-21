@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.databinding.FragmentStartNewSearchingFormBinding
 
-class FragmentStartNewSearchingForm : BaseFragment<FragmentStartNewSearchingFormBinding>() {
+class StartNewSearchingFormFragment : BaseFragment<FragmentStartNewSearchingFormBinding>() {
 
     override fun viewBinding(
         inflater: LayoutInflater,
@@ -16,11 +16,13 @@ class FragmentStartNewSearchingForm : BaseFragment<FragmentStartNewSearchingForm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.backBtn.setOnClickListener {
+            navigator.back()
+        }
     }
 
     companion object {
 
-        fun newInstance() = FragmentStartNewSearchingForm()
+        fun newInstance() = StartNewSearchingFormFragment()
     }
 }

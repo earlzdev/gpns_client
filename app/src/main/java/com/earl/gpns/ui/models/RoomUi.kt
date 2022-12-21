@@ -21,7 +21,7 @@ interface RoomUi : Same<RoomUi> {
 
     fun sameId(id: String) : Boolean
 
-    fun updateLastMessage(lastMsg: LastMessageForUpdate)
+    fun updateLastMessage(lastMsg: LastMessageForUpdateInRoom)
 
     fun updateUnreadMsgCount()
 
@@ -82,7 +82,7 @@ interface RoomUi : Same<RoomUi> {
 
         override fun sameId(id: String) = id == roomId
 
-        override fun updateLastMessage(lastMsg: LastMessageForUpdate) {
+        override fun updateLastMessage(lastMsg: LastMessageForUpdateInRoom) {
             lastMessage = lastMsg.messageText
             lastMessageAuthor = lastMsg.authorName
         }

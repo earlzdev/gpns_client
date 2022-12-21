@@ -18,7 +18,7 @@ import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentChatBinding
-import com.earl.gpns.domain.webSocketActions.services.MessagingSocketActionsService
+import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.MessageUi
 import com.earl.gpns.ui.models.NewRoomDtoUi
@@ -37,7 +37,7 @@ import java.util.*
 @AndroidEntryPoint
 class ChatFragment(
     private val chatInfo: ChatInfo,
-) : BaseFragment<FragmentChatBinding>(), MessagingSocketActionsService {
+) : BaseFragment<FragmentChatBinding>(), RoomsMessagingSocketActionsService {
 
     private lateinit var viewModel: ChatViewModel
     private var newRoomId = ""

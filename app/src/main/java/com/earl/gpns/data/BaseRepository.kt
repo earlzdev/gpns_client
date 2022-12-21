@@ -8,6 +8,7 @@ import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.data.retrofit.Service
 import com.earl.gpns.domain.Repository
+import com.earl.gpns.domain.mappers.GroupTypingStatusDomainToDataMapper
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.mappers.TypingMessageDtoDomainToDataMapper
 import com.earl.gpns.domain.models.*
@@ -25,7 +26,13 @@ class BaseRepository @Inject constructor(
     private val messageRemoteToDataMapper: MessageRemoteToDataMapper<MessageData>,
     private val messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>,
     private val typingMessageDomainToDataMapper: TypingMessageDtoDomainToDataMapper<TypingMessageDtoData>,
-    private val typingMessageDataToResponseMapper: TypingMessageDataToResponseMapper<TypingMessageDtoResponse>
+    private val typingMessageDataToResponseMapper: TypingMessageDataToResponseMapper<TypingMessageDtoResponse>,
+    private val groupRemoteToDataMapper: GroupRemoteToDataMapper<GroupData>,
+    private val groupDataToDomainMapper: GroupDataToDomainMapper<GroupDomain>,
+    private val groupMessageRemoteToDataMapper: GroupMessageRemoteToDataMapper<GroupMessageData>,
+    private val groupMessageDataToDomainMapper: GroupMessageDataToDomainMapper<GroupMessageDomain>,
+    private val groupTypingMessageDomainToDataMapper: GroupTypingStatusDomainToDataMapper<GroupTypingStatusData>,
+    private val groupTypingStatusDataToRequestMapper: GroupTypingStatusDataToRequestMapper<TypingStatusInGroupRequest>
 ) : Repository {
 
     override suspend fun register(registerRequest: RegisterRequest, callback: AuthResultListener) {
@@ -34,9 +41,9 @@ class BaseRepository @Inject constructor(
             if (registerOperationResult == KEY_SUCCESS) {
                 login(
                     LoginRequest(
-                    registerRequest.email,
-                    registerRequest.password
-                ), callback)
+                        registerRequest.email,
+                        registerRequest.password
+                    ), callback)
             } else {
                 callback.unknownError(Exception(registerOperationResult))
             }
@@ -98,7 +105,7 @@ class BaseRepository @Inject constructor(
 
     override suspend fun fetchUserInfo(token: String): UserDomain? {
         return try {
-           val result =  service.fetchUserInfo("Bearer $token")
+            val result =  service.fetchUserInfo("Bearer $token")
                 .map(userResponseToDataMapper)
                 .map(userDataToDomainMapper)
             Log.d("tag", "fetchUserInfo: repository -> $result")
@@ -168,6 +175,57 @@ class BaseRepository @Inject constructor(
                 "Bearer $token",
                 request.map(typingMessageDomainToDataMapper).map(typingMessageDataToResponseMapper)
             )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun fetchGroups(token: String) =
+        try {
+
+            service.fetchGroups("Bearer $token").map {
+                it.map(groupRemoteToDataMapper)
+            }.map {
+                it.mapToDomain(groupDataToDomainMapper)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+
+    override suspend fun fetchMessagesForGroup(
+        token: String,
+        groupId: String
+    ): List<GroupMessageDomain> {
+        return try {
+            service.fetchMessagesForGroup("Bearer $token", GroupIdRequest(groupId))
+                .map { it.map(groupMessageRemoteToDataMapper) }
+                .map { it.mapToDomain(groupMessageDataToDomainMapper) }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    override suspend fun sendTypingMessageStatusInGroup(
+        token: String,
+        request: GroupTypingStatusDomain
+    ) {
+        try {
+            service.sendGroupTypingStatus(
+                "Bearer $token",
+                request
+                    .map(groupTypingMessageDomainToDataMapper)
+                    .map(groupTypingStatusDataToRequestMapper)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun markMessagesAsReadInGroup(token: String, groupId: String) {
+        try {
+             service.markMessagesAsReadInGroup("Bearer $token", GroupIdRequest(groupId))
         } catch (e: Exception) {
             e.printStackTrace()
         }

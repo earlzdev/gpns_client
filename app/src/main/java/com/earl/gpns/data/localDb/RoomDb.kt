@@ -1,4 +1,4 @@
-package com.earl.gpns.data.local
+package com.earl.gpns.data.localDb
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -19,5 +19,6 @@ data class RoomDb(
     @ColumnInfo(name = "contactIsOnline") val contactIsOnline: Int,
     @ColumnInfo(name = "contactLastAuth") val contactLastAuth: String
 ) {
-    fun <T> map(mapper: RoomDbToDataMapper<T>) = mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead, contactIsOnline, contactLastAuth)
+    fun <T> map(mapper: RoomDbToDataMapper<T>) =
+        mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead, contactIsOnline, contactLastAuth)
 }

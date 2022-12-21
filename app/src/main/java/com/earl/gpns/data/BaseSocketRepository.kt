@@ -3,22 +3,23 @@ package com.earl.gpns.data
 import android.util.Log
 import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.data.mappers.*
-import com.earl.gpns.data.models.MessageData
-import com.earl.gpns.data.models.NewLastMessageInRoomData
-import com.earl.gpns.data.models.NewRoomDtoData
-import com.earl.gpns.data.models.RoomData
+import com.earl.gpns.data.models.*
+import com.earl.gpns.data.models.remote.GroupMessageRemote
 import com.earl.gpns.data.models.remote.MessageRemote
-import com.earl.gpns.data.models.remote.RoomObservingSocketModel
+import com.earl.gpns.data.models.remote.ObservingSocketModel
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import com.earl.gpns.data.models.remote.responses.RoomIdResponse
 import com.earl.gpns.data.models.remote.responses.RoomResponse
 import com.earl.gpns.domain.SocketsRepository
+import com.earl.gpns.domain.mappers.GroupMessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.MessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
+import com.earl.gpns.domain.models.GroupMessageDomain
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.webSocketActions.services.MessagingSocketActionsService
+import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketActionsService
+import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
@@ -43,7 +44,11 @@ class BaseSocketRepository @Inject constructor(
     private val messageDataToDomainMapper: MessageDataToDomainMapper<MessageDomain>,
     private val lastMsgResponseToDataMapper: NewLastMsgResponseToDataMapper<NewLastMessageInRoomData>,
     private val lastMsgDataToDomainMapper: NewLastMsgDataToDomainMapper<NewLastMessageInRoomDomain>,
-    private val socketActionsParser: SocketActionsParser
+    private val socketActionsParser: SocketActionsParser,
+    private val groupMessageRemoteToDataMapper: GroupMessageRemoteToDataMapper<GroupMessageData>,
+    private val groupMessageDataToDomainMapper: GroupMessageDataToDomainMapper<GroupMessageDomain>,
+    private val groupMessageDomainToDataMapper: GroupMessageDomainToDataMapper<GroupMessageData>,
+    private val groupMessageDataToRemoteMapper: GroupMessageDataToRemoteMapper<GroupMessageRemote>
 ) : SocketsRepository {
 
     private var roomsSocket: WebSocketSession? = null
@@ -52,7 +57,7 @@ class BaseSocketRepository @Inject constructor(
     private var usersOnlineSocket: WebSocketSession? = null
     private var searchSocket: WebSocketSession? = null
 
-    override suspend fun initChatSocketSession(token: String): SocketOperationResultListener<Unit> {
+    override suspend fun initRoomsSocket(token: String): SocketOperationResultListener<Unit> {
         return try {
             roomsSocket = socketClient.webSocketSession {
                 url(WebSocketService.Endpoints.Chat.url)
@@ -69,12 +74,24 @@ class BaseSocketRepository @Inject constructor(
         }
     }
 
-    override suspend fun initMessagingSocket(jwtToken: String, roomId: String) {
+    override suspend fun initRoomMessagingSocket(jwtToken: String, roomId: String) {
         return try {
             messagingSocket = socketClient.webSocketSession {
                 url(WebSocketService.Endpoints.Messaging.url)
                 header("Authorization", "Bearer $jwtToken")
                 parameter("roomId", roomId)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun initGroupsMessagingSocket(token: String, groupId: String) {
+        return try {
+            groupsMessagingSocket = socketClient.webSocketSession {
+                url(WebSocketService.Endpoints.GroupMessaging.url)
+                header("Authorization", "Bearer $token")
+                parameter("groupId", groupId)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -89,14 +106,18 @@ class BaseSocketRepository @Inject constructor(
         messagingSocket?.close()
     }
 
-    override suspend fun observeNewRooms(roomsService: RoomsObservingSocketService): Flow<RoomDomain?> {
+    override suspend fun closeGroupMessagingSocket() {
+        groupsMessagingSocket?.close()
+    }
+
+    override suspend fun observeRoomsSocket(roomsService: RoomsObservingSocketService): Flow<RoomDomain?> {
         return try {
             roomsSocket?.incoming
                 ?.receiveAsFlow()
                 ?.filter { it is Frame.Text }
                 ?.map {
                     val json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
-                    val socketModel = Json.decodeFromString<RoomObservingSocketModel>(json)
+                    val socketModel = Json.decodeFromString<ObservingSocketModel>(json)
                     socketActionsParser.setRoomObservingService(roomsService)
                     when (socketModel.action) {
                         REMOVE_DELETED_BY_ANOTHER_USER_ROOM -> {
@@ -119,8 +140,15 @@ class BaseSocketRepository @Inject constructor(
                             socketActionsParser.updateUserOnlineInRoomObserving(socketModel.value)
                             return@map null
                         }
+                        NEW_UPDATABLE_MESSAGE_IN_GROUP -> {
+                            socketActionsParser.updateLastMessageInGroup(socketModel.value)
+                            return@map null
+                        }
+                        MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP -> {
+                            socketActionsParser.markAuthoredMessagesAsReadInGroup(socketModel.value)
+                            return@map null
+                        }
                         else -> {
-                            val value = Json.decodeFromString<RoomIdResponse>(socketModel.value)
                             // todo test and don't need
                             return@map null
                         }
@@ -132,7 +160,7 @@ class BaseSocketRepository @Inject constructor(
         }
     }
 
-    override suspend fun observeMessages(service: MessagingSocketActionsService): Flow<MessageDomain?> {
+    override suspend fun observeRoomMessagingSocket(service: RoomsMessagingSocketActionsService): Flow<MessageDomain?> {
         return try {
             messagingSocket?.incoming
                 ?.receiveAsFlow()
@@ -140,7 +168,7 @@ class BaseSocketRepository @Inject constructor(
                 ?.map {
                     val json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
                     Log.d("tag", "observeMessages: json -> ${json}")
-                    val socketModel = Json.decodeFromString<RoomObservingSocketModel>(json)
+                    val socketModel = Json.decodeFromString<ObservingSocketModel>(json)
                     socketActionsParser.setMessagingSocketActionsService(service)
                     Log.d("tag", "observeMessages: action -> ${socketModel.action} value -> ${socketModel.value}")
                     when(socketModel.action) {
@@ -157,7 +185,7 @@ class BaseSocketRepository @Inject constructor(
                             return@map null
                         }
                         MARK_MESSAGE_AS_READ_IN_CHAT -> {
-                            socketActionsParser.markMessagesAsReadInChat(socketModel.value)
+                            socketActionsParser.markMessagesAsReadInChat()
                             return@map null
                         }
                         else -> {
@@ -171,10 +199,56 @@ class BaseSocketRepository @Inject constructor(
         }
     }
 
-    override suspend fun sendMessage(message: MessageDomain, token: String) {
+    override suspend fun observeGroupMessagingSocket(service: GroupMessagingSocketActionsService): Flow<GroupMessageDomain?> {
+        return try {
+            groupsMessagingSocket?.incoming
+                ?.receiveAsFlow()
+                ?.filter { it is Frame.Text }
+                ?.map {
+                    val json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
+                    val socketModel = Json.decodeFromString<ObservingSocketModel>(json)
+                    socketActionsParser.setGroupMessagingActionsService(service)
+                    when(socketModel.action) {
+                        NEW_MESSAGE_IN_GROUP -> {
+                            val messageInGroupRemote = Json.decodeFromString<GroupMessageRemote>(socketModel.value)
+                            return@map messageInGroupRemote.map(groupMessageRemoteToDataMapper).mapToDomain(groupMessageDataToDomainMapper)
+                        }
+                        UPDATE_TYPING_MESSAGE_STATUS_IN_GROUP -> {
+                            socketActionsParser.updateTypingStatusInGroup(socketModel.value)
+                            return@map null
+                        }
+                        MARK_MESSAGES_AS_READ_IN_GROUP -> {
+                            socketActionsParser.markMessagesAsReadInGroup(socketModel.value)
+                            return@map null
+                        }
+                        else -> return@map null
+                    }
+                }!!
+        } catch (e: Exception) {
+            e.printStackTrace()
+            flow {  }
+        }
+    }
+
+    override suspend fun sendMessageInRoom(message: MessageDomain, token: String) {
         try {
-            val requestJson = Json.encodeToString(message.mapToData(messageDomainToDataMapper).mapToRemote(messageDataToRemoteMapper))
+            val requestJson = Json.encodeToString(message
+                .mapToData(messageDomainToDataMapper)
+                .mapToRemote(messageDataToRemoteMapper)
+            )
             messagingSocket?.send(Frame.Text(requestJson))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun sendMessageInGroup(token: String, messageDomain: GroupMessageDomain) {
+        try {
+            val requestJson = Json.encodeToString(messageDomain
+                .mapToData(groupMessageDomainToDataMapper)
+                .mapToRemote(groupMessageDataToRemoteMapper)
+            )
+            groupsMessagingSocket?.send(Frame.Text(requestJson))
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -191,5 +265,10 @@ class BaseSocketRepository @Inject constructor(
         private const val UPDATE_USER_ONLINE_STATUS_IN_CHAT = "UPDATE_USER_ONLINE_STATUS_IN_CHAT"
         private const val MARK_MESSAGE_AS_READ_IN_CHAT = "MARK_MESSAGE_AS_READ_IN_CHAT"
         private const val NEW_MESSAGE = "NEW_MESSAGE"
+        private const val NEW_MESSAGE_IN_GROUP = "NEW_MESSAGE_IN_GROUP"
+        private const val NEW_UPDATABLE_MESSAGE_IN_GROUP = "NEW_UPDATABLE_MESSAGE_IN_GROUP"
+        private const val UPDATE_TYPING_MESSAGE_STATUS_IN_GROUP = "UPDATE_TYPING_MESSAGE_STATUS_IN_GROUP"
+        private const val MARK_MESSAGES_AS_READ_IN_GROUP = "MARK_MESSAGES_AS_READ_IN_GROUP"
+        private const val MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP = "MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP"
     }
 }

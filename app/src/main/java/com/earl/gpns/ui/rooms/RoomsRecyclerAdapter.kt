@@ -9,10 +9,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.earl.gpns.databinding.RecyclerRoomItemBinding
 import com.earl.gpns.ui.models.ChatInfo
-import com.earl.gpns.ui.models.LastMessageForUpdate
+import com.earl.gpns.ui.models.LastMessageForUpdateInRoom
 import com.earl.gpns.ui.models.RoomUi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import java.util.*
 
 interface OnRoomClickListener {
@@ -50,7 +48,7 @@ class RoomsRecyclerAdapter(
         // todo ???
     }
 
-    fun updateLastMessage(messageForUpdate: LastMessageForUpdate,  position: Int) {
+    fun updateLastMessage(messageForUpdate: LastMessageForUpdateInRoom, position: Int) {
         val item = getItem(position)
         item.updateLastMessage(messageForUpdate)
         notifyItemChanged(position)
@@ -117,7 +115,6 @@ class RoomsRecyclerAdapter(
             binding.lastMessageUnreadIndicator.isVisible = item.isLastMessageAuthorEqualsCurrentUser() && !item.isLastMsgRead()
             binding.lastMessageReadIndicator.isVisible = item.isLastMessageAuthorEqualsCurrentUser() && item.isLastMsgRead()
             binding.userOnlineIndicator.isVisible = item.isUserOnline()
-            Log.d("tag", "bind: online -> ${item.testisonline()}")
         }
     }
 

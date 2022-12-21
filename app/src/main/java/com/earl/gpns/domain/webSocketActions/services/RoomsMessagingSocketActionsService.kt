@@ -4,7 +4,7 @@ import com.earl.gpns.domain.webSocketActions.MarkMessageAsReadInChat
 import com.earl.gpns.domain.webSocketActions.UpdateUserTypingMessageState
 import com.earl.gpns.domain.webSocketActions.UpdateUserOnlineStatusInChat
 
-interface MessagingSocketActionsService :
+interface RoomsMessagingSocketActionsService :
     UpdateUserTypingMessageState,
     UpdateUserOnlineStatusInChat,
     MarkMessageAsReadInChat

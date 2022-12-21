@@ -35,4 +35,12 @@ interface Repository {
     suspend fun sendTypingMessageRequest(token: String, request: TypingMessageDtoDomain)
 
     suspend fun addNewRoom(token: String, newRoomRequest: NewRoomDtoDomain)
+
+    suspend fun fetchGroups(token: String) : List<GroupDomain>
+
+    suspend fun fetchMessagesForGroup(token: String, groupId: String) : List<GroupMessageDomain>
+
+    suspend fun sendTypingMessageStatusInGroup(token: String, request: GroupTypingStatusDomain)
+
+    suspend fun markMessagesAsReadInGroup(token: String, groupId: String)
 }

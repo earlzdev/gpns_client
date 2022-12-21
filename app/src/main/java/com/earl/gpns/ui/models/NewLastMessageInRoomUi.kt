@@ -6,7 +6,7 @@ interface NewLastMessageInRoomUi {
 
     fun isMessageRead() : Boolean
 
-    fun lastMessageForUpdate() : LastMessageForUpdate
+    fun lastMessageForUpdate() : LastMessageForUpdateInRoom
 
     fun isAuthoredMessage(name: String) : Boolean
 
@@ -23,7 +23,7 @@ interface NewLastMessageInRoomUi {
         override fun isMessageRead() = read == 1
 
         override fun lastMessageForUpdate() =
-            LastMessageForUpdate(authorImage, authorName, messageText, timestamp)
+            LastMessageForUpdateInRoom(authorImage, authorName, messageText, timestamp)
 
         override fun isAuthoredMessage(name: String) = name == authorName
     }

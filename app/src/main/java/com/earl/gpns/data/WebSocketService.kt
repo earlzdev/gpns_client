@@ -13,5 +13,6 @@ interface WebSocketService {
         object Rooms: Endpoints("$BASE_URL/socketRooms")
         object Chat: Endpoints("$BASE_URL/chat")
         object Messaging: Endpoints("$BASE_URL/messaging")
+        object GroupMessaging: Endpoints("$BASE_URL/group")
     }
 }
