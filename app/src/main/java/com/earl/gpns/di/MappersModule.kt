@@ -1,18 +1,17 @@
 package com.earl.gpns.di
 
-import com.earl.gpns.data.local.RoomDb
+import com.earl.gpns.data.localDb.RoomDb
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
+import com.earl.gpns.data.models.remote.GroupMessageRemote
 import com.earl.gpns.data.models.remote.MessageRemote
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
+import com.earl.gpns.data.models.remote.requests.TypingStatusInGroupRequest
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.domain.mappers.*
 import com.earl.gpns.domain.models.*
 import com.earl.gpns.ui.mappers.*
-import com.earl.gpns.ui.models.MessageUi
-import com.earl.gpns.ui.models.NewLastMessageInRoomUi
-import com.earl.gpns.ui.models.RoomUi
-import com.earl.gpns.ui.models.UserUi
+import com.earl.gpns.ui.models.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -165,5 +164,131 @@ object MappersModule {
     @Singleton
     fun provideTypingMessageDtoDataToResponseMapper() : TypingMessageDataToResponseMapper<TypingMessageDtoResponse> {
         return BaseTypingMessageDataToResponseMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupRemoteToDataMapper() : GroupRemoteToDataMapper<GroupData> {
+        return BaseGroupRemoteToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupDataToDomainMapper() : GroupDataToDomainMapper<GroupDomain> {
+        return BaseGroupDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupDomainToUiMapper() : GroupDomainToUiMapper<GroupUi> {
+        return BaseGroupDomainToUiMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupMessageRemoteToDataMapper() : GroupMessageRemoteToDataMapper<GroupMessageData> {
+        return BaseGroupMessageRemoteToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupMessageDataToDomainMapper() : GroupMessageDataToDomainMapper<GroupMessageDomain> {
+        return BaseGroupMessageDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupMessageDomainToUiMapper() : GroupMessageDomainToUiMapper<GroupMessageUi> {
+        return BaseGroupMessageDomainToUiMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupMessageUiToDomainMapper() : GroupMessageUiToDomainMapper<GroupMessageDomain> {
+        return BaseGroupMessageUiToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupMessageDomainToDataMapper() : GroupMessageDomainToDataMapper<GroupMessageData> {
+        return BaseGroupMessageDomainToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupMessageDataToRemoteMapper() : GroupMessageDataToRemoteMapper<GroupMessageRemote> {
+        return BaseGroupMessageDataToRemoteMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupLastMessageResponseToDataMapper() : GroupLastMessageResponseToDataMapper<GroupLastMessageData> {
+        return BaseGroupLastMessageResponseToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupLastMessageDataToDomainMapper() : GroupLastMessageDataToDomainMapper<GroupLastMessageDomain> {
+        return BaseGroupLastMessageDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupLastMessageDomainToUiMapper() : GroupLastMessageDomainToUiMapper<GroupLastMessageUi> {
+        return BaseGroupLastMessageDomainToUiMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupTypingStatusUiToDomainMapper() : GroupTypingStatusUiToDomainMapper<GroupTypingStatusDomain> {
+        return BaseGroupTypingStatusUiToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupTypingStatusDomainToDataMapper() : GroupTypingStatusDomainToDataMapper<GroupTypingStatusData> {
+        return BaseGroupTypingStatusDomainToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupTypingStatusDataToRequestMapper() : GroupTypingStatusDataToRequestMapper<TypingStatusInGroupRequest> {
+        return BaseGroupTypingStatusDataToRequestMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupTypingStatusRemoteToDataMapper() : GroupTypingStatusRemoteToDataMapper<GroupTypingStatusData> {
+        return BaseGroupTypingStatusRemoteToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupTypingStatusDataToDomainMapper() : GroupTypingStatusDataToDomainMapper<GroupTypingStatusDomain> {
+        return BaseGroupTypingStatusDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupTypingStatusDomainToUiMapper() : GroupTypingStatusDomainToUiMapper<GroupTypingStatusUi> {
+        return BaseGroupTypingStatusDomainToUiMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupMessagesCounterDbToDataMapper() : GroupMessagesCounterDbToDataMapper<GroupMessagesCounterData> {
+        return BaseGroupMessagesCounterDbToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupMessagesCounterDataToDomainMapper() : GroupMessagesCounterDataToDomainMapper<GroupMessagesCounterDomain> {
+        return BaseGroupMessagesCounterDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGroupMessagesCounterDomainToUiMapper() : GroupMessagesCounterDomainToUimapper<GroupMessagesCounterUi> {
+        return BaseGroupMessagesCounterDomainToUiMapper()
     }
 }

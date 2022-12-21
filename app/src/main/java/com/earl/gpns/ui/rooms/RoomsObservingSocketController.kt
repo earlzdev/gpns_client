@@ -2,8 +2,11 @@ package com.earl.gpns.ui.rooms
 
 import com.earl.gpns.core.Keys
 import com.earl.gpns.core.SharedPreferenceManager
+import com.earl.gpns.domain.mappers.GroupLastMessageDomainToUiMapper
 import com.earl.gpns.domain.mappers.NewLastMessageInRoomDomainToUiMapper
+import com.earl.gpns.domain.models.GroupLastMessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
+import com.earl.gpns.ui.models.GroupLastMessageUi
 import com.earl.gpns.ui.models.NewLastMessageInRoomUi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +15,9 @@ import javax.inject.Inject
 
 interface RoomsObservingSocketController {
 
-    fun setRecyclerAdapter(recyclerAdapter: RoomsRecyclerAdapter)
+    fun setRoomsRecyclerAdapter(recyclerAdapter: RoomsRecyclerAdapter)
+
+    fun setGroupsRecyclerAdapter(recyclerAdapter: GroupsRecyclerAdapter)
 
     fun setViewModel(roomsViewModel: RoomsViewModel)
 
@@ -26,16 +31,26 @@ interface RoomsObservingSocketController {
 
     fun updateUserOnlineInRoomObserving(roomId: String, online: Int, lastAuthDate: String)
 
+    fun updateLastMessageInGroup(newLastMessageInGroup: GroupLastMessageDomain)
+
+    fun markAuthoredMessagesAsReadInGroup(groupId: String)
+
     class Base @Inject constructor(
-        private val newLastMsgInRoomDomainToUiMapper: NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi>
+        private val newLastMsgInRoomDomainToUiMapper: NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi>,
+        private val groupLastMessageDomainToUiMapper: GroupLastMessageDomainToUiMapper<GroupLastMessageUi>
     ) : RoomsObservingSocketController {
 
-        private var adapter: RoomsRecyclerAdapter? = null
+        private var roomsRecyclerAdapter: RoomsRecyclerAdapter? = null
+        private var groupsRecyclerAdapter: GroupsRecyclerAdapter? = null
         private var viewModel: RoomsViewModel? = null
         private var preferenceManager: SharedPreferenceManager? = null
 
-        override fun setRecyclerAdapter(recyclerAdapter: RoomsRecyclerAdapter) {
-            adapter = recyclerAdapter
+        override fun setRoomsRecyclerAdapter(recyclerAdapter: RoomsRecyclerAdapter) {
+            roomsRecyclerAdapter = recyclerAdapter
+        }
+
+        override fun setGroupsRecyclerAdapter(recyclerAdapter: GroupsRecyclerAdapter) {
+            groupsRecyclerAdapter = recyclerAdapter
         }
 
         override fun setViewModel(roomsViewModel: RoomsViewModel) {
@@ -55,26 +70,26 @@ interface RoomsObservingSocketController {
 
         override fun updateLastMessageInRoomReadState(roomId: String) {
             CoroutineScope(Dispatchers.Main).launch {
-                adapter?.hideMessageAuthorUnreadIndicator(roomId)
+                roomsRecyclerAdapter?.hideMessageAuthorUnreadIndicator(roomId)
             }
         }
 
         override fun updateLastMessageInRoom(newLastMessage: NewLastMessageInRoomDomain) {
             CoroutineScope(Dispatchers.Main).launch {
                 val newLastMsgUi = newLastMessage.mapToUi(newLastMsgInRoomDomainToUiMapper)
-                val room = adapter?.currentList?.find { it.sameId(newLastMsgUi.provideRoomId()) }
-                val currentPosition = adapter?.currentList?.indexOf(room)
+                val room = roomsRecyclerAdapter?.currentList?.find { it.sameId(newLastMsgUi.provideRoomId()) }
+                val currentPosition = roomsRecyclerAdapter?.currentList?.indexOf(room)
                 if (room != null) {
-                    adapter?.updateLastMessage(newLastMsgUi.lastMessageForUpdate(), currentPosition!!)
-                    adapter?.swap(currentPosition!!)
+                    roomsRecyclerAdapter?.updateLastMessage(newLastMsgUi.lastMessageForUpdate(), currentPosition!!)
+                    roomsRecyclerAdapter?.swap(currentPosition!!)
                     if (!newLastMsgUi.isMessageRead()
                         && newLastMsgUi.isAuthoredMessage(preferenceManager?.getString(Keys.KEY_NAME) ?: "")) {
-                        adapter?.showMessageUnreadIndicator(currentPosition!!)
+                        roomsRecyclerAdapter?.showMessageUnreadIndicator(currentPosition!!)
                     } else if (!newLastMsgUi.isMessageRead()
                         && !newLastMsgUi.isAuthoredMessage(preferenceManager?.getString(Keys.KEY_NAME) ?: "")) {
-                        adapter?.updateCounter(currentPosition!!)
+                        roomsRecyclerAdapter?.updateCounter(currentPosition!!)
                     } else if (newLastMsgUi.isMessageRead()){
-                        adapter?.clearCounter(newLastMsgUi.provideRoomId())
+                        roomsRecyclerAdapter?.clearCounter(newLastMsgUi.provideRoomId())
                     }
                 }
             }
@@ -86,7 +101,27 @@ interface RoomsObservingSocketController {
             lastAuthDate: String
         ) {
             CoroutineScope(Dispatchers.Main).launch {
-                adapter?.changeUserOnlineInRoom(roomId, online, lastAuthDate)
+                roomsRecyclerAdapter?.changeUserOnlineInRoom(roomId, online, lastAuthDate)
+            }
+        }
+
+        override fun updateLastMessageInGroup(newLastMessageInGroup: GroupLastMessageDomain) {
+            CoroutineScope(Dispatchers.Main).launch {
+                val lastMsgUi = newLastMessageInGroup.map(groupLastMessageDomainToUiMapper)
+                if (lastMsgUi.isLastMessageReadOrNot()) {
+                    viewModel?.updateMessagesReadCounterInGroup(lastMsgUi.provideId(), 1)
+                }
+                val group = groupsRecyclerAdapter?.currentList?.find { it.sameId(lastMsgUi.provideId()) }
+                val currentPosition = groupsRecyclerAdapter?.currentList?.indexOf(group)
+                if (group != null && currentPosition != null) {
+                    groupsRecyclerAdapter?.updateLastMessage(lastMsgUi.provideLastMessageForUpdateInGroup(), currentPosition)
+            }
+        }
+    }
+
+        override fun markAuthoredMessagesAsReadInGroup(groupId: String) {
+            CoroutineScope(Dispatchers.Main).launch {
+                groupsRecyclerAdapter?.markAuthoredMessagesAsRead(groupId)
             }
         }
     }

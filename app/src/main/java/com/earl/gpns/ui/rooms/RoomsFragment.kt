@@ -12,10 +12,14 @@ import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentRoomsBinding
+import com.earl.gpns.domain.mappers.GroupLastMessageDomainToUiMapper
 import com.earl.gpns.domain.mappers.NewLastMessageInRoomDomainToUiMapper
+import com.earl.gpns.domain.models.GroupLastMessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
 import com.earl.gpns.ui.models.ChatInfo
+import com.earl.gpns.ui.models.GroupInfo
+import com.earl.gpns.ui.models.GroupLastMessageUi
 import com.earl.gpns.ui.models.NewLastMessageInRoomUi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -23,15 +27,17 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
-    RoomsObservingSocketService {
+class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener, RoomsObservingSocketService, OnGroupClickListener {
 
     private lateinit var viewModel: RoomsViewModel
-    private lateinit var adapter: RoomsRecyclerAdapter
+    private lateinit var roomsRecyclerAdapter: RoomsRecyclerAdapter
+    private lateinit var groupsRecyclerAdapter: GroupsRecyclerAdapter
     @Inject
     lateinit var roomController: RoomsObservingSocketController
     @Inject
     lateinit var newLastMsgInRoomDomainToUiMapper: NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi>
+    @Inject
+    lateinit var groupLastMessageDomainToUiMapper: GroupLastMessageDomainToUiMapper<GroupLastMessageUi>
 
     override fun viewBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentRoomsBinding.inflate(inflater, container, false)
@@ -41,7 +47,8 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
         viewModel = ViewModelProvider(this)[RoomsViewModel::class.java]
         initSession()
         initClickListeners()
-        recycler()
+        groupsRecycler()
+        roomRecycler()
         initRoomController()
         backPressedCallback()
         binding.testUsername.text = preferenceManager.getString(Keys.KEY_NAME) // todo don't forget to remove then...
@@ -52,17 +59,18 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
             navigator.showProgressBar()
             navigator.usersFragment()
         }
-        binding.chatChapter.setOnClickListener {
-            // todo refactor !!!
-            viewModel.clearDatabase()
-            Toast.makeText(requireContext(), "Database cleared", Toast.LENGTH_SHORT).show()
-        }
+//        binding.chatChapter.setOnClickListener {
+//            // todo refactor !!!
+//            viewModel.clearDatabase()
+//            Toast.makeText(requireContext(), "Database cleared", Toast.LENGTH_SHORT).show()
+//        }
     }
 
     private fun initRoomController() {
-        roomController = RoomsObservingSocketController.Base(newLastMsgInRoomDomainToUiMapper)
+        roomController = RoomsObservingSocketController.Base(newLastMsgInRoomDomainToUiMapper, groupLastMessageDomainToUiMapper)
         roomController.setPreferenceManager(preferenceManager)
-        roomController.setRecyclerAdapter(adapter)
+        roomController.setRoomsRecyclerAdapter(roomsRecyclerAdapter)
+        roomController.setGroupsRecyclerAdapter(groupsRecyclerAdapter)
         roomController.setViewModel(viewModel)
     }
 
@@ -76,20 +84,11 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
 
     override fun joinRoom(chatInfo: ChatInfo) {
         navigator.chat(chatInfo)
-        adapter.clearCounter(chatInfo.roomId ?: "")
+        roomsRecyclerAdapter.clearCounter(chatInfo.roomId ?: "")
         viewModel.joinRoom(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
             chatInfo
         )
-//        viewModel.markAuthoredMessageAsRead(
-//            preferenceManager.getString(Keys.KEY_JWT) ?: "",
-//            chatInfo.roomId ?: "",
-//            chatInfo.chatTitle
-//        )
-//        viewModel.updateLastMsgReadState(
-//            preferenceManager.getString(Keys.KEY_JWT) ?: "",
-//            chatInfo.roomId ?: ""
-//        )
     }
 
     override fun deleteRoom(chatInfo: ChatInfo) {
@@ -100,9 +99,25 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
         Toast.makeText(requireContext(), getString(R.string.room_with_this_user_successfully_removed), Toast.LENGTH_SHORT).show()
     }
 
-    private fun recycler() {
-        adapter = RoomsRecyclerAdapter(this)
-        binding.chatRecycler.adapter = adapter
+    private fun groupsRecycler() {
+        groupsRecyclerAdapter = GroupsRecyclerAdapter(
+            preferenceManager.getString(Keys.KEY_NAME) ?: "",
+            this
+        )
+        binding.groupsRecycler.adapter = groupsRecyclerAdapter
+        viewModel.observeGroupsLiveData(this) {
+            if (it != null) {
+//                it.onEach { group ->
+//                    viewModel.updateActualUnreadMessagesCounterInGroup(group)
+//                }
+                groupsRecyclerAdapter.submitList(it)
+            }
+        }
+    }
+
+    private fun roomRecycler() {
+        roomsRecyclerAdapter = RoomsRecyclerAdapter(this)
+        binding.chatRecycler.adapter = roomsRecyclerAdapter
         lifecycleScope.launchWhenStarted {
             viewModel._rooms
                 .onEach {
@@ -115,7 +130,7 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
                             }
                         }
                     }
-                    adapter.submitList(rooms)
+                    roomsRecyclerAdapter.submitList(rooms)
                 }
                 .collect()
         }
@@ -134,15 +149,32 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
         roomController.updateLastMessageInRoomReadState(roomId)
     }
 
-    override fun updateUserOnlineInRoomObserving(
-        roomId: String,
-        online: Int,
-        lastAuthDate: String
-    ) {
+    override fun updateUserOnlineInRoomObserving(roomId: String, online: Int, lastAuthDate: String) {
         roomController.updateUserOnlineInRoomObserving(roomId, online, lastAuthDate)
     }
 
+    override fun updateLastMessageInGroup(newLastMessageDomain: GroupLastMessageDomain) {
+        roomController.updateLastMessageInGroup(newLastMessageDomain)
+    }
+
+    override fun joinGroup(groupInfo: GroupInfo) {
+        viewModel.updateMessagesReadCounterInGroup(groupInfo.groupId, groupInfo.counter)
+        if (groupInfo.lastMessageAuthor != preferenceManager.getString(Keys.KEY_NAME)) {
+            viewModel.markMessagesAsReadInGroup(
+                preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                groupInfo.groupId
+            )
+        }
+        groupsRecyclerAdapter.updateGroup(groupInfo.groupId)
+        navigator.groupMessaging(groupInfo)
+    }
+
+    override fun markAuthoredMessagesAsReadInGroup(groupId: String) {
+        roomController.markAuthoredMessagesAsReadInGroup(groupId)
+    }
+
     private fun backPressedCallback() {
+        // todo refactor !!!
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 navigator.exit()

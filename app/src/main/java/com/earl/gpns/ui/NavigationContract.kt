@@ -1,6 +1,7 @@
 package com.earl.gpns.ui
 
 import com.earl.gpns.ui.models.ChatInfo
+import com.earl.gpns.ui.models.GroupInfo
 import com.earl.gpns.ui.models.RoomUi
 
 interface NavigationContract {
@@ -36,6 +37,8 @@ interface NavigationContract {
     fun driverFormDetails()
 
     fun companionFormDetails()
+
+    fun groupMessaging(groupInfo: GroupInfo)
 
     fun exit()
 }

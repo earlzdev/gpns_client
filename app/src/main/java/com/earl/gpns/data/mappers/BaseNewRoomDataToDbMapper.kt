@@ -1,6 +1,6 @@
 package com.earl.gpns.data.mappers
 
-import com.earl.gpns.data.local.RoomDb
+import com.earl.gpns.data.localDb.RoomDb
 import javax.inject.Inject
 
 class BaseNewRoomDataToDbMapper @Inject constructor() : NewRoomDataToDbMapper<RoomDb> {

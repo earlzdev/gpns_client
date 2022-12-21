@@ -1,5 +1,7 @@
 package com.earl.gpns.data.retrofit
 
+import com.earl.gpns.data.models.remote.GroupMessageRemote
+import com.earl.gpns.data.models.remote.GroupRemote
 import com.earl.gpns.data.models.remote.MessageRemote
 import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.models.remote.responses.RoomResponse
@@ -93,5 +95,32 @@ interface Service {
     suspend fun typingMessageRequest(
         @Header("Authorization") token: String,
         @Body request: TypingMessageDtoResponse
+    )
+
+    @Headers("Content-Type: application/json")
+    @GET("/fetchGroups")
+    suspend fun fetchGroups(
+        @Header("Authorization") token: String
+    ) : List<GroupRemote>
+
+    @Headers("Content-Type: application/json")
+    @POST("/fetchMessagesForGroup")
+    suspend fun fetchMessagesForGroup(
+        @Header("Authorization") token: String,
+        @Body roomId: GroupIdRequest
+    ) : List<GroupMessageRemote>
+
+    @Headers("Content-Type: application/json")
+    @POST("/groupTypingStatus")
+    suspend fun sendGroupTypingStatus(
+        @Header("Authorization") token: String,
+        @Body request: TypingStatusInGroupRequest
+    )
+
+    @Headers("Content-Type: application/json")
+    @POST("/markMessagesAsReadInGroup")
+    suspend fun markMessagesAsReadInGroup(
+        @Header("Authorization") token: String,
+        @Body groupId: GroupIdRequest
     )
 }

@@ -4,8 +4,8 @@ import com.earl.gpns.core.*
 import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
 import com.earl.gpns.domain.models.*
-import com.earl.gpns.domain.webSocketActions.*
-import com.earl.gpns.domain.webSocketActions.services.MessagingSocketActionsService
+import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketActionsService
+import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -36,7 +36,7 @@ interface Interactor {
 
     suspend fun sendMessage(message: MessageDomain, token: String)
 
-    suspend fun observeNewMessages(service: MessagingSocketActionsService) : Flow<MessageDomain?>
+    suspend fun observeNewMessages(service: RoomsMessagingSocketActionsService) : Flow<MessageDomain?>
 
     suspend fun initMessagingSocket(jwtToken: String, roomId: String)
 
@@ -59,6 +59,30 @@ interface Interactor {
     suspend fun deleteRoomFromDb(roomId: String)
 
     suspend fun sendTypingMessageRequest(token: String, response: TypingMessageDtoDomain)
+
+    suspend fun fetchGroups(token: String) : List<GroupDomain>
+
+    suspend fun initGroupMessagingSocket(token: String, groupId: String)
+
+    suspend fun observeGroupMessaging(service: GroupMessagingSocketActionsService) : Flow<GroupMessageDomain?>
+
+    suspend fun fetchAllMessagesInGroup(token: String, groupId: String) : List<GroupMessageDomain>
+
+    suspend fun sendMessageInGroup(token: String, message: GroupMessageDomain)
+
+    suspend fun closeGroupMessagingSocket()
+
+    suspend fun sendGroupTypingMessageStatus(token: String, request: GroupTypingStatusDomain)
+
+    suspend fun markMessagesAsReadInGroup(token: String, groupId: String)
+
+    suspend fun fetchGroupMessagesCounter(groupId: String) : GroupMessagesCounterDomain?
+
+    suspend fun insertNewMessagesCounterInGroup(groupId: String, counter: Int)
+
+    suspend fun deleteMessagesCounterInGroup(groupId: String)
+
+    suspend fun updateReadMessagesCounterInGroup(groupId: String, counter: Int)
 
     class Base @Inject constructor(
         private val repository: Repository,
@@ -96,7 +120,7 @@ interface Interactor {
         }
 
         override suspend fun initChatSocketSession(token: String) =
-            socketRepository.initChatSocketSession(token)
+            socketRepository.initRoomsSocket(token)
 
         override suspend fun closeChatSocketSession() {
             socketRepository.closeChatSocketSession()
@@ -105,7 +129,7 @@ interface Interactor {
         override suspend fun fetchUserInfo(token: String) = repository.fetchUserInfo(token)
 
         override suspend fun observeNewRooms(roomsService: RoomsObservingSocketService) =
-            socketRepository.observeNewRooms(roomsService)
+            socketRepository.observeRoomsSocket(roomsService)
 
         override suspend fun addRoom(token: String, newRoomDtoDomain: NewRoomDtoDomain) {
             repository.addNewRoom(token, newRoomDtoDomain)
@@ -115,14 +139,14 @@ interface Interactor {
             repository.fetchMessagesForRoom(token, roomId)
 
         override suspend fun sendMessage(message: MessageDomain, token: String) {
-            socketRepository.sendMessage(message, token)
+            socketRepository.sendMessageInRoom(message, token)
         }
 
-        override suspend fun observeNewMessages(service: MessagingSocketActionsService) =
-            socketRepository.observeMessages(service)
+        override suspend fun observeNewMessages(service: RoomsMessagingSocketActionsService) =
+            socketRepository.observeRoomMessagingSocket(service)
 
         override suspend fun initMessagingSocket(jwtToken: String, roomId: String) {
-            socketRepository.initMessagingSocket(jwtToken, roomId)
+            socketRepository.initRoomMessagingSocket(jwtToken, roomId)
         }
 
         override suspend fun fetchRoomsListFromLocalDb() = localDatabaseRepository.fetchRoomsListFromLocalDb()
@@ -166,6 +190,49 @@ interface Interactor {
 
         override suspend fun sendTypingMessageRequest(token: String, response: TypingMessageDtoDomain) {
             repository.sendTypingMessageRequest(token, response)
+        }
+
+        override suspend fun fetchGroups(token: String) = repository.fetchGroups(token)
+
+        override suspend fun initGroupMessagingSocket(token: String, groupId: String) {
+            socketRepository.initGroupsMessagingSocket(token, groupId)
+        }
+
+        override suspend fun observeGroupMessaging(service: GroupMessagingSocketActionsService) =
+            socketRepository.observeGroupMessagingSocket(service)
+
+        override suspend fun fetchAllMessagesInGroup(token: String, groupId: String) =
+            repository.fetchMessagesForGroup(token, groupId)
+
+        override suspend fun sendMessageInGroup(token: String, message: GroupMessageDomain) {
+            socketRepository.sendMessageInGroup(token, message)
+        }
+
+        override suspend fun closeGroupMessagingSocket() {
+            socketRepository.closeGroupMessagingSocket()
+        }
+
+        override suspend fun sendGroupTypingMessageStatus(token: String, request: GroupTypingStatusDomain) {
+            repository.sendTypingMessageStatusInGroup(token, request)
+        }
+
+        override suspend fun markMessagesAsReadInGroup(token: String, groupId: String) {
+            repository.markMessagesAsReadInGroup(token, groupId)
+        }
+
+        override suspend fun fetchGroupMessagesCounter(groupId: String) =
+            localDatabaseRepository.fetchMessagesCounterForGroup(groupId)
+
+        override suspend fun insertNewMessagesCounterInGroup(groupId: String, counter: Int) {
+            localDatabaseRepository.insertGroupMessagesCounter(groupId, counter)
+        }
+
+        override suspend fun deleteMessagesCounterInGroup(groupId: String) {
+            localDatabaseRepository.deleteMessagesCounterInGroup(groupId)
+        }
+
+        override suspend fun updateReadMessagesCounterInGroup(groupId: String, counter: Int) {
+            localDatabaseRepository.updateMessagesReadCounter(groupId, counter)
         }
     }
 }

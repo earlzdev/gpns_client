@@ -15,7 +15,9 @@ import com.earl.gpns.ui.auth.LoginFragment
 import com.earl.gpns.ui.auth.SignUpFragment
 import com.earl.gpns.ui.auth.StartFragment
 import com.earl.gpns.ui.chat.ChatFragment
+import com.earl.gpns.ui.chat.GroupMessagingFragment
 import com.earl.gpns.ui.models.ChatInfo
+import com.earl.gpns.ui.models.GroupInfo
 import com.earl.gpns.ui.search.*
 import com.earl.gpns.ui.usersFragment.FragmentUsers
 import dagger.hilt.android.AndroidEntryPoint
@@ -84,7 +86,7 @@ class MainActivity : AppCompatActivity(), NavigationContract {
     }
 
     override fun newSearchForm() {
-        showFragment(FragmentStartNewSearchingForm.newInstance())
+        showFragment(StartNewSearchingFormFragment.newInstance())
     }
 
     override fun startFirstDriverForm() {
@@ -105,6 +107,10 @@ class MainActivity : AppCompatActivity(), NavigationContract {
 
     override fun companionFormDetails() {
         showFragment(CompanionFormDetailsFragment.newInstance())
+    }
+
+    override fun groupMessaging(groupInfo: GroupInfo) {
+        showFragment(GroupMessagingFragment.newInstance(groupInfo))
     }
 
     private fun showFragment(fragment: Fragment) {
