@@ -1,5 +1,6 @@
 package com.earl.gpns.ui.rooms
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -30,6 +31,7 @@ class GroupsRecyclerAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
+        Log.d("tag", "onBindViewHolder: simple")
         holder.itemView.setOnClickListener {
             clickListener.joinGroup(item.provideGroupInfo())
         }
@@ -40,14 +42,15 @@ class GroupsRecyclerAdapter(
         position: Int,
         payloads: MutableList<Any>
     ) {
+        Log.d("tag", "onBindViewHolder: payload")
         super.onBindViewHolder(holder, position, payloads)
-
     }
 
-    fun updateGroup(new: List<GroupUi>) {
-        val callback = GroupDiffUtil(new, currentList)
+    fun updateGroupByCallback(new: List<GroupUi>) {
+        val callback = GroupDiffUtil(currentList, new)
         val result = DiffUtil.calculateDiff(callback)
-
+//        currentList.toMutableList().clear()
+//        currentList.toMutableList().addAll(new)
         result.dispatchUpdatesTo(this)
     }
 
@@ -105,15 +108,30 @@ class GroupDiffUtil(
 
     override fun getNewListSize() = new.size
 
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-        old[oldItemPosition].same(new[newItemPosition])
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val result = old[oldItemPosition].same(new[newItemPosition])
+        Log.d("tag", "areItemsTheSame: old counter${old.last().provideGroupMessagesCounter()}")
+        Log.d("tag", "areItemsTheSame: new counter ${new.last().provideGroupMessagesCounter()}")
+        Log.d("tag", "areItemsTheSame: $result")
+        return result
+    }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-        old[oldItemPosition] == new[newItemPosition]
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val result = old[oldItemPosition] == new[newItemPosition]
+        Log.d("tag", "areContentsTheSame: old counter${old.last().provideGroupMessagesCounter()}")
+        Log.d("tag", "areContentsTheSame: new counter ${new.last().provideGroupMessagesCounter()}")
+        Log.d("tag", "areContentsTheSame: $result")
+        return result
+    }
+
+    //    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+//        old[oldItemPosition].same(new[newItemPosition])
+//
+//    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+//        old[oldItemPosition] == new[newItemPosition]
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-//        return super.getChangePayload(oldItemPosition, newItemPosition)
-        val bundle = bundleOf("item" to "any")
-        return bundle
+        Log.d("tag", "getChangePayload: payload")
+        return super.getChangePayload(oldItemPosition, newItemPosition)
     }
 }

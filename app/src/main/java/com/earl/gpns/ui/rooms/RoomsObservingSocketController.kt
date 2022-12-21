@@ -111,13 +111,36 @@ interface RoomsObservingSocketController {
                 if (lastMsgUi.isLastMessageReadOrNot()) {
                     viewModel?.updateMessagesReadCounterInGroup(lastMsgUi.provideId(), 1)
                 }
+//                val currentList = groupsRecyclerAdapter?.currentList
+//                val newList = mutableListOf<GroupUi>()
+//                val newGroup = GroupUi.Base(
+//                    "common",
+//                    "Общий чат",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    "",
+//                    0,
+//                    0,
+//                    0
+//                    )
+//                newList.add(newGroup)
+//                currentList?.forEach { newList.add(it) }
+//                Log.d("tag", " 1 new list -> ${newList.last().provideGroupMessagesCounter()}")
+//                Log.d("tag", " 1 old list -> ${currentList?.last()?.provideGroupMessagesCounter()}")
+//                newList.find { it.sameId(lastMsgUi.provideId()) }?.updateLastMessage(lastMsgUi.provideLastMessageForUpdateInGroup())
+//                val oldList = groupsRecyclerAdapter?.currentList?.last()?.provideGroupMessagesCounter()
+//                Log.d("tag", " 2 new list -> ${newList.last().provideGroupMessagesCounter()}")
+//                Log.d("tag", " 2 old list -> ${currentList?.last()?.provideGroupMessagesCounter()}")
+//                groupsRecyclerAdapter?.updateGroupByCallback(new = newList)
                 val group = groupsRecyclerAdapter?.currentList?.find { it.sameId(lastMsgUi.provideId()) }
                 val currentPosition = groupsRecyclerAdapter?.currentList?.indexOf(group)
                 if (group != null && currentPosition != null) {
                     groupsRecyclerAdapter?.updateLastMessage(lastMsgUi.provideLastMessageForUpdateInGroup(), currentPosition)
+                }
             }
         }
-    }
 
         override fun markAuthoredMessagesAsReadInGroup(groupId: String) {
             CoroutineScope(Dispatchers.Main).launch {

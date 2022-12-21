@@ -165,7 +165,7 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
                 groupInfo.groupId
             )
         }
-        groupsRecyclerAdapter.updateGroup(groupInfo.groupId)
+//        groupsRecyclerAdapter.updateGroup(groupInfo.groupId)
         navigator.groupMessaging(groupInfo)
     }
 
