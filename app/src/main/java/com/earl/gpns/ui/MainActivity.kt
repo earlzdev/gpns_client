@@ -19,6 +19,11 @@ import com.earl.gpns.ui.chat.GroupMessagingFragment
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.GroupInfo
 import com.earl.gpns.ui.search.*
+import com.earl.gpns.ui.search.companion.CompanionFormDetailsFragment
+import com.earl.gpns.ui.search.companion.CompanionFormFragment
+import com.earl.gpns.ui.search.driver.DriverFormDetailsFragment
+import com.earl.gpns.ui.search.driver.FirstDriverFormFragment
+import com.earl.gpns.ui.search.driver.SecondDriverFormFragment
 import com.earl.gpns.ui.usersFragment.FragmentUsers
 import dagger.hilt.android.AndroidEntryPoint
 

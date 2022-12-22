@@ -29,11 +29,11 @@
     <string name="example_user_name">Ivan Ivanov</string>
     <string name="user_is_online_now_text">Сейчас онлайн</string>
     <string name="example_of_unread_msg_in_room">3</string>
-    <string name="search_text">Если вы хотите и можете взять попутчиков, либо ищите водителя, с кем можно ездить на работу, пожалуйста, заполните анкету, чтобы людям было проще найти Вас</string>
+    <string name="search_text">Если вы хотите и можете взять попутчиков, либо ищите водителя, с кем можно ездить на работу, пожалуйста, заполните соответствующую форму, чтобы людям было проще найти Вас</string>
     <string name="driver_form_btn_text">Я водитель, ищу попутчиков</string>
     <string name="companion_btn_search_text">Я ищу водителя, с кем ездить</string>
     <string name="driver_form_first_text">Анкета водителя 1/2</string>
-    <string name="from">Откуда:</string>
+    <string name="from">Откуда я выезжаю(район):</string>
     <string name="leave_time">Выезжаю в:</string>
     <string name="can_catch_comp_from">Так же могу забрать попутчика с:</string>
     <string name="drivre_destination">Я еду на:</string>
@@ -44,7 +44,7 @@
     <string name="continue_text">Продолжить</string>
     <string name="driver_car">Авто:</string>
     <string name="driver_car_color">Цвет:</string>
-    <string name="driver_car_count_of_passengeres">Сколько мест?</string>
+    <string name="driver_car_count_of_passengeres">Сколько попутчиков смогу взять?</string>
     <string name="driver_car_gos_number">Гос. номер:</string>
     <string name="trip_price">Цена поездки:</string>
     <string name="driver_comment">Комментарий водителя:</string>
@@ -79,4 +79,177 @@
     <string name="suggest_to_drive_together">Предложить ездить вместе</string>
     <string name="common_chat_string">Общий чат</string>
     <string name="you">Вы: </string>
+    <string name="car_model">Модель:</string>
+    <string name="catch_nearest">Выберите ближайший</string>
+    <string name="all_nessesary_fileds">Все обязательные поля отмечены звездочкой *</string>
+    <string name="not_ness">Необязательно</string>
+    <string name="enter_ur_district">Введите район</string>
+    <string name="enter_new_place">Введите место</string>
+    <string name="another_time">Другое время</string>
+
+    // spinners
+    <string-array name="spinner_drive_from">
+        <item>Курчатовский</item>
+        <item>Мариинский</item>
+        <item>Михайловка</item>
+        <item>Дом связи</item>
+        <item>Дом быта</item>
+        <item>Сода</item>
+        <item>ВТС</item>
+        <item>Автовокзал</item>
+        <item>Ольховка</item>
+        <item>Первомайский</item>
+        <item>Парк Гагарина</item>
+        <item>Новая Отрадовка</item>
+        <item>Жд вокзал</item>
+        <item>Юго-Западный</item>
+        <item>Солнечный</item>
+        <item>Западный(за арбатом)</item>
+        <item>ул.Мира</item>
+        <item>ул. Дружбы/Шаймуратова</item>
+        <item>ул.Блюхера</item>
+        <item>ост.Льва Толстого</item>
+        <item>Арбат</item>
+        <item>Ситимолл</item>
+        <item>Ашкадарский</item>
+        <item>Старый Город</item>
+        <item>Другой район</item>
+    </string-array>
+
+    <string-array name="spinner_can_catch_comp_from">
+        <item>Курчатовский</item>
+        <item>Мариинский</item>
+        <item>Михайловка</item>
+        <item>Дом связи</item>
+        <item>Дом быта</item>
+        <item>Сода</item>
+        <item>ВТС</item>
+        <item>Автовокзал</item>
+        <item>Ольховка</item>
+        <item>Первомайский</item>
+        <item>Парк Гагарина</item>
+        <item>Новая Отрадовка</item>
+        <item>Жд вокзал</item>
+        <item>Юго-Западный</item>
+        <item>Солнечный</item>
+        <item>Западный(за арбатом)</item>
+        <item>ул.Мира</item>
+        <item>ул. Дружбы/Шаймуратова</item>
+        <item>ул.Блюхера</item>
+        <item>ост.Льва Толстого</item>
+        <item>Арбат</item>
+        <item>Ситимолл</item>
+        <item>Ашкадарский</item>
+        <item>старый Город</item>
+    </string-array>
+
+    <string-array name="spinner_drive_to">
+        <item>Центральная проходная</item>
+        <item>Проходная №4</item>
+        <item>Проходная №10</item>
+        <item>Северная проходная №1</item>
+        <item>Северная проходная №2</item>
+        <item>Западная проходная</item>
+        <item>Южная проходная №1</item>
+        <item>Южная проходная №2</item>
+        <item>Южная проходная №3</item>
+        <item>Площадка А</item>
+        <item>Площадка Б</item>
+        <item>Площадка В</item>
+        <item>Площадка Г</item>
+        <item>Площадка Д</item>
+        <item>Площадка Е</item>
+        <item>ППЖТ</item>
+        <item>Аллагуват</item>
+        <item>Другое</item>
+    </string-array>
+
+    <string-array name="spinner_can_also_drive_to">
+        <item>Центральная проходная</item>
+        <item>Проходная №4</item>
+        <item>Проходная №10</item>
+        <item>Северная проходная №1</item>
+        <item>Северная проходная №2</item>
+        <item>Западная проходная</item>
+        <item>Южная проходная №1</item>
+        <item>Южная проходная №2</item>
+        <item>Южная проходная №3</item>
+        <item>Площадка А</item>
+        <item>Площадка Б</item>
+        <item>Площадка В</item>
+        <item>Площадка Г</item>
+        <item>Площадка Д</item>
+        <item>Площадка Е</item>
+        <item>ППЖТ</item>
+        <item>Аллагуват</item>
+    </string-array>
+
+    <string-array name="spinner_schedule">
+        <item>Дневной 8:00-17:00</item>
+        <item>Дневной 8:30-17:30</item>
+        <item>Бригада №1</item>
+        <item>Бригада №2</item>
+        <item>Бригада №3</item>
+        <item>Бригада №4</item>
+        <item>По разному(подменный)</item>
+    </string-array>
+
+    <string-array name="spinner_how_long_trip_is_actual">
+        <item>Езжу постоянно</item>
+        <item>Буду ездить пару месяцев</item>
+        <item>Буду ездить пару недель</item>
+        <item>Буду ездить несколько дней</item>
+        <item>Еду один раз</item>
+        <item>Не могу сказать сколько</item>
+        <item>Другое</item>
+    </string-array>
+
+    <string-array name="spinner_driver_car_model">
+        <item>Audi</item>
+        <item>BMW</item>
+        <item>Chevrolet</item>
+        <item>Daewoo</item>
+        <item>Datsun</item>
+        <item>Ford</item>
+        <item>Honda</item>
+        <item>Hyundai</item>
+        <item>Kia</item>
+        <item>АВТОВАЗ</item>
+        <item>Mazda</item>
+        <item>Mercedes</item>
+        <item>Mitsubishi</item>
+        <item>Nissan</item>
+        <item>Opel</item>
+        <item>Renault</item>
+        <item>Skoda</item>
+        <item>Tesla</item>
+        <item>Toyota</item>
+        <item>Volkswagen</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="spinner_car_type">
+        <item>Laccetti</item>
+        <item>Almera</item>
+    </string-array>
+
+    <string-array name="spinner_driver_car_color">
+        <item>Белый</item>
+        <item>Серый</item>
+        <item>Черный</item>
+        <item>Коричневый</item>
+        <item>Серебристый</item>
+        <item>Синий</item>
+        <item>Красный</item>
+        <item>Зеленый</item>
+        <item>Желтый</item>
+        <item>Другой</item>
+    </string-array>
+
+    <string-array name="spinner_how_many_places_in_driver_car">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
 </resources>
