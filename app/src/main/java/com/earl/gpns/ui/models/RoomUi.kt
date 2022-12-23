@@ -45,6 +45,8 @@ interface RoomUi : Same<RoomUi> {
 
     fun setRoomController(controller: RoomsObservingSocketController)
 
+    fun provideId() : String
+
     fun testisonline() : Int
 
     class Base(
@@ -78,7 +80,7 @@ interface RoomUi : Same<RoomUi> {
             unreadMsgCounter.text = this.unreadMsgCounter.toString()
         }
 
-        override fun chatInfo() = ChatInfo(roomId, title, image, contactOnline, contactLastAuth)
+        override fun chatInfo() = ChatInfo(roomId, title, image, contactOnline, contactLastAuth, lastMessageAuthor)
 
         override fun sameId(id: String) = id == roomId
 
@@ -117,6 +119,8 @@ interface RoomUi : Same<RoomUi> {
             contactOnline = online
             contactLastAuth = lastAuthDate
         }
+
+        override fun provideId() = roomId
 
         override fun testisonline() = contactOnline
     }

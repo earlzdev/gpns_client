@@ -1,5 +1,6 @@
 package com.earl.gpns.ui.chat
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -47,6 +48,7 @@ class ChatViewModel @Inject constructor(
 
     fun addNewRoomToLocalDatabase(room: NewRoomDtoUi) {
         viewModelScope.launch {
+            Log.d("tag", "addNewRoomToLocalDatabase: ChatViewModel")
             interactor.insertRoomIntoLocalDb(room.map(newRoomUiToDomainMapper))
         }
     }

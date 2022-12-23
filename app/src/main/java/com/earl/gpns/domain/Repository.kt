@@ -43,4 +43,8 @@ interface Repository {
     suspend fun sendTypingMessageStatusInGroup(token: String, request: GroupTypingStatusDomain)
 
     suspend fun markMessagesAsReadInGroup(token: String, groupId: String)
+
+    suspend fun sendNewDriverForm(token: String, driverForm: DriverFormDomain)
+
+    suspend fun sendNewCompanionForm(token: String, companionForm: CompanionFormDomain)
 }

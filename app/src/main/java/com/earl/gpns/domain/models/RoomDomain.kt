@@ -11,6 +11,8 @@ interface RoomDomain {
 
     fun provideId() : String
 
+    fun sameId(id: String) : Boolean
+
     class Base(
         private val roomId: String,
         private val image: String,
@@ -30,5 +32,7 @@ interface RoomDomain {
             mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, contactIsOnline, contactLastAuth)
 
         override fun provideId() = roomId
+
+        override fun sameId(id: String) = id == roomId
     }
 }

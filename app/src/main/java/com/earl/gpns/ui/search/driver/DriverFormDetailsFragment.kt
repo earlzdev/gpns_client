@@ -1,4 +1,4 @@
-package com.earl.gpns.ui.search
+package com.earl.gpns.ui.search.driver
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -78,7 +78,7 @@ interface UserUi : Same<UserUi> {
             }
         }
 
-        override fun chatInfo() = ChatInfo(null, username, image, online, lastAuth)
+        override fun chatInfo() = ChatInfo(null, username, image, online, lastAuth, username)
 
         override fun provideId() = userId
 

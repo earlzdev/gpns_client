@@ -3,6 +3,8 @@ package com.earl.gpns.di
 import com.earl.gpns.data.localDb.RoomDb
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
+import com.earl.gpns.data.models.remote.CompanionFormRemote
+import com.earl.gpns.data.models.remote.DriverFormRemote
 import com.earl.gpns.data.models.remote.GroupMessageRemote
 import com.earl.gpns.data.models.remote.MessageRemote
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
@@ -290,5 +292,77 @@ object MappersModule {
     @Singleton
     fun provideGroupMessagesCounterDomainToUiMapper() : GroupMessagesCounterDomainToUimapper<GroupMessagesCounterUi> {
         return BaseGroupMessagesCounterDomainToUiMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormRemoteToDataMapper() : DriverFormRemoteToDataMapper<DriverFormData> {
+        return BaseDriverFormRemoteToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormDataToDomainMapper() : DriverFormDataToDomainMapper<DriverFormDomain> {
+        return BaseDriverFormDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormDomainToUiMapper() : DriverFormDomainToUiMapper<DriverFormUi> {
+        return BaseDriverFormDomainToUiMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormUiToDomainMapper() : DriverFormUiToDomainMapper<DriverFormDomain> {
+        return BaseDriverFormUiToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormDomainToDataMapper() : DriverFormDomainToDataMapper<DriverFormData> {
+        return BaseDriverFormDomainToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormDataToRemoteMapper() : DriverFormDataToRemoteMapper<DriverFormRemote> {
+        return BaseDriverFormDataToRemoteMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormUiToDomainMapper() : CompanionFormUiToDomainMapper<CompanionFormDomain> {
+        return BaseCompanionFormUiToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormDomainToDataMapper() : CompanionFormDomainToDataMapper<CompanionFormData> {
+        return BaseCompanionFormDomainToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormDataToRemoteMapper() : CompanionFormDataToRemoteMapper<CompanionFormRemote> {
+        return BaseCompanionFormDataToRemoteMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormRemoteToDataMapper() : CompanionFormRemoteToDataMapper<CompanionFormData> {
+        return BaseCompanionFormRemoteToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormDataToDomainMapper() : CompanionFormDataToDomainMapper<CompanionFormDomain> {
+        return BaseCompanionFormDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormDomainToUiMapper() : CompanionFormDomainToUiMapper<CompanionFormUi> {
+        return BaseCompanionFormDomainToUiMapper()
     }
 }

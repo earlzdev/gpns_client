@@ -1,6 +1,7 @@
 package com.earl.gpns.ui.rooms
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,11 +60,11 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
             navigator.showProgressBar()
             navigator.usersFragment()
         }
-//        binding.chatChapter.setOnClickListener {
-//            // todo refactor !!!
-//            viewModel.clearDatabase()
-//            Toast.makeText(requireContext(), "Database cleared", Toast.LENGTH_SHORT).show()
-//        }
+        binding.chatChapter.setOnClickListener {
+            // todo refactor !!!
+            viewModel.clearDatabase()
+            Toast.makeText(requireContext(), "Database cleared", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initRoomController() {
@@ -85,10 +86,12 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
     override fun joinRoom(chatInfo: ChatInfo) {
         navigator.chat(chatInfo)
         roomsRecyclerAdapter.clearCounter(chatInfo.roomId ?: "")
-        viewModel.joinRoom(
-            preferenceManager.getString(Keys.KEY_JWT) ?: "",
-            chatInfo
-        )
+        if (chatInfo.lastMsgAuthor != preferenceManager.getString(Keys.KEY_NAME)) {
+            viewModel.joinRoom(
+                preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                chatInfo
+            )
+        }
     }
 
     override fun deleteRoom(chatInfo: ChatInfo) {

@@ -12,6 +12,8 @@ import com.earl.gpns.data.localDb.RoomDb
 import com.earl.gpns.data.localDb.RoomsDao
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
+import com.earl.gpns.data.models.remote.CompanionFormRemote
+import com.earl.gpns.data.models.remote.DriverFormRemote
 import com.earl.gpns.data.models.remote.GroupMessageRemote
 import com.earl.gpns.data.models.remote.MessageRemote
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
@@ -58,7 +60,15 @@ object AppModule {
         groupMessageRemoteToDataMapper: GroupMessageRemoteToDataMapper<GroupMessageData>,
         groupMessageDataToDomainMapper: GroupMessageDataToDomainMapper<GroupMessageDomain>,
         groupTypingStatusDomainToDataMapper: GroupTypingStatusDomainToDataMapper<GroupTypingStatusData>,
-        groupTypingStatusDataToRequestMapper: GroupTypingStatusDataToRequestMapper<TypingStatusInGroupRequest>
+        groupTypingStatusDataToRequestMapper: GroupTypingStatusDataToRequestMapper<TypingStatusInGroupRequest>,
+        driverFormDomainToDataMapper: DriverFormDomainToDataMapper<DriverFormData>,
+        driverFormDataToRemoteMapper: DriverFormDataToRemoteMapper<DriverFormRemote>,
+        driverFormRemoteToDataMapper: DriverFormRemoteToDataMapper<DriverFormData>,
+        driverFormDataToDomainMapper: DriverFormDataToDomainMapper<DriverFormDomain>,
+        companionFormDomainToDataMapper: CompanionFormDomainToDataMapper<CompanionFormData>,
+        companionFormDataToRemoteMapper: CompanionFormDataToRemoteMapper<CompanionFormRemote>,
+        companionFormRemoteToDataMapper: CompanionFormRemoteToDataMapper<CompanionFormData>,
+        companionFormDataToDomainMapper: CompanionFormDataToDomainMapper<CompanionFormDomain>
     ) : Repository {
         return BaseRepository(
             service,
@@ -77,7 +87,15 @@ object AppModule {
             groupMessageRemoteToDataMapper,
             groupMessageDataToDomainMapper,
             groupTypingStatusDomainToDataMapper,
-            groupTypingStatusDataToRequestMapper
+            groupTypingStatusDataToRequestMapper,
+            driverFormDomainToDataMapper,
+            driverFormDataToRemoteMapper,
+            driverFormRemoteToDataMapper,
+            driverFormDataToDomainMapper,
+            companionFormDomainToDataMapper,
+            companionFormDataToRemoteMapper,
+            companionFormRemoteToDataMapper,
+            companionFormDataToDomainMapper
         )
     }
 
@@ -131,7 +149,7 @@ object AppModule {
             groupMessageRemoteToDataMapper,
             groupMessageDataToDomainMapper,
             groupMessageDomainToDataMapper,
-            groupMessageDataToRemoteMapper
+            groupMessageDataToRemoteMapper,
         )
     }
 

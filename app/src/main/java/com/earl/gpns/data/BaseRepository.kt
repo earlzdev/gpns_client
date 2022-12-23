@@ -4,13 +4,13 @@ import android.util.Log
 import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
+import com.earl.gpns.data.models.remote.CompanionFormRemote
+import com.earl.gpns.data.models.remote.DriverFormRemote
 import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.data.retrofit.Service
 import com.earl.gpns.domain.Repository
-import com.earl.gpns.domain.mappers.GroupTypingStatusDomainToDataMapper
-import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
-import com.earl.gpns.domain.mappers.TypingMessageDtoDomainToDataMapper
+import com.earl.gpns.domain.mappers.*
 import com.earl.gpns.domain.models.*
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -32,7 +32,15 @@ class BaseRepository @Inject constructor(
     private val groupMessageRemoteToDataMapper: GroupMessageRemoteToDataMapper<GroupMessageData>,
     private val groupMessageDataToDomainMapper: GroupMessageDataToDomainMapper<GroupMessageDomain>,
     private val groupTypingMessageDomainToDataMapper: GroupTypingStatusDomainToDataMapper<GroupTypingStatusData>,
-    private val groupTypingStatusDataToRequestMapper: GroupTypingStatusDataToRequestMapper<TypingStatusInGroupRequest>
+    private val groupTypingStatusDataToRequestMapper: GroupTypingStatusDataToRequestMapper<TypingStatusInGroupRequest>,
+    private val driverFormDomainToDataMapper: DriverFormDomainToDataMapper<DriverFormData>,
+    private val driverFormDataToRemoteMapper: DriverFormDataToRemoteMapper<DriverFormRemote>,
+    private val driverFormRemoteToDataMapper: DriverFormRemoteToDataMapper<DriverFormData>,
+    private val driverFormDataToDomainMapper: DriverFormDataToDomainMapper<DriverFormDomain>,
+    private val companionFormDomainToDataMapper: CompanionFormDomainToDataMapper<CompanionFormData>,
+    private val companionFormDataToRemoteMapper: CompanionFormDataToRemoteMapper<CompanionFormRemote>,
+    private val companionFormRemoteToDataMapper: CompanionFormRemoteToDataMapper<CompanionFormData>,
+    private val companionFormDataToDomainMapper: CompanionFormDataToDomainMapper<CompanionFormDomain>
 ) : Repository {
 
     override suspend fun register(registerRequest: RegisterRequest, callback: AuthResultListener) {
@@ -108,10 +116,8 @@ class BaseRepository @Inject constructor(
             val result =  service.fetchUserInfo("Bearer $token")
                 .map(userResponseToDataMapper)
                 .map(userDataToDomainMapper)
-            Log.d("tag", "fetchUserInfo: repository -> $result")
             result
         } catch (e: Exception) {
-            Log.d("tag", "fetchUserInfo: exceptoin -> $e")
             e.printStackTrace()
             null
         }
@@ -182,7 +188,6 @@ class BaseRepository @Inject constructor(
 
     override suspend fun fetchGroups(token: String) =
         try {
-
             service.fetchGroups("Bearer $token").map {
                 it.map(groupRemoteToDataMapper)
             }.map {
@@ -225,7 +230,33 @@ class BaseRepository @Inject constructor(
 
     override suspend fun markMessagesAsReadInGroup(token: String, groupId: String) {
         try {
-             service.markMessagesAsReadInGroup("Bearer $token", GroupIdRequest(groupId))
+            service.markMessagesAsReadInGroup("Bearer $token", GroupIdRequest(groupId))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun sendNewDriverForm(token: String, driverForm: DriverFormDomain) {
+        try {
+            service.sendNewDriverForm(
+                "Bearer $token",
+                driverForm
+                    .mapToData(driverFormDomainToDataMapper)
+                    .mapToRemote(driverFormDataToRemoteMapper)
+            )
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun sendNewCompanionForm(token: String, companionForm: CompanionFormDomain) {
+        try {
+            service.sendNewCompanionForm(
+                "Bearer $token",
+                companionForm
+                    .mapToData(companionFormDomainToDataMapper)
+                    .mapToRemote(companionFormDataToRemoteMapper)
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         }

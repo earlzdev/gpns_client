@@ -19,6 +19,12 @@ class StartNewSearchingFormFragment : BaseFragment<FragmentStartNewSearchingForm
         binding.backBtn.setOnClickListener {
             navigator.back()
         }
+        binding.searchCompanionForm.setOnClickListener {
+            navigator.startCompanionForm()
+        }
+        binding.searchDriverForm.setOnClickListener {
+            navigator.startFirstDriverForm()
+        }
     }
 
     companion object {

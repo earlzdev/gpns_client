@@ -42,9 +42,11 @@ class RoomsViewModel @Inject constructor(
 
     private fun fetchRooms(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = interactor.fetchRooms(token).map { it.map(roomDomainToUiMapper) }
+            val list = interactor.fetchRooms(token)?.map { it.map(roomDomainToUiMapper) }
             withContext(Dispatchers.Main) {
-                rooms.value = list
+                if (list != null) {
+                    rooms.value = list
+                }
             }
         }
     }
@@ -57,7 +59,6 @@ class RoomsViewModel @Inject constructor(
 //            val list = interactor.fetchGroups(token).map { it.mapToUi(groupDomainToUiMapper) }
             withContext(Dispatchers.Main) {
                 groupsLiveData.value = list
-                Log.d("tag", "fetchGroups: added groups to live data")
             }
         }
     }
@@ -74,7 +75,12 @@ class RoomsViewModel @Inject constructor(
                     interactor.observeNewRooms(roomsService).onEach { room ->
                         if (room != null) {
                             rooms.value += room.map(roomDomainToUiMapper)
-                            interactor.insertRoomIntoLocalDb(room.mapToNewRoomDto(roomDomainToNewRoomDomainMapper))
+                            val roomsListFromLocalDb = interactor.fetchRoomsListFromLocalDb()
+                                .map { it.map(roomDomainToUiMapper) }
+                                .map { it.provideId() }
+                            if (!roomsListFromLocalDb.contains(room.provideId())) {
+                                interactor.insertRoomIntoLocalDb(room.mapToNewRoomDto(roomDomainToNewRoomDomainMapper))
+                            }
                         }
                     }.collect()
                 }
@@ -107,7 +113,6 @@ class RoomsViewModel @Inject constructor(
                 ?.map(groupMessagesCounterDomainToUimapper)?.provideCounter()
             if (readCounter != null) {
                 val newCounter = readCounter + counter
-                Log.d("tag", "insertGroupMessagesReadCounter: counter -> $newCounter")
                 interactor.insertNewMessagesCounterInGroup(groupId, newCounter)
             }
         }
@@ -119,7 +124,6 @@ class RoomsViewModel @Inject constructor(
                 ?.map(groupMessagesCounterDomainToUimapper)?.provideCounter()
             if (readCounter != null) {
                 val newCounter = readCounter + counter
-                Log.d("tag", "insertGroupMessagesReadCounter: counter -> $newCounter")
                 interactor.updateReadMessagesCounterInGroup(groupId, newCounter)
             }
             groupsLiveData.value?.find { it.sameId(groupId) }?.updateMessagesCounter(0)
@@ -144,13 +148,10 @@ class RoomsViewModel @Inject constructor(
             val readMessagesCounter = interactor.fetchGroupMessagesCounter(group.provideId())
                 ?.map(groupMessagesCounterDomainToUimapper)?.provideCounter()
             if (readMessagesCounter == null) {
-                Log.d("tag", "read messages counter = 0: ")
-                Log.d("tag", "counter in group -> ${group.provideGroupMessagesCounter()}")
                 interactor.insertNewMessagesCounterInGroup(group.provideId(), 0)
             } else {
                 val allMessagesCounter = group.provideGroupMessagesCounter()
                 val unread = allMessagesCounter - readMessagesCounter
-                Log.d("tag", "counters: allMessagesCounter -> $allMessagesCounter unread -> $unread readMessagesCounter -> $readMessagesCounter")
                 group.updateMessagesCounter(unread)
             }
         }

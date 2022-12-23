@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_spinner"
+    style="@style/spinnerItemStyle"
+    android:maxLines="1"
+    android:textColor="@color/black"
+    android:fontFamily="@font/montserrat_regular"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:layout_gravity="center_horizontal"
+    android:ellipsize="marquee"
+    android:drawableEnd="@drawable/drop_spinner_btn"
+    android:paddingEnd="12dp">
+</TextView>
