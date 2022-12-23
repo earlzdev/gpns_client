@@ -12,6 +12,17 @@
         android:background="@drawable/search_form_background_layout"
         />
 
+    <ImageView
+        android:id="@+id/back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/back_btn_white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        />
+
     <TextView
         android:id="@+id/companion_form_text"
         android:layout_width="wrap_content"
@@ -22,7 +33,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         />
 
     <TextView
@@ -39,6 +50,50 @@
         android:layout_marginStart="20dp"
         />
 
+    <ImageView
+        android:id="@+id/close_another_district_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/close"
+        app:layout_constraintTop_toTopOf="@id/comp_from_another_district"
+        app:layout_constraintBottom_toBottomOf="@id/comp_from_another_district"
+        app:layout_constraintEnd_toStartOf="@id/comp_from_another_district"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:id="@+id/comp_from_another_district"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="80dp"
+        android:textColor="@color/black"
+        android:hint="@string/enter_ur_district"
+        android:fontFamily="@font/montserrat_regular"
+        android:textSize="16sp"
+        android:maxLines="2"
+        android:padding="6dp"
+        app:layout_constraintTop_toTopOf="@id/companion_from"
+        app:layout_constraintBottom_toBottomOf="@id/companion_from"
+        app:layout_constraintStart_toEndOf="@id/companion_from"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/driver_form_spinner_background"
+        android:visibility="gone"
+        />
+
+    <Spinner
+        android:id="@+id/spinner_companion_from"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/companion_from"
+        app:layout_constraintBottom_toBottomOf="@id/companion_from"
+        app:layout_constraintStart_toEndOf="@id/companion_from"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:dropDownWidth="250dp"
+        android:background="@drawable/driver_form_spinner_background"
+        android:spinnerMode="dialog"
+        />
+
     <TextView
         android:id="@+id/companion_drive_to"
         android:layout_width="200dp"
@@ -52,6 +107,49 @@
         android:layout_marginTop="30dp"
         />
 
+    <ImageView
+        android:id="@+id/close_another_district_drive_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/close"
+        app:layout_constraintTop_toTopOf="@id/another_comp_drive_to"
+        app:layout_constraintBottom_toBottomOf="@id/another_comp_drive_to"
+        app:layout_constraintEnd_toStartOf="@id/another_comp_drive_to"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:id="@+id/another_comp_drive_to"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="80dp"
+        android:textColor="@color/black"
+        android:hint="@string/enter_ur_district"
+        android:fontFamily="@font/montserrat_regular"
+        android:textSize="16sp"
+        android:maxLines="2"
+        android:padding="6dp"
+        app:layout_constraintTop_toTopOf="@id/spinner_companion_drive_to"
+        app:layout_constraintBottom_toBottomOf="@id/spinner_companion_drive_to"
+        app:layout_constraintStart_toEndOf="@id/spinner_companion_drive_to"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/driver_form_spinner_background"
+        android:visibility="gone"
+        />
+
+    <Spinner
+        android:id="@+id/spinner_companion_drive_to"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/companion_drive_to"
+        app:layout_constraintBottom_toBottomOf="@id/companion_drive_to"
+        app:layout_constraintStart_toEndOf="@id/companion_drive_to"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:dropDownWidth="250dp"
+        android:background="@drawable/driver_form_spinner_background"
+        android:spinnerMode="dialog"
+        />
 
     <TextView
         android:id="@+id/companion_schedule"
@@ -66,6 +164,19 @@
         android:layout_marginTop="30dp"
         />
 
+    <Spinner
+        android:id="@+id/spinner_schedule"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/companion_schedule"
+        app:layout_constraintBottom_toBottomOf="@id/companion_schedule"
+        app:layout_constraintStart_toEndOf="@id/companion_schedule"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:dropDownWidth="250dp"
+        android:background="@drawable/driver_form_spinner_background"
+        android:spinnerMode="dialog"
+        />
+
     <TextView
         android:id="@+id/companion_actual_trip_time"
         android:layout_width="200dp"
@@ -77,6 +188,50 @@
         app:layout_constraintTop_toBottomOf="@id/companion_schedule"
         app:layout_constraintStart_toStartOf="@id/companion_from"
         android:layout_marginTop="30dp"
+        />
+
+    <ImageView
+        android:id="@+id/close_another_actual_trip_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/close"
+        app:layout_constraintTop_toTopOf="@id/another_actual_trip_time"
+        app:layout_constraintBottom_toBottomOf="@id/another_actual_trip_time"
+        app:layout_constraintEnd_toStartOf="@id/another_actual_trip_time"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:id="@+id/another_actual_trip_time"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:maxHeight="80dp"
+        android:textColor="@color/black"
+        android:hint="@string/another_time"
+        android:fontFamily="@font/montserrat_regular"
+        android:textSize="16sp"
+        android:maxLines="2"
+        android:padding="6dp"
+        app:layout_constraintTop_toTopOf="@id/companion_actual_trip_time"
+        app:layout_constraintBottom_toBottomOf="@id/companion_actual_trip_time"
+        app:layout_constraintStart_toEndOf="@id/companion_actual_trip_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/driver_form_spinner_background"
+        android:visibility="gone"
+        />
+
+    <Spinner
+        android:id="@+id/spinner_actual_trip_time"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/companion_actual_trip_time"
+        app:layout_constraintBottom_toBottomOf="@id/companion_actual_trip_time"
+        app:layout_constraintStart_toEndOf="@id/companion_actual_trip_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:dropDownWidth="250dp"
+        android:background="@drawable/driver_form_spinner_background"
+        android:spinnerMode="dialog"
         />
 
     <View
@@ -102,6 +257,27 @@
         android:layout_marginTop="30dp"
         />
 
+    <EditText
+        android:id="@+id/edit_text_gos_number_of_car"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/not_ness"
+        android:gravity="center_horizontal"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:background="@drawable/driver_form_spinner_background"
+        app:layout_constraintTop_toTopOf="@id/companion_price"
+        app:layout_constraintBottom_toBottomOf="@id/companion_price"
+        app:layout_constraintStart_toStartOf="@id/spinner_companion_drive_to"
+        app:layout_constraintEnd_toEndOf="@id/spinner_companion_drive_to"
+        android:padding="8dp"
+        android:inputType="number"
+        android:drawableEnd="@drawable/ruble"
+        android:paddingEnd="15dp"
+        android:drawablePadding="6dp"
+        />
+
     <TextView
         android:id="@+id/companion_form_comment"
         android:layout_width="200dp"
@@ -113,6 +289,23 @@
         app:layout_constraintTop_toBottomOf="@id/companion_price"
         app:layout_constraintStart_toStartOf="@id/companion_from"
         android:layout_marginTop="30dp"
+        />
+
+    <EditText
+        android:id="@+id/edit_text_driver_comment"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:hint="Необязательно"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/companion_form_comment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/driver_form_spinner_background"
+        android:padding="12dp"
         />
 
     <androidx.appcompat.widget.AppCompatButton

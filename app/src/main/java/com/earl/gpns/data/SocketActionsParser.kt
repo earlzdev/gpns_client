@@ -1,6 +1,5 @@
 package com.earl.gpns.data
 
-import android.util.Log
 import com.earl.gpns.data.mappers.GroupLastMessageDataToDomainMapper
 import com.earl.gpns.data.mappers.GroupLastMessageResponseToDataMapper
 import com.earl.gpns.data.mappers.NewLastMsgDataToDomainMapper
@@ -42,7 +41,6 @@ class SocketActionsParser @Inject constructor(
     }
 
     fun removeDeletedByAnotherUserRoomFromDb(json: String) {
-        Log.d("tag", "removeDeletedByAnotherUserRoomFromDb: json -> $json")
         val roomResponse = Json.decodeFromString<RoomResponse>(json)
         roomObservingService?.removeDeletedByAnotherUserRoomFromDb(roomResponse.roomId, roomResponse.title)
     }

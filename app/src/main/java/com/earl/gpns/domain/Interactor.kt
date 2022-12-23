@@ -1,5 +1,6 @@
 package com.earl.gpns.domain
 
+import android.util.Log
 import com.earl.gpns.core.*
 import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
@@ -84,6 +85,10 @@ interface Interactor {
 
     suspend fun updateReadMessagesCounterInGroup(groupId: String, counter: Int)
 
+    suspend fun sendNewDriverForm(token: String, driverFormDomain: DriverFormDomain)
+
+    suspend fun sendNewCompanionForm(token: String, companionForm: CompanionFormDomain)
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -106,12 +111,13 @@ interface Interactor {
 
         override suspend fun fetchRooms(token: String): List<RoomDomain> {
             val remoteList = repository.fetchRooms(token)
+            val remoteListIds = remoteList.map { it.provideId() }
             val localDbList = localDatabaseRepository.fetchRoomsListFromLocalDb()
             if (remoteList.isEmpty()) {
                 localDatabaseRepository.clearLocalDataBase()
             } else {
-                remoteList.forEach {
-                    if(!localDbList.contains(it)){
+                localDbList.forEach {
+                    if (!remoteListIds.contains(it.provideId())) {
                         localDatabaseRepository.deleteRoomFromLocalDb(it.provideId())
                     }
                 }
@@ -233,6 +239,14 @@ interface Interactor {
 
         override suspend fun updateReadMessagesCounterInGroup(groupId: String, counter: Int) {
             localDatabaseRepository.updateMessagesReadCounter(groupId, counter)
+        }
+
+        override suspend fun sendNewDriverForm(token: String, driverFormDomain: DriverFormDomain) {
+            repository.sendNewDriverForm(token, driverFormDomain)
+        }
+
+        override suspend fun sendNewCompanionForm(token: String, companionForm: CompanionFormDomain) {
+            repository.sendNewCompanionForm(token, companionForm)
         }
     }
 }

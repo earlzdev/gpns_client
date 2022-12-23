@@ -28,7 +28,15 @@ class BaseDatabaseRepository @Inject constructor(
 ) : DatabaseRepository {
 
     override suspend fun insertNewRoomIntoLocalDb(room: NewRoomDtoDomain) {
-        roomsDao.insertRoom(room.map(newRoomDomainToDataMapper).mapToDb(newRoomDataToDbMapper))
+        try {
+            roomsDao.insertRoom(room.map(newRoomDomainToDataMapper).mapToDb(newRoomDataToDbMapper))
+            val list = roomsDao.fetchAllRooms()
+            Log.d("tag", "insertNewRoomIntoLocalDb: successsful")
+            Log.d("tag", "insertNewRoomIntoLocalDb: room list -> $list")
+        } catch (e: Exception) {
+            Log.d("tag", "insertNewRoomIntoLocalDb: $e")
+            e.printStackTrace()
+        }
     }
 
     override suspend fun fetchRoomsListFromLocalDb() = roomsDao.fetchAllRooms()
@@ -38,16 +46,19 @@ class BaseDatabaseRepository @Inject constructor(
     override suspend fun deleteRoomFromLocalDb(roomId: String) {
         try {
             roomsDao.deleteRoomFromDb(roomId)
+            Log.d("tag", "deleted room ")
         } catch (e: Exception) {
             Log.d("tag", "deleteRoomFromLocalDb: EXCEPTION -> $e")
         }
     }
 
     override suspend fun clearLocalDataBase() {
+        Log.d("tag", "cleared db")
         roomsDao.clearDatabase()
     }
 
     override suspend fun fetchMessagesCounterForGroup(groupId: String): GroupMessagesCounterDomain? {
+        Log.d("tag", "fetched all rooms")
         return groupsDao.selectCounterForGroup(groupId)
             ?.map(groupMessagesCounterDbToDataMapper)
             ?.map(groupMessagesCounterDataToDomainMapper)
@@ -65,10 +76,12 @@ class BaseDatabaseRepository @Inject constructor(
     }
 
     override suspend fun deleteMessagesCounterInGroup(groupId: String) {
+        Log.d("tag", "updated messages cunet in group")
         groupsDao.deleteMessagesCounterInGroup(groupId)
     }
 
     override suspend fun updateMessagesReadCounter(groupId: String, counter: Int) {
+        Log.d("tag", "updateMessagesReadCounter")
         groupsDao.updateReadMessagesCount(groupId, counter)
     }
 }

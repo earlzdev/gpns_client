@@ -97,6 +97,6 @@ dependencies {
     androidTestImplementation "androidx.room:room-testing:2.4.3"
 
     //multiselect Spinner
-    implementation 'com.github.puskal-khadka:MultiSelectSpinner:1.0.1'
+//    implementation 'com.github.puskal-khadka:MultiSelectSpinner:1.0.1'
 //    implementation 'com.github.pratikbutani:MultiSelectSpinner:1.0.1'
 }

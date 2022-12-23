@@ -31,7 +31,6 @@ class GroupsRecyclerAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
-        Log.d("tag", "onBindViewHolder: simple")
         holder.itemView.setOnClickListener {
             clickListener.joinGroup(item.provideGroupInfo())
         }
@@ -42,7 +41,6 @@ class GroupsRecyclerAdapter(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        Log.d("tag", "onBindViewHolder: payload")
         super.onBindViewHolder(holder, position, payloads)
     }
 
@@ -73,6 +71,16 @@ class GroupsRecyclerAdapter(
 
     inner class ItemViewHolder(private val binding: RecyclerGroupItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: GroupUi) {
+            if (binding.lastMsgAuthorImage.isVisible) {
+                Log.d("tag", "bind: lastMsgAuthorImage visible")
+            } else {
+                Log.d("tag", "bind: lastMsgAuthorImage invisible")
+            }
+            if (binding.unreadMsgCounter.isVisible) {
+                Log.d("tag", "bind: unreadMsgCounter visible")
+            } else {
+                Log.d("tag", "bind: unreadMsgCounter invisible")
+            }
             val context = binding.chatImage.context
             item.recyclerDetails(
                 authorUsername,

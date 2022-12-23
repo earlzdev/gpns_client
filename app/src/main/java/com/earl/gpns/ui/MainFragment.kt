@@ -71,12 +71,14 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
     }
 
     private fun fetchUserInfo() {
-        viewModel.fetchUserInfo(preferenceManager.getString(Keys.KEY_JWT) ?: "")
-        viewModel.observeUserInfoLiveData(this) {
-            preferenceManager.putString(Keys.KEY_NAME, it.provideName())
-            Log.d("tag", "fetchUserInfo: tve name -> ${it.provideName()}")
-            preferenceManager.putString(Keys.KEY_IMAGE, it.provideImage())
-            preferenceManager.putString(Keys.KEY_USER_ID, it.provideId())
+        if (preferenceManager.getString(Keys.KEY_NAME) == null) {
+            viewModel.fetchUserInfo(preferenceManager.getString(Keys.KEY_JWT) ?: "")
+            viewModel.observeUserInfoLiveData(this) {
+                preferenceManager.putString(Keys.KEY_NAME, it.provideName())
+                Log.d("tag", "fetchUserInfo:  name -> ${it.provideName()}")
+                preferenceManager.putString(Keys.KEY_IMAGE, it.provideImage())
+                preferenceManager.putString(Keys.KEY_USER_ID, it.provideId())
+            }
         }
     }
 

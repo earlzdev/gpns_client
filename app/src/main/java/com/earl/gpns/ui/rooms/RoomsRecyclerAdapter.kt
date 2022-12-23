@@ -69,7 +69,6 @@ class RoomsRecyclerAdapter(
 
     fun changeUserOnlineInRoom(roomId: String, online: Int, lastAuthDate: String) {
         val item = currentList.toMutableList().find { it.sameId(roomId) }
-        Log.d("tag", "updateOnline: in adapter  online ${online}")
         val position = currentList.indexOf(item)
         item?.setUserOnline(online, lastAuthDate)
         notifyItemChanged(position)

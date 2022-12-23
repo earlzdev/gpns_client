@@ -54,7 +54,6 @@ class BaseSocketRepository @Inject constructor(
     private var roomsSocket: WebSocketSession? = null
     private var messagingSocket: WebSocketSession? = null
     private var groupsMessagingSocket: WebSocketSession? = null
-    private var usersOnlineSocket: WebSocketSession? = null
     private var searchSocket: WebSocketSession? = null
 
     override suspend fun initRoomsSocket(token: String): SocketOperationResultListener<Unit> {
@@ -70,6 +69,7 @@ class BaseSocketRepository @Inject constructor(
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            Log.d("tag", "initRoomsSocket: $e")
             SocketOperationResultListener.Error(e.localizedMessage ?: "unknown error $e")
         }
     }

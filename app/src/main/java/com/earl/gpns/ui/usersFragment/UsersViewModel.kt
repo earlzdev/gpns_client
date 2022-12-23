@@ -49,6 +49,7 @@ class UsersViewModel @Inject constructor(
     private fun fetchExistedRoomsFromLocalDatabase() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = interactor.fetchRoomsListFromLocalDb().map { it.map(roomDomainToUiMapper) }
+            Log.d("tag", "fetchExistedRoomsFromLocalDatabase: list -> $list")
             withContext(Dispatchers.Main) {
                 existedRoomsListLiveData.value = list
             }

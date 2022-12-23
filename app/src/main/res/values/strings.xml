@@ -60,7 +60,9 @@
     <string name="from_where_could_driver_catch">Откуда можно меня забрать?</string>
     <string name="companion_go_to">Еду на:</string>
     <string name="companion_actuial_trip_time">Буду попутчиком в течение:</string>
-    <string name="companion_able_to_pay_for_trip">Готов(а) платить на поездку:</string>
+    <string name="companion_able_to_pay_for_trip">Готов(а) платить за поездку:</string>
+    <string name="no_pay_companion">(оставьте это поле пустым, если хотите договориться с водителем лично)</string>
+    <string name="no_pay_driver">(оставьте это поле пустым, если хотите договориться с попутчиками лично)</string>
     <string name="companion_form_comment">Комментарий попутчика:</string>
     <string name="companion_role">Попутчик</string>
     <string name="comp_comf_to_catch">Удобно забрать:</string>
@@ -86,6 +88,31 @@
     <string name="enter_ur_district">Введите район</string>
     <string name="enter_new_place">Введите место</string>
     <string name="another_time">Другое время</string>
+    <string name="audi">Audi</string>
+    <string name="bmw">BMW</string>
+    <string name="chevrolet">Chevrolet</string>
+    <string name="daewoo">BMDaewooW</string>
+    <string name="datsun">Datsun</string>
+    <string name="ford">Ford</string>
+    <string name="honda">Honda</string>
+    <string name="hyundai">Hyundai</string>
+    <string name="kia">Kia</string>
+    <string name="lada">Лада</string>
+    <string name="mazda">Mazda</string>
+    <string name="mercedes">Mercedes</string>
+    <string name="mitsubishi">Mitsubishi</string>
+    <string name="nissan">Nissan</string>
+    <string name="opel">Opel</string>
+    <string name="renault">Renault</string>
+    <string name="skoda">Skoda</string>
+    <string name="tesla">Tesla</string>
+    <string name="toyota">Toyota</string>
+    <string name="volkswagen">Volkswagen</string>
+    <string name="another_car">Другая</string>
+    <string name="model_of_car">Марка авто</string>
+    <string name="another_color">Другой</string>
+    <string name="car_modelL">Модель авто</string>
+    <string name="another_car_color">Цвет авто</string>
 
     // spinners
     <string-array name="spinner_drive_from">
@@ -171,9 +198,8 @@
         <item>Северная проходная №1</item>
         <item>Северная проходная №2</item>
         <item>Западная проходная</item>
-        <item>Южная проходная №1</item>
-        <item>Южная проходная №2</item>
-        <item>Южная проходная №3</item>
+        <item>Южная проходная №1(ССТЭЦ)</item>
+        <item>Южная проходная №2, №3</item>
         <item>Площадка А</item>
         <item>Площадка Б</item>
         <item>Площадка В</item>
@@ -181,6 +207,10 @@
         <item>Площадка Д</item>
         <item>Площадка Е</item>
         <item>ППЖТ</item>
+        <item>СЖА</item>
+        <item>ПАТиМ ОТК</item>
+        <item>ПАТиМ ОТК</item>
+        <item>УКК</item>
         <item>Аллагуват</item>
     </string-array>
 
@@ -214,7 +244,7 @@
         <item>Honda</item>
         <item>Hyundai</item>
         <item>Kia</item>
-        <item>АВТОВАЗ</item>
+        <item>Лада</item>
         <item>Mazda</item>
         <item>Mercedes</item>
         <item>Mitsubishi</item>
@@ -228,9 +258,215 @@
         <item>Другая</item>
     </string-array>
 
-    <string-array name="spinner_car_type">
-        <item>Laccetti</item>
+    <string-array name="audi_models">
+        <item>Audi 80</item>
+        <item>Audi 100</item>
+        <item>A6</item>
+        <item>A4</item>
+        <item>Q7</item>
+        <item>A3</item>
+        <item>Q5</item>
+        <item>TT</item>
+        <item>S5</item>
+        <item>A1</item>
+        <item>Q8</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="bmw_models">
+        <item>BMW X5</item>
+        <item>BMW X7</item>
+        <item>BMW X3</item>
+        <item>BMW 5-Series</item>
+        <item>BMW 3-Series</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="chevrolet_models">
+        <item>Cobalt</item>
+        <item>Nexia</item>
+        <item>Spark</item>
+        <item>Lacetti</item>
+        <item>Aveo</item>
+        <item>Tracker</item>
+        <item>Orlando</item>
+        <item>Tahoe</item>
+        <item>Chevrolet Niva</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="daweoo_models">
+        <item>Winstorm</item>
+        <item>Gentra</item>
+        <item>Magnus</item>
+        <item>Leganza</item>
+        <item>Lanos</item>
+        <item>Sens</item>
+        <item>Nexia</item>
+        <item>Matiz</item>
+        <item>Nibura</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="datsun_models">
+        <item>on-Do</item>
+        <item>Cross</item>
+        <item>Go</item>
+        <item>Do+</item>
+        <item>mi-Do</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="ford_models">
+        <item>Explorer</item>
+        <item>Taurus</item>
+        <item>Kuga</item>
+        <item>Focus</item>
+        <item>Fiesta</item>
+        <item>Fiesta</item>
+        <item>Fusion</item>
+        <item>Mondeo</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="honda_models">
+        <item>Accord</item>
+        <item>Civic</item>
+        <item>CR-V</item>
+        <item>HR-V</item>
+        <item>Fit</item>
+        <item>Freed</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="hyundai_models">
+        <item>Solaris</item>
+        <item>Santa Fe</item>
+        <item>Tucson</item>
+        <item>Creta</item>
+        <item>Sonata</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="kia_models">
+        <item>Rio</item>
+        <item>Sportage</item>
+        <item>Ceed</item>
+        <item>Sorento</item>
+        <item>Cerato</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="avtovaz_models">
+        <item>Vesta</item>
+        <item>Granta</item>
+        <item>X-Ray</item>
+        <item>Priora</item>
+        <item>Kalina</item>
+        <item>Largus</item>
+        <item>Нива</item>
+        <item>2107</item>
+        <item>2109</item>
+        <item>2110</item>
+        <item>2111</item>
+        <item>2112</item>
+        <item>2113</item>
+        <item>2114</item>
+        <item>2115</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="mazda_models">
+        <item>Mazda 6</item>
+        <item>Mazda 3</item>
+        <item>CX-5</item>
+        <item>Demio</item>
+        <item>Axela</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="mersedes_models">
+        <item>E-class</item>
+        <item>C-class</item>
+        <item>S-class</item>
+        <item>M-class</item>
+        <item>GL-class</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="mitsubishi">
+        <item>Outlander</item>
+        <item>Lancer</item>
+        <item>Delica</item>
+        <item>Pajero</item>
+        <item>ASX</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="nissan">
+        <item>X-Trail</item>
+        <item>Qashqai</item>
+        <item>Note</item>
+        <item>Juke</item>
+        <item>Teana</item>
         <item>Almera</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="opel">
+        <item>Astra</item>
+        <item>Corsa</item>
+        <item>Vectra</item>
+        <item>Cherry</item>
+        <item>Insignia</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="renault">
+        <item>Logan</item>
+        <item>Duster</item>
+        <item>Kaptur</item>
+        <item>Megane</item>
+        <item>Sandero Stepway</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="skoda">
+        <item>Octavia</item>
+        <item>Rapid</item>
+        <item>Fabia</item>
+        <item>Kodiaq</item>
+        <item>Yeti</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="tesla">
+        <item>Model 3</item>
+        <item>Model S</item>
+        <item>Model X</item>
+        <item>Model Y</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="toyota">
+        <item>Camry</item>
+        <item>Corolla</item>
+        <item>Land Cruiser</item>
+        <item>Rav4</item>
+        <item>Rav4</item>
+        <item>Mark</item>
+        <item>Corona</item>
+        <item>Carina</item>
+        <item>Другая</item>
+    </string-array>
+
+    <string-array name="volkswagen">
+        <item>Polo</item>
+        <item>Tiguan</item>
+        <item>Passat</item>
+        <item>Touareg</item>
+        <item>Jetta</item>
+        <item>Другая</item>
     </string-array>
 
     <string-array name="spinner_driver_car_color">

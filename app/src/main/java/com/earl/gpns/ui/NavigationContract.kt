@@ -2,7 +2,7 @@ package com.earl.gpns.ui
 
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.GroupInfo
-import com.earl.gpns.ui.models.RoomUi
+import com.earl.gpns.ui.models.NewFirstDriverForm
 
 interface NavigationContract {
 
@@ -30,7 +30,7 @@ interface NavigationContract {
 
     fun startFirstDriverForm()
 
-    fun startSecondDriverForm()
+    fun startSecondDriverForm(newFirstDriverForm: NewFirstDriverForm)
 
     fun startCompanionForm()
 

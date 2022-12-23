@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.databinding.FragmentDriverFormFirstBinding
+import com.earl.gpns.ui.models.NewFirstDriverForm
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,7 +28,17 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
         viewModel = ViewModelProvider(this)[NewDriverFormViewModel::class.java]
         initSpinners()
         binding.nextBtn.setOnClickListener {
-            navigator.startSecondDriverForm()
+            navigator.startSecondDriverForm(
+                NewFirstDriverForm(
+                    binding.spinnerDriveFrom.selectedItem.toString(),
+                    binding.spinnerDriveTo.selectedItem.toString(),
+                    binding.spinnerCanCatchCompFrom.selectedItem.toString(),
+                    binding.spinnerCanAlsoDriveTo.selectedItem.toString(),
+                    binding.spinnerSchedule.selectedItem.toString(),
+                    if (binding.chechboxDriveInTurn.isChecked) 1 else 0,
+                    binding.spinnerHowLongTripIsActual.selectedItem.toString()
+                )
+            )
         }
         binding.backBtn.setOnClickListener {
             navigator.back()
@@ -94,10 +103,6 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
-    }
-
-    private fun initItemSelectedListeners() {
-
     }
 
     companion object {

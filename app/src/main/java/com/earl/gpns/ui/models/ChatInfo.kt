@@ -5,5 +5,6 @@ data class ChatInfo(
     val chatTitle: String,
     val chatImage: String,
     val userOnline: Int,
-    val userLastAuth: String
+    val userLastAuth: String,
+    val lastMsgAuthor: String
 )

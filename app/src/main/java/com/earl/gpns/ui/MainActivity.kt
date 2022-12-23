@@ -18,6 +18,7 @@ import com.earl.gpns.ui.chat.ChatFragment
 import com.earl.gpns.ui.chat.GroupMessagingFragment
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.GroupInfo
+import com.earl.gpns.ui.models.NewFirstDriverForm
 import com.earl.gpns.ui.search.*
 import com.earl.gpns.ui.search.companion.CompanionFormDetailsFragment
 import com.earl.gpns.ui.search.companion.CompanionFormFragment
@@ -98,8 +99,8 @@ class MainActivity : AppCompatActivity(), NavigationContract {
         showFragment(FirstDriverFormFragment.newInstance())
     }
 
-    override fun startSecondDriverForm() {
-        showFragment(SecondDriverFormFragment.newInstance())
+    override fun startSecondDriverForm(newFirstDriverForm: NewFirstDriverForm) {
+        showFragment(SecondDriverFormFragment.newInstance(newFirstDriverForm))
     }
 
     override fun startCompanionForm() {
