@@ -5,14 +5,14 @@ import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModel
 import com.earl.gpns.R
 import com.earl.gpns.domain.Interactor
-import com.earl.gpns.ui.search.SpinnerInterfaceInitializator
+import com.earl.gpns.ui.search.SpinnerInterfaceInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class CompanionFormViewModel @Inject constructor(
     private val interactor: Interactor,
-): ViewModel(), SpinnerInterfaceInitializator {
+): ViewModel(), SpinnerInterfaceInitializer {
 
     override fun initSpinnerAdapter(
         textResource: Int,

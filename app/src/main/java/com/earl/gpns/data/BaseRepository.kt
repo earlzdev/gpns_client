@@ -5,13 +5,17 @@ import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
 import com.earl.gpns.data.models.remote.CompanionFormRemote
+import com.earl.gpns.data.models.remote.CompanionTripFormDetailsRemote
 import com.earl.gpns.data.models.remote.DriverFormRemote
+import com.earl.gpns.data.models.remote.DriverTripFormDetailsRemote
 import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.data.retrofit.Service
 import com.earl.gpns.domain.Repository
 import com.earl.gpns.domain.mappers.*
 import com.earl.gpns.domain.models.*
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -40,7 +44,10 @@ class BaseRepository @Inject constructor(
     private val companionFormDomainToDataMapper: CompanionFormDomainToDataMapper<CompanionFormData>,
     private val companionFormDataToRemoteMapper: CompanionFormDataToRemoteMapper<CompanionFormRemote>,
     private val companionFormRemoteToDataMapper: CompanionFormRemoteToDataMapper<CompanionFormData>,
-    private val companionFormDataToDomainMapper: CompanionFormDataToDomainMapper<CompanionFormDomain>
+    private val companionFormDataToDomainMapper: CompanionFormDataToDomainMapper<CompanionFormDomain>,
+    private val companionFormDetailsRemoteToDataMapper: CompanionTripFormDetailsRemoteToDataMapper<CompanionFormDetailsData>,
+    private val driverFormDetailsRemoteToDataMapper: DriverTripFormDetailsRemoteToDataMapper<DriverFormDetailsData>,
+    private val tripFormDataToDomainMapper: TripFormDataToDomainMapper<TripFormDomain>
 ) : Repository {
 
     override suspend fun register(registerRequest: RegisterRequest, callback: AuthResultListener) {
@@ -237,14 +244,17 @@ class BaseRepository @Inject constructor(
     }
 
     override suspend fun sendNewDriverForm(token: String, driverForm: DriverFormDomain) {
+        Log.d("tag", "sendNewDriverForm: sent")
+        val form = driverForm
+            .mapToData(driverFormDomainToDataMapper)
+            .mapToRemote(driverFormDataToRemoteMapper)
         try {
             service.sendNewDriverForm(
                 "Bearer $token",
-                driverForm
-                    .mapToData(driverFormDomainToDataMapper)
-                    .mapToRemote(driverFormDataToRemoteMapper)
+                form
             )
-        } catch (e: Exception){
+        } catch (e: Exception) {
+            Log.d("tag", "sendNewDriverForm: $e")
             e.printStackTrace()
         }
     }
@@ -262,7 +272,37 @@ class BaseRepository @Inject constructor(
         }
     }
 
+    override suspend fun fetchAllTripForms(token: String) : List<TripFormDomain> {
+        return try {
+            val list = service.fetchAllCompForms("Bearer $token")
+//            Log.d("tag", "fetchAllTripForms: remote $list")
+            val dataList = mutableListOf<TripFormData>()
+            for (i in list.indices) {
+                dataList.add(TripFormData.Base(
+                    list[i].username,
+                    list[i].userImage,
+                    list[i].companionRole,
+                    if (list[i].companionRole == COMPANION_ROLE) Json.decodeFromString<CompanionTripFormDetailsRemote>(list[i].details).map(companionFormDetailsRemoteToDataMapper)
+                    else Json.decodeFromString<DriverTripFormDetailsRemote>(list[i].details).map(driverFormDetailsRemoteToDataMapper)
+                ))
+            }
+//            Log.d("tag", "fetchAllTripForms: data -> $dataList")
+            val domainList = mutableListOf<TripFormDomain>()
+            for (i in dataList.indices) {
+                domainList.add(dataList[i].map(tripFormDataToDomainMapper))
+            }
+//            Log.d("tag", "fetchAllTripForms: ready -> $domainList")
+            domainList
+        } catch (e: Exception) {
+            Log.d("tag", "fetchAllTripForms: $e")
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
     companion object {
         private const val KEY_SUCCESS = "success"
+        private const val COMPANION_ROLE = "COMPANION_ROLE"
+        private const val DRIVER_ROLE = "DRIVER_ROLE"
     }
 }

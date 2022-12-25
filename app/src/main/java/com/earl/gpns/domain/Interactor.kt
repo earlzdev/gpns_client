@@ -1,7 +1,7 @@
 package com.earl.gpns.domain
 
-import android.util.Log
-import com.earl.gpns.core.*
+import com.earl.gpns.core.AuthResultListener
+import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
 import com.earl.gpns.domain.models.*
@@ -88,6 +88,8 @@ interface Interactor {
     suspend fun sendNewDriverForm(token: String, driverFormDomain: DriverFormDomain)
 
     suspend fun sendNewCompanionForm(token: String, companionForm: CompanionFormDomain)
+
+    suspend fun fetchAllTripForms(token: String) : List<TripFormDomain>
 
     class Base @Inject constructor(
         private val repository: Repository,
@@ -248,5 +250,8 @@ interface Interactor {
         override suspend fun sendNewCompanionForm(token: String, companionForm: CompanionFormDomain) {
             repository.sendNewCompanionForm(token, companionForm)
         }
+
+        override suspend fun fetchAllTripForms(token: String) = repository.fetchAllTripForms(token)
+
     }
 }

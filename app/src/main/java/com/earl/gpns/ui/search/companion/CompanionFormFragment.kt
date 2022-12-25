@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Adapter
 import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
@@ -35,6 +36,21 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
     private fun initViews() {
         val compDriveFrom = binding.spinnerCompanionFrom
         compDriveFrom.adapter = viewModel.initSpinnerAdapter(R.array.spinner_drive_from, requireContext())
+        compDriveFrom.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                if (p0?.selectedItem == "Другой район") {
+                    binding.spinnerCompanionFrom.isVisible = false
+                    binding.compFromAnotherDistrict.isVisible = true
+                    binding.closeAnotherDistrictView.isVisible = true
+                }
+                binding.closeAnotherDistrictView.setOnClickListener {
+                    binding.spinnerCompanionFrom.isVisible = true
+                    binding.compFromAnotherDistrict.isVisible = false
+                    binding.closeAnotherDistrictView.isVisible = false
+                }
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
         val compDriveTo = binding.spinnerCompanionDriveTo
         compDriveTo.adapter = viewModel.initSpinnerAdapter(R.array.spinner_drive_to, requireContext())
         val compSchedule = binding.spinnerSchedule

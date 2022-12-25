@@ -33,18 +33,17 @@
     <string name="driver_form_btn_text">Я водитель, ищу попутчиков</string>
     <string name="companion_btn_search_text">Я ищу водителя, с кем ездить</string>
     <string name="driver_form_first_text">Анкета водителя 1/2</string>
-    <string name="from">Откуда я выезжаю(район):</string>
-    <string name="leave_time">Выезжаю в:</string>
+    <string name="from">Откуда я выезжаю(район)*:</string>
     <string name="can_catch_comp_from">Так же могу забрать попутчика с:</string>
-    <string name="drivre_destination">Я еду на:</string>
+    <string name="drivre_destination">Я еду на*:</string>
     <string name="can_drive_also">Могу заехать по пути:</string>
-    <string name="schedule">График:</string>
+    <string name="schedule">График*:</string>
     <string name="can_also_drive_in_turn">Готов ездить по очереди с другим водителем</string>
-    <string name="how_long_trip_is_actual">Сколько я буду ездить по этому маршруту:</string>
+    <string name="how_long_trip_is_actual">На какой срок я ищу попутчика*:</string>
     <string name="continue_text">Продолжить</string>
-    <string name="driver_car">Авто:</string>
-    <string name="driver_car_color">Цвет:</string>
-    <string name="driver_car_count_of_passengeres">Сколько попутчиков смогу взять?</string>
+    <string name="driver_car">Авто*:</string>
+    <string name="driver_car_color">Цвет*:</string>
+    <string name="driver_car_count_of_passengeres">Сколько попутчиков смогу взять?*</string>
     <string name="driver_car_gos_number">Гос. номер:</string>
     <string name="trip_price">Цена поездки:</string>
     <string name="driver_comment">Комментарий водителя:</string>
@@ -57,9 +56,9 @@
     <string name="look_trip">Смотреть подробнее</string>
     <string name="search_for_compnaions">Поиск попутчиков</string>
     <string name="companion_form_text">Анкета попутчика</string>
-    <string name="from_where_could_driver_catch">Откуда можно меня забрать?</string>
-    <string name="companion_go_to">Еду на:</string>
-    <string name="companion_actuial_trip_time">Буду попутчиком в течение:</string>
+    <string name="from_where_could_driver_catch">Откуда можно меня забрать?*</string>
+    <string name="companion_go_to">Еду на*:</string>
+    <string name="companion_actuial_trip_time">Буду попутчиком в течение*:</string>
     <string name="companion_able_to_pay_for_trip">Готов(а) платить за поездку:</string>
     <string name="no_pay_companion">(оставьте это поле пустым, если хотите договориться с водителем лично)</string>
     <string name="no_pay_driver">(оставьте это поле пустым, если хотите договориться с попутчиками лично)</string>
@@ -91,7 +90,7 @@
     <string name="audi">Audi</string>
     <string name="bmw">BMW</string>
     <string name="chevrolet">Chevrolet</string>
-    <string name="daewoo">BMDaewooW</string>
+    <string name="daewoo">Daewoo</string>
     <string name="datsun">Datsun</string>
     <string name="ford">Ford</string>
     <string name="honda">Honda</string>
@@ -225,12 +224,12 @@
     </string-array>
 
     <string-array name="spinner_how_long_trip_is_actual">
-        <item>Езжу постоянно</item>
-        <item>Буду ездить пару месяцев</item>
-        <item>Буду ездить пару недель</item>
-        <item>Буду ездить несколько дней</item>
-        <item>Еду один раз</item>
-        <item>Не могу сказать сколько</item>
+        <item>Постоянно</item>
+        <item>На пару месяцев</item>
+        <item>На пару недель</item>
+        <item>На несколько дней</item>
+        <item>На один раз</item>
+        <item>Не могу сказать</item>
         <item>Другое</item>
     </string-array>
 

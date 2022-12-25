@@ -1,6 +1,6 @@
 package com.earl.gpns.ui.models
 
-data class NewFirstDriverForm(
+data class FirstPartOfNewDriverForm(
     val driveFrom: String,
     val driveTo: String,
     val catchCompanionFrom: String,

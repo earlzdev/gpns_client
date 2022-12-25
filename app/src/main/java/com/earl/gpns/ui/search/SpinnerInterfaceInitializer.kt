@@ -3,6 +3,6 @@ package com.earl.gpns.ui.search
 import android.content.Context
 import android.widget.ArrayAdapter
 
-interface SpinnerInterfaceInitializator {
+interface SpinnerInterfaceInitializer {
     fun initSpinnerAdapter(textResource: Int, context: Context) : ArrayAdapter<CharSequence>
 }

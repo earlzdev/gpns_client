@@ -19,7 +19,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-
 @Module
 @InstallIn(SingletonComponent::class)
 object MappersModule {
@@ -365,4 +364,65 @@ object MappersModule {
     fun provideCompanionFormDomainToUiMapper() : CompanionFormDomainToUiMapper<CompanionFormUi> {
         return BaseCompanionFormDomainToUiMapper()
     }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormDetailsRemoteToDataMapper() : CompanionTripFormDetailsRemoteToDataMapper<CompanionFormDetailsData> {
+        return BaseCompanionFormDetailsRemoteToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormDetailsDataToDomainMapper() : CompanionFormDetailsDataToDomainMapper<CompanionFormDetailsDomain> {
+        return BaseCompanionFormDetailsDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormDetailsRemoteToDataMapper() : DriverTripFormDetailsRemoteToDataMapper<DriverFormDetailsData> {
+        return BaseDriverFormDetailsRemoteToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormDetailsDataToDomainMapper() : DriverFormDetailsDataToDomainMapper<DriverFormDetailsDomain> {
+        return BaseDriverFormDetailsDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripFormDataToDomainMapper(
+        driverFormDetailsDataToDomainMapper: DriverFormDetailsDataToDomainMapper<DriverFormDetailsDomain>,
+        companionFormDetailsDataToDomainMapper: CompanionFormDetailsDataToDomainMapper<CompanionFormDetailsDomain>
+    ) : TripFormDataToDomainMapper<TripFormDomain> {
+        return BaseTripFormDataToDomainMapper(
+            driverFormDetailsDataToDomainMapper,
+            companionFormDetailsDataToDomainMapper
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormDetailsDomainToUiMapper() : DriverFormDetailsDomainToUiMapper<DriverFormDetailsUi> {
+        return BaseDriverFormDetailsDomainToUiMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormDetailsDomainToUiMapper() : CompanionFormDetailsDomainToUiMapper<CompanionFormDetailsUi> {
+        return BaseCompanionFormDetailsDomainToUiMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripFormDomainToUiMapper(
+        driverFormDetailsDomainToUiMapper: DriverFormDetailsDomainToUiMapper<DriverFormDetailsUi>,
+        companionFormDetailsDomainToUiMapper: CompanionFormDetailsDomainToUiMapper<CompanionFormDetailsUi>
+    ) : TripFormDomainToUiMapper<TripFormUi> {
+        return BaseTripFormDomainToUiMapper(
+            driverFormDetailsDomainToUiMapper,
+            companionFormDetailsDomainToUiMapper
+        )
+    }
 }
+

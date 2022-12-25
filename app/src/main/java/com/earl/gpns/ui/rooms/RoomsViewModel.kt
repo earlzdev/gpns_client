@@ -33,7 +33,7 @@ class RoomsViewModel @Inject constructor(
     private val roomDomainToNewRoomDomainMapper: RoomDomainToNewRoomDomainMapper<NewRoomDtoDomain>,
     private val messageDomainToUiMapper: MessageDomainToUiMapper<MessageUi>,
     private val groupDomainToUiMapper: GroupDomainToUiMapper<GroupUi>,
-    private val groupMessagesCounterDomainToUimapper: GroupMessagesCounterDomainToUimapper<GroupMessagesCounterUi>
+    private val groupMessagesCounterDomainToUiMapper: GroupMessagesCounterDomainToUimapper<GroupMessagesCounterUi>
 ) : ViewModel() {
 
     private val rooms: MutableStateFlow<List<RoomUi>> = MutableStateFlow(emptyList())
@@ -42,9 +42,9 @@ class RoomsViewModel @Inject constructor(
 
     private fun fetchRooms(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = interactor.fetchRooms(token)?.map { it.map(roomDomainToUiMapper) }
+            val list = interactor.fetchRooms(token).map { it.map(roomDomainToUiMapper) }
             withContext(Dispatchers.Main) {
-                if (list != null) {
+                if (list.isNotEmpty()) {
                     rooms.value = list
                 }
             }
@@ -110,7 +110,7 @@ class RoomsViewModel @Inject constructor(
     fun insertGroupMessagesReadCounter(groupId: String, counter: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val readCounter = interactor.fetchGroupMessagesCounter(groupId)
-                ?.map(groupMessagesCounterDomainToUimapper)?.provideCounter()
+                ?.map(groupMessagesCounterDomainToUiMapper)?.provideCounter()
             if (readCounter != null) {
                 val newCounter = readCounter + counter
                 interactor.insertNewMessagesCounterInGroup(groupId, newCounter)
@@ -121,7 +121,7 @@ class RoomsViewModel @Inject constructor(
     fun updateMessagesReadCounterInGroup(groupId: String, counter: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val readCounter = interactor.fetchGroupMessagesCounter(groupId)
-                ?.map(groupMessagesCounterDomainToUimapper)?.provideCounter()
+                ?.map(groupMessagesCounterDomainToUiMapper)?.provideCounter()
             if (readCounter != null) {
                 val newCounter = readCounter + counter
                 interactor.updateReadMessagesCounterInGroup(groupId, newCounter)
@@ -146,7 +146,7 @@ class RoomsViewModel @Inject constructor(
     private fun updateActualUnreadMessagesCounterInGroup(group: GroupUi) {
         viewModelScope.launch(Dispatchers.IO) {
             val readMessagesCounter = interactor.fetchGroupMessagesCounter(group.provideId())
-                ?.map(groupMessagesCounterDomainToUimapper)?.provideCounter()
+                ?.map(groupMessagesCounterDomainToUiMapper)?.provideCounter()
             if (readMessagesCounter == null) {
                 interactor.insertNewMessagesCounterInGroup(group.provideId(), 0)
             } else {

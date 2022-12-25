@@ -1,22 +1,28 @@
 package com.earl.gpns.ui.search.driver
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
+import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentDriverFormSecondBinding
-import com.earl.gpns.ui.models.NewFirstDriverForm
+import com.earl.gpns.ui.models.DriverFormUi
+import com.earl.gpns.ui.models.FirstPartOfNewDriverForm
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @AndroidEntryPoint
 class SecondDriverFormFragment(
-    private val newFirstDriverForm: NewFirstDriverForm
+    private val firstPartOfNewDriverForm: FirstPartOfNewDriverForm
 ): BaseFragment<FragmentDriverFormSecondBinding>() {
 
     private lateinit var viewModel: NewDriverFormViewModel
@@ -33,11 +39,16 @@ class SecondDriverFormFragment(
         binding.backBtn.setOnClickListener {
             navigator.back()
         }
+        binding.finishDriverForm.setOnClickListener {
+            Toast.makeText(requireContext(), "ENDED", Toast.LENGTH_SHORT).show()
+            sendNewDriverForm()
+        }
     }
 
     private fun initViews() {
         val spinnerDriverCar = binding.spinnerDriverCarModel
         val spinnerDriverCarModel = binding.spinnerDriverCarType
+        spinnerDriverCarModel.adapter = viewModel.initSpinnerAdapter(R.array.audi_models, requireContext())
         spinnerDriverCar.adapter = viewModel.initSpinnerAdapter(R.array.spinner_driver_car_model, requireContext())
         spinnerDriverCar.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -109,6 +120,7 @@ class SecondDriverFormFragment(
                         binding.anotherAuto.isVisible = true
                         binding.closeAnotherAuto.isVisible = true
                         binding.closeAnotherAuto.setOnClickListener {
+                            binding.spinnerDriverCarModel.setSelection(0)
                             binding.spinnerDriverCarModel.isVisible = true
                             binding.anotherAuto.isVisible = false
                             binding.closeAnotherAuto.isVisible = false
@@ -124,10 +136,7 @@ class SecondDriverFormFragment(
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 if (p0?.selectedItem == requireContext().resources.getString(R.string.another_car)) {
                     showInputFieldForAnotherValue()
-                } else {
-                    hideInputFieldForAnotherValue()
                 }
-
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
@@ -140,6 +149,7 @@ class SecondDriverFormFragment(
                     binding.anotherCarColor.isVisible = true
                     binding.closeAnotherCarColor.isVisible = true
                     binding.closeAnotherCarColor.setOnClickListener {
+                        binding.spinnerDriverCarColor.setSelection(0)
                         binding.spinnerDriverCarColor.isVisible = true
                         binding.anotherCarColor.isVisible = false
                         binding.closeAnotherCarColor.isVisible = false
@@ -157,29 +167,70 @@ class SecondDriverFormFragment(
         binding.anotherAutoModel.isVisible = true
         binding.closeAnotherAutoModel.isVisible = true
         binding.closeAnotherAutoModel.setOnClickListener {
+            binding.spinnerDriverCarType.setSelection(0)
             binding.spinnerDriverCarType.isVisible = true
             binding.anotherAutoModel.isVisible = false
             binding.closeAnotherAutoModel.isVisible = false
         }
     }
 
-    private fun hideInputFieldForAnotherValue() {
-        binding.spinnerDriverCarType.isVisible = true
-        binding.anotherAutoModel.isVisible = false
-        binding.closeAnotherAuto.isVisible = false
-        binding.closeAnotherAutoModel.setOnClickListener {
-            binding.spinnerDriverCarType.isVisible = false
-            binding.anotherAutoModel.isVisible = false
-            binding.closeAnotherAutoModel.isVisible = true
-        }
+    private fun validate() : Boolean {
+        val validation = SecondDriverFormValidation.Base(
+            binding.spinnerDriverCarModel,
+            binding.anotherAuto,
+            binding.spinnerDriverCarColor,
+            binding.anotherCarColor
+        )
+        return validation.validate()
     }
 
     private fun sendNewDriverForm() {
-        // todo
+        if (validate()) {
+            val car = if (binding.spinnerDriverCarModel.isVisible) {
+                binding.spinnerDriverCarModel.selectedItem.toString()
+            } else {
+                binding.anotherAuto.text.toString()
+            }
+            val carModel = if (!binding.spinnerDriverCarModel.isVisible && !binding.spinnerDriverCarType.isVisible) {
+                binding.anotherAutoModel.text.toString()
+            } else if (binding.spinnerDriverCarType.isVisible) {
+                binding.spinnerDriverCarType.selectedItem.toString()
+            } else {
+                binding.anotherAutoModel.text.toString()
+            }
+            val carColor = if (binding.spinnerDriverCarColor.isVisible) {
+                binding.spinnerDriverCarColor.selectedItem.toString()
+            } else {
+                binding.anotherCarColor.text.toString()
+            }
+            val driverForm = DriverFormUi.Base(
+                preferenceManager.getString(Keys.KEY_NAME) ?: "",
+                preferenceManager.getString(Keys.KEY_IMAGE) ?: "",
+                firstPartOfNewDriverForm.driveFrom,
+                firstPartOfNewDriverForm.driveTo,
+                firstPartOfNewDriverForm.catchCompanionFrom ?: "",
+                firstPartOfNewDriverForm.alsoCanDriveTo ?: "",
+                firstPartOfNewDriverForm.schedule,
+                firstPartOfNewDriverForm.ableToDriveInTurn,
+                firstPartOfNewDriverForm.actualTripTime,
+                car,
+                carModel ?: "",
+                carColor,
+                binding.spinnerDriverCarCountOfPassengers.selectedItem.toString(),
+                binding.editTextGosNumberOfCar.text.toString() ?: "",
+                binding.editTextTripPrice.text.toString() ?: "",
+                binding.editTextDriverComment.text.toString() ?: ""
+            )
+            Log.d("tag", "sendNewDriverForm: DRIVER FORM -> ${Json.encodeToString(driverForm)}")
+            viewModel.sendNewDriverForm(
+                preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                driverForm
+            )
+        }
     }
 
     companion object {
 
-        fun newInstance(newFirstDriverForm: NewFirstDriverForm) = SecondDriverFormFragment(newFirstDriverForm)
+        fun newInstance(firstPartOfNewDriverForm: FirstPartOfNewDriverForm) = SecondDriverFormFragment(firstPartOfNewDriverForm)
     }
 }
