@@ -1,11 +1,8 @@
 package com.earl.gpns.domain
 
 import com.earl.gpns.core.AuthResultListener
-import com.earl.gpns.core.OperationResultListener
 import com.earl.gpns.data.models.remote.requests.LoginRequest
-import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
-import com.earl.gpns.data.models.remote.responses.RoomResponse
 import com.earl.gpns.domain.models.*
 
 interface Repository {
@@ -47,4 +44,6 @@ interface Repository {
     suspend fun sendNewDriverForm(token: String, driverForm: DriverFormDomain)
 
     suspend fun sendNewCompanionForm(token: String, companionForm: CompanionFormDomain)
+
+    suspend fun fetchAllTripForms(token: String) : List<TripFormDomain>
 }

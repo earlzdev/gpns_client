@@ -135,4 +135,10 @@ interface Service {
         @Header("Authorization") token: String,
         @Body companionForm: CompanionFormRemote
     )
+
+    @Headers("Content-Type: application/json")
+    @GET("/fetchAllCompForms")
+    suspend fun fetchAllCompForms(
+        @Header("Authorization") token: String
+    ) : List<TripFormRemote>
 }

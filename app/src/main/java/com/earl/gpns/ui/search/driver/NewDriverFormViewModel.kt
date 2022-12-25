@@ -9,7 +9,7 @@ import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.models.DriverFormDomain
 import com.earl.gpns.ui.mappers.DriverFormUiToDomainMapper
 import com.earl.gpns.ui.models.DriverFormUi
-import com.earl.gpns.ui.search.SpinnerInterfaceInitializator
+import com.earl.gpns.ui.search.SpinnerInterfaceInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class NewDriverFormViewModel @Inject constructor(
     private val interactor: Interactor,
     private val driverFormUiToDomainMapper: DriverFormUiToDomainMapper<DriverFormDomain>
-): ViewModel(), SpinnerInterfaceInitializator {
+): ViewModel(), SpinnerInterfaceInitializer {
 
     override fun initSpinnerAdapter(
         textResource: Int,

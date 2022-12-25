@@ -68,7 +68,10 @@ object AppModule {
         companionFormDomainToDataMapper: CompanionFormDomainToDataMapper<CompanionFormData>,
         companionFormDataToRemoteMapper: CompanionFormDataToRemoteMapper<CompanionFormRemote>,
         companionFormRemoteToDataMapper: CompanionFormRemoteToDataMapper<CompanionFormData>,
-        companionFormDataToDomainMapper: CompanionFormDataToDomainMapper<CompanionFormDomain>
+        companionFormDataToDomainMapper: CompanionFormDataToDomainMapper<CompanionFormDomain>,
+        companionFormDetailsRemoteToDataMapper: CompanionTripFormDetailsRemoteToDataMapper<CompanionFormDetailsData>,
+        driverFormDetailsRemoteToDataMapper: DriverTripFormDetailsRemoteToDataMapper<DriverFormDetailsData>,
+        tripFormDataToDomainMapper: TripFormDataToDomainMapper<TripFormDomain>
     ) : Repository {
         return BaseRepository(
             service,
@@ -95,7 +98,10 @@ object AppModule {
             companionFormDomainToDataMapper,
             companionFormDataToRemoteMapper,
             companionFormRemoteToDataMapper,
-            companionFormDataToDomainMapper
+            companionFormDataToDomainMapper,
+            companionFormDetailsRemoteToDataMapper,
+            driverFormDetailsRemoteToDataMapper,
+            tripFormDataToDomainMapper
         )
     }
 

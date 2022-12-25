@@ -98,5 +98,5 @@ dependencies {
 
     //multiselect Spinner
 //    implementation 'com.github.puskal-khadka:MultiSelectSpinner:1.0.1'
-//    implementation 'com.github.pratikbutani:MultiSelectSpinner:1.0.1'
+    implementation 'com.github.pratikbutani:MultiSelectSpinner:1.0.1'
 }

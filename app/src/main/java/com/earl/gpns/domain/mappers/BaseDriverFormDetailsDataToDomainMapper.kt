@@ -1,13 +1,12 @@
-package com.earl.gpns.data.mappers
+package com.earl.gpns.domain.mappers
 
-import com.earl.gpns.data.models.remote.DriverFormRemote
+import com.earl.gpns.data.mappers.DriverFormDetailsDataToDomainMapper
+import com.earl.gpns.domain.models.DriverFormDetailsDomain
 import javax.inject.Inject
 
-class BaseDriverFormDataToRemoteMapper @Inject constructor() : DriverFormDataToRemoteMapper<DriverFormRemote> {
+class BaseDriverFormDetailsDataToDomainMapper @Inject constructor(): DriverFormDetailsDataToDomainMapper<DriverFormDetailsDomain> {
 
     override fun map(
-        username: String,
-        userImage: String,
         driveFrom: String,
         driveTo: String,
         catchCompanionFrom: String,
@@ -18,13 +17,11 @@ class BaseDriverFormDataToRemoteMapper @Inject constructor() : DriverFormDataToR
         car: String,
         carModel: String,
         carColor: String,
-        passengersCount: String,
+        passengersCount: Int,
         carGovNumber: String,
-        tripPrice: String,
+        tripPrice: Int,
         driverComment: String
-    ) = DriverFormRemote(
-        username,
-        userImage,
+    ) = DriverFormDetailsDomain.Base(
         driveFrom,
         driveTo,
         catchCompanionFrom,
@@ -35,9 +32,9 @@ class BaseDriverFormDataToRemoteMapper @Inject constructor() : DriverFormDataToR
         car,
         carModel,
         carColor,
-        if (passengersCount == "") 0 else passengersCount.toInt(),
+        passengersCount,
         carGovNumber,
-        if (tripPrice == "") 0 else tripPrice.toInt(),
+        tripPrice,
         driverComment
     )
 }

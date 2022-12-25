@@ -62,6 +62,8 @@
         android:visibility="gone"
         />
 
+
+
     <EditText
         android:id="@+id/comp_from_another_district"
         android:layout_width="170dp"

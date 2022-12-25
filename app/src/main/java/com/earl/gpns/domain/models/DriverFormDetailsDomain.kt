@@ -1,16 +1,13 @@
-package com.earl.gpns.ui.models
+package com.earl.gpns.domain.models
 
-import com.earl.gpns.ui.mappers.DriverFormUiToDomainMapper
-import kotlinx.serialization.Serializable
+import com.earl.gpns.domain.TripFormDetails
+import com.earl.gpns.domain.mappers.DriverFormDetailsDomainToUiMapper
 
-interface DriverFormUi {
+interface DriverFormDetailsDomain : TripFormDetails {
 
-    fun <T> mapToDomain(mapper: DriverFormUiToDomainMapper<T>) : T
+    fun <T> map(mapper: DriverFormDetailsDomainToUiMapper<T>) : T
 
-    @Serializable
     class Base(
-        private val username: String,
-        private val userImage: String,
         private val driveFrom: String,
         private val driveTo: String,
         private val catchCompanionFrom: String,
@@ -21,15 +18,13 @@ interface DriverFormUi {
         private val car: String,
         private val carModel: String,
         private val carColor: String,
-        private val passengersCount: String,
+        private val passengersCount: Int,
         private val carGovNumber: String,
-        private val tripPrice: String,
+        private val tripPrice: Int,
         private val driverComment: String
-    ) : DriverFormUi {
-        override fun <T> mapToDomain(mapper: DriverFormUiToDomainMapper<T>) =
+    ) : DriverFormDetailsDomain {
+        override fun <T> map(mapper: DriverFormDetailsDomainToUiMapper<T>) =
             mapper.map(
-                username,
-                userImage,
                 driveFrom,
                 driveTo,
                 catchCompanionFrom,
