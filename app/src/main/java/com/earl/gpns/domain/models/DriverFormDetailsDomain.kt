@@ -8,11 +8,8 @@ interface DriverFormDetailsDomain : TripFormDetails {
     fun <T> map(mapper: DriverFormDetailsDomainToUiMapper<T>) : T
 
     class Base(
-        private val driveFrom: String,
-        private val driveTo: String,
         private val catchCompanionFrom: String,
         private val alsoCanDriveTo: String,
-        private val schedule: String,
         private val ableToDriveInTurn: Int,
         private val actualTripTime: String,
         private val car: String,
@@ -25,11 +22,8 @@ interface DriverFormDetailsDomain : TripFormDetails {
     ) : DriverFormDetailsDomain {
         override fun <T> map(mapper: DriverFormDetailsDomainToUiMapper<T>) =
             mapper.map(
-                driveFrom,
-                driveTo,
                 catchCompanionFrom,
                 alsoCanDriveTo,
-                schedule,
                 ableToDriveInTurn,
                 actualTripTime,
                 car,

@@ -7,5 +7,8 @@ data class TripFormRemote (
     val username: String,
     val userImage: String,
     val companionRole: String,
+    val from: String,
+    val to: String,
+    val schedule: String,
     val details: String
 )

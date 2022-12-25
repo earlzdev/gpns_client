@@ -11,14 +11,17 @@ interface TripFormData {
         private val username: String,
         private val userImage: String,
         private val companionRole: String,
+        private val from: String,
+        private val to: String,
+        private val schedule: String,
         private val details: TripFormDetails
     ) : TripFormData {
 
         override fun <T> map(mapper: TripFormDataToDomainMapper<T>): T {
             return if (companionRole == COMPANION_ROLE) {
-                mapper.mapCompanionDetails(username, userImage, companionRole, details as CompanionFormDetailsData)
+                mapper.mapCompanionDetails(username, userImage, companionRole, from, to, schedule, details as CompanionFormDetailsData)
             } else {
-                mapper.mapDriversDetails(username, userImage, companionRole, details as DriverFormDetailsData)
+                mapper.mapDriversDetails(username, userImage, companionRole, from, to, schedule, details as DriverFormDetailsData)
             }
         }
     }

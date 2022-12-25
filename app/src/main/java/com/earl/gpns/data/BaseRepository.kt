@@ -275,13 +275,16 @@ class BaseRepository @Inject constructor(
     override suspend fun fetchAllTripForms(token: String) : List<TripFormDomain> {
         return try {
             val list = service.fetchAllCompForms("Bearer $token")
-//            Log.d("tag", "fetchAllTripForms: remote $list")
+            Log.d("tag", "fetchAllTripForms: remote $list")
             val dataList = mutableListOf<TripFormData>()
             for (i in list.indices) {
                 dataList.add(TripFormData.Base(
                     list[i].username,
                     list[i].userImage,
                     list[i].companionRole,
+                    list[i].from,
+                    list[i].to,
+                    list[i].schedule,
                     if (list[i].companionRole == COMPANION_ROLE) Json.decodeFromString<CompanionTripFormDetailsRemote>(list[i].details).map(companionFormDetailsRemoteToDataMapper)
                     else Json.decodeFromString<DriverTripFormDetailsRemote>(list[i].details).map(driverFormDetailsRemoteToDataMapper)
                 ))

@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewDriverFormViewModel @Inject constructor(
+class DriverFormViewModel @Inject constructor(
     private val interactor: Interactor,
     private val driverFormUiToDomainMapper: DriverFormUiToDomainMapper<DriverFormDomain>
 ): ViewModel(), SpinnerInterfaceInitializer {

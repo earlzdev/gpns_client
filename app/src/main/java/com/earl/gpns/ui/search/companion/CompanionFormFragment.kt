@@ -11,7 +11,9 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
+import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentCompanionFormBinding
+import com.earl.gpns.ui.models.CompanionFormUi
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,6 +30,9 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[CompanionFormViewModel::class.java]
         initViews()
+        binding.finishDriverForm.setOnClickListener {
+            sendNewCompanionForm()
+        }
         binding.backBtn.setOnClickListener {
             navigator.back()
         }
@@ -44,6 +49,7 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
                     binding.closeAnotherDistrictView.isVisible = true
                 }
                 binding.closeAnotherDistrictView.setOnClickListener {
+                    binding.spinnerCompanionFrom.setSelection(0)
                     binding.spinnerCompanionFrom.isVisible = true
                     binding.compFromAnotherDistrict.isVisible = false
                     binding.closeAnotherDistrictView.isVisible = false
@@ -53,6 +59,22 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
         }
         val compDriveTo = binding.spinnerCompanionDriveTo
         compDriveTo.adapter = viewModel.initSpinnerAdapter(R.array.spinner_drive_to, requireContext())
+        compDriveTo.onItemSelectedListener = object  : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                if (p0?.selectedItem == "Другое") {
+                    binding.spinnerCompanionDriveTo.isVisible = false
+                    binding.anotherCompDriveTo.isVisible = true
+                    binding.closeAnotherDistrictDriveTo.isVisible = true
+                }
+                binding.closeAnotherDistrictDriveTo.setOnClickListener {
+                    binding.spinnerCompanionDriveTo.setSelection(0)
+                    binding.spinnerCompanionDriveTo.isVisible = true
+                    binding.anotherCompDriveTo.isVisible = false
+                    binding.closeAnotherDistrictDriveTo.isVisible = false
+                }
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
         val compSchedule = binding.spinnerSchedule
         compSchedule.adapter = viewModel.initSpinnerAdapter(R.array.spinner_schedule, requireContext())
         val compTripTimeAbility = binding.spinnerActualTripTime
@@ -65,12 +87,59 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
                     binding.closeAnotherActualTripTime.isVisible = true
                 }
                 binding.closeAnotherActualTripTime.setOnClickListener {
+                    binding.spinnerActualTripTime.setSelection(0)
                     binding.spinnerActualTripTime.isVisible = true
                     binding.anotherActualTripTime.isVisible = false
                     binding.closeAnotherActualTripTime.isVisible = false
                 }
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
+    }
+
+    private fun validate() : Boolean {
+        val validation = CompanionFormValidation.Base(
+            binding.spinnerCompanionFrom,
+            binding.compFromAnotherDistrict,
+            binding.spinnerCompanionDriveTo,
+            binding.anotherCompDriveTo,
+            binding.spinnerActualTripTime,
+            binding.anotherActualTripTime
+        )
+        return validation.validate()
+    }
+
+    private fun sendNewCompanionForm() {
+        if (validate()) {
+            val from = if (binding.spinnerCompanionFrom.isVisible) {
+                binding.spinnerCompanionFrom.selectedItem.toString()
+            } else {
+                binding.compFromAnotherDistrict.text.toString()
+            }
+            val to = if (binding.spinnerCompanionDriveTo.isVisible) {
+                binding.spinnerCompanionDriveTo.selectedItem.toString()
+            } else {
+                binding.anotherCompDriveTo.text.toString()
+            }
+            val actualTripTime = if (binding.spinnerActualTripTime.isVisible) {
+                binding.spinnerActualTripTime.selectedItem.toString()
+            } else {
+                binding.anotherActualTripTime.text.toString()
+            }
+            val form = CompanionFormUi.Base(
+                preferenceManager.getString(Keys.KEY_NAME) ?: "",
+                preferenceManager.getString(Keys.KEY_IMAGE) ?: "",
+                from,
+                to,
+                binding.spinnerSchedule.selectedItem.toString(),
+                actualTripTime,
+                binding.compPriceEd.text.toString() ?: "",
+                binding.editTextDriverComment.text.toString() ?: ""
+            )
+            viewModel.sendNewCompanionForm(
+                preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                form
+            )
         }
     }
 

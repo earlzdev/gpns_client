@@ -25,7 +25,7 @@ class SecondDriverFormFragment(
     private val firstPartOfNewDriverForm: FirstPartOfNewDriverForm
 ): BaseFragment<FragmentDriverFormSecondBinding>() {
 
-    private lateinit var viewModel: NewDriverFormViewModel
+    private lateinit var viewModel: DriverFormViewModel
 
     override fun viewBinding(
         inflater: LayoutInflater,
@@ -34,7 +34,7 @@ class SecondDriverFormFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[NewDriverFormViewModel::class.java]
+        viewModel = ViewModelProvider(this)[DriverFormViewModel::class.java]
         initViews()
         binding.backBtn.setOnClickListener {
             navigator.back()

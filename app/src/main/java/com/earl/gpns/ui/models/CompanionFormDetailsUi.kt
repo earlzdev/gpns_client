@@ -4,14 +4,13 @@ import com.earl.gpns.domain.TripFormDetails
 
 interface CompanionFormDetailsUi : TripFormDetails {
 
+    fun provideCompanionFormDetails() : CompanionDetails
+
     class Base(
-        private val from: String,
-        private val to: String,
-        private val schedule: String,
         private val actualTripTime: String,
         private val ableToPay: String,
         private val comment: String
     ) : CompanionFormDetailsUi {
-
+        override fun provideCompanionFormDetails() = CompanionDetails(actualTripTime, ableToPay, comment)
     }
 }
