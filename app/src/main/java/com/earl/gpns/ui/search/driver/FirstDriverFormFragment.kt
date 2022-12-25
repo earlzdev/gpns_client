@@ -19,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
 
-    private lateinit var viewModel: NewDriverFormViewModel
+    private lateinit var viewModel: DriverFormViewModel
 
     override fun viewBinding(
         inflater: LayoutInflater,
@@ -28,7 +28,7 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[NewDriverFormViewModel::class.java]
+        viewModel = ViewModelProvider(this)[DriverFormViewModel::class.java]
         initSpinners()
         binding.nextBtn.setOnClickListener {
             goToSecondPartOfDriverForm()

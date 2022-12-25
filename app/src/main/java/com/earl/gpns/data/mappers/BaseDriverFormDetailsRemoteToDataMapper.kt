@@ -6,11 +6,8 @@ import javax.inject.Inject
 class BaseDriverFormDetailsRemoteToDataMapper @Inject constructor() : DriverTripFormDetailsRemoteToDataMapper<DriverFormDetailsData> {
 
     override fun map(
-        driveFrom: String,
-        driveTo: String,
         catchCompanionFrom: String,
         alsoCanDriveTo: String,
-        schedule: String,
         ableToDriveInTurn: Int,
         actualTripTime: String,
         car: String,
@@ -21,6 +18,6 @@ class BaseDriverFormDetailsRemoteToDataMapper @Inject constructor() : DriverTrip
         tripPrice: Int,
         driverComment: String
     ) = DriverFormDetailsData.Base(
-        driveFrom, driveTo, catchCompanionFrom, alsoCanDriveTo, schedule, ableToDriveInTurn, actualTripTime, car, carModel, carColor, passengersCount, carGovNumber, tripPrice, driverComment
+       catchCompanionFrom, alsoCanDriveTo, ableToDriveInTurn, actualTripTime, car, carModel, carColor, passengersCount, carGovNumber, tripPrice, driverComment
     )
 }

@@ -7,16 +7,10 @@ import javax.inject.Inject
 class BaseCompanionFormDetailsDataToDomainMapper @Inject constructor() : CompanionFormDetailsDataToDomainMapper<CompanionFormDetailsDomain> {
 
     override fun map(
-        from: String,
-        to: String,
-        schedule: String,
         actualTripTime: String,
         ableToPay: String,
         comment: String
     ) = CompanionFormDetailsDomain.Base(
-        from,
-        to,
-        schedule,
         actualTripTime,
         ableToPay,
         comment

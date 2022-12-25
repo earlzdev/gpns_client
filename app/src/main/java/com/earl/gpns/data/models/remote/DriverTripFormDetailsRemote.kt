@@ -7,11 +7,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DriverTripFormDetailsRemote(
-    val driveFrom: String,
-    val driveTo: String,
     val catchCompanionFrom: String,
     val alsoCanDriveTo: String,
-    val schedule: String,
     val ableToDriveInTurn: Int,
     val actualTripTime: String,
     val car: String,
@@ -24,11 +21,8 @@ data class DriverTripFormDetailsRemote(
 ) : TripFormDetails {
     fun map(mapper: DriverTripFormDetailsRemoteToDataMapper<DriverFormDetailsData>) =
         mapper.map(
-            driveFrom,
-            driveTo,
             catchCompanionFrom,
             alsoCanDriveTo,
-            schedule,
             ableToDriveInTurn,
             actualTripTime,
             car,

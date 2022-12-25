@@ -112,6 +112,11 @@
     <string name="another_color">Другой</string>
     <string name="car_modelL">Модель авто</string>
     <string name="another_car_color">Цвет авто</string>
+    <string name="form_form">Откуда:</string>
+    <string name="form_to">Куда:</string>
+    <string name="form_schedule">График:</string>
+    <string name="compa">Попутчик</string>
+    <string name="driv">Водитель</string>
 
     // spinners
     <string-array name="spinner_drive_from">

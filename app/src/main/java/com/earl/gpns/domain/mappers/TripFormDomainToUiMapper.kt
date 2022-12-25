@@ -9,6 +9,9 @@ interface TripFormDomainToUiMapper<T> {
         username: String,
         userImage: String,
         companionRole: String,
+        from: String,
+        to: String,
+        schedule: String,
         details: DriverFormDetailsDomain
     ) : T
 
@@ -16,6 +19,9 @@ interface TripFormDomainToUiMapper<T> {
         username: String,
         userImage: String,
         companionRole: String,
+        from: String,
+        to: String,
+        schedule: String,
         details: CompanionFormDetailsDomain
     ) : T
 }

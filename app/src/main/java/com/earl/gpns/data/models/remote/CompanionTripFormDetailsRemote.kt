@@ -7,13 +7,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CompanionTripFormDetailsRemote(
-    val from: String,
-    val to: String,
-    val schedule: String,
     val actualTripTime: String,
     val ableToPay: String,
     val comment: String
 ) : TripFormDetails {
     fun map(mapper: CompanionTripFormDetailsRemoteToDataMapper<CompanionFormDetailsData>) =
-        mapper.map(from, to, schedule, actualTripTime, ableToPay, comment)
+        mapper.map(actualTripTime, ableToPay, comment)
 }

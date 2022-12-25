@@ -7,11 +7,8 @@ import javax.inject.Inject
 class BaseDriverFormDetailsDomainToUiMapper @Inject constructor() : DriverFormDetailsDomainToUiMapper<DriverFormDetailsUi> {
 
     override fun map(
-        driveFrom: String,
-        driveTo: String,
         catchCompanionFrom: String,
         alsoCanDriveTo: String,
-        schedule: String,
         ableToDriveInTurn: Int,
         actualTripTime: String,
         car: String,
@@ -22,11 +19,8 @@ class BaseDriverFormDetailsDomainToUiMapper @Inject constructor() : DriverFormDe
         tripPrice: Int,
         driverComment: String
     ) = DriverFormDetailsUi.Base(
-        driveFrom,
-        driveTo,
         catchCompanionFrom,
         alsoCanDriveTo,
-        schedule,
         ableToDriveInTurn,
         actualTripTime,
         car,

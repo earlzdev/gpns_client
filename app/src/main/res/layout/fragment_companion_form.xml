@@ -134,7 +134,7 @@
         android:padding="6dp"
         app:layout_constraintTop_toTopOf="@id/spinner_companion_drive_to"
         app:layout_constraintBottom_toBottomOf="@id/spinner_companion_drive_to"
-        app:layout_constraintStart_toEndOf="@id/spinner_companion_drive_to"
+        app:layout_constraintStart_toEndOf="@id/companion_drive_to"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/driver_form_spinner_background"
         android:visibility="gone"
@@ -260,7 +260,7 @@
         />
 
     <EditText
-        android:id="@+id/edit_text_gos_number_of_car"
+        android:id="@+id/comp_price_ed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/not_ness"
@@ -271,8 +271,8 @@
         android:background="@drawable/driver_form_spinner_background"
         app:layout_constraintTop_toTopOf="@id/companion_price"
         app:layout_constraintBottom_toBottomOf="@id/companion_price"
-        app:layout_constraintStart_toStartOf="@id/spinner_companion_drive_to"
-        app:layout_constraintEnd_toEndOf="@id/spinner_companion_drive_to"
+        app:layout_constraintStart_toStartOf="@id/spinner_schedule"
+        app:layout_constraintEnd_toEndOf="@id/spinner_schedule"
         android:padding="8dp"
         android:inputType="number"
         android:drawableEnd="@drawable/ruble"

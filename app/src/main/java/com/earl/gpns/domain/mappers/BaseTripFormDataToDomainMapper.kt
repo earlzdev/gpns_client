@@ -19,13 +19,19 @@ class BaseTripFormDataToDomainMapper @Inject constructor(
         username: String,
         userImage: String,
         companionRole: String,
+        from: String,
+        to: String,
+        schedule: String,
         details: DriverFormDetailsData
-    ) = TripFormDomain.Base(username, userImage, companionRole, details.map(driverFormDetailsDataToDomainMapper))
+    ) = TripFormDomain.Base(username, userImage, companionRole, from, to ,schedule, details.map(driverFormDetailsDataToDomainMapper))
 
     override fun mapCompanionDetails(
         username: String,
         userImage: String,
         companionRole: String,
+        from: String,
+        to: String,
+        schedule: String,
         details: CompanionFormDetailsData
-    ) = TripFormDomain.Base(username, userImage, companionRole, details.mapToDomain(companionFormDetailsDataToDomainMapper))
+    ) = TripFormDomain.Base(username, userImage, companionRole, from, to ,schedule, details.mapToDomain(companionFormDetailsDataToDomainMapper))
 }

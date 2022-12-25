@@ -6,9 +6,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.earl.gpns.databinding.RecyclerSearchItemBinding
+import com.earl.gpns.ui.SearchFormsDetails
 import com.earl.gpns.ui.models.TripFormUi
 
-class TripFormsRecyclerAdapter : ListAdapter<TripFormUi, TripFormsRecyclerAdapter.ItemViewHolder>(Diff) {
+interface OnSearchFormClickListener {
+    fun showDetails(details: SearchFormsDetails)
+}
+
+class TripFormsRecyclerAdapter(
+    private val clickListener: OnSearchFormClickListener
+) : ListAdapter<TripFormUi, TripFormsRecyclerAdapter.ItemViewHolder>(Diff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = RecyclerSearchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -22,7 +29,19 @@ class TripFormsRecyclerAdapter : ListAdapter<TripFormUi, TripFormsRecyclerAdapte
 
     inner class ItemViewHolder(private val binding: RecyclerSearchItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: TripFormUi) {
-
+            item.recyclerDetails(
+                binding.userName,
+                binding.userAvatar,
+                binding.tripRole,
+                binding.driverIcon,
+                binding.companionIcon,
+                binding.fromEd,
+                binding.driveToEd,
+                binding.schduleEd
+            )
+            binding.lookTripDetailsBtn.setOnClickListener {
+                clickListener.showDetails(item.provideDetails())
+            }
         }
     }
 

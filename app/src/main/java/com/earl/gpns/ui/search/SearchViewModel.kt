@@ -1,6 +1,9 @@
 package com.earl.gpns.ui.search
 
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.earl.gpns.domain.Interactor
@@ -22,14 +25,19 @@ class SearchViewModel @Inject constructor(
 
     private val tripForms: MutableStateFlow<List<TripFormUi>> = MutableStateFlow(emptyList())
     val _tripForms = tripForms.asStateFlow()
+    private val searchTripFormsLiveData = MutableLiveData<List<TripFormUi>>()
 
     fun fetchAllTripForms(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val list = interactor.fetchAllTripForms(token).map { it.map(tripFormDomainToUiMapper) }
             withContext(Dispatchers.Main) {
                 Log.d("tag", "fetchAllTripForms ui : $list")
-                tripForms.value += list
+                searchTripFormsLiveData.value = list
             }
         }
+    }
+
+    fun observeSearchTripFormsLiveData(owner: LifecycleOwner, observer: Observer<List<TripFormUi>>) {
+        searchTripFormsLiveData.observe(owner, observer)
     }
 }
