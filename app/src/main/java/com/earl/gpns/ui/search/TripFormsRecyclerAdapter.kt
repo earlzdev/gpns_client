@@ -10,7 +10,7 @@ import com.earl.gpns.ui.SearchFormsDetails
 import com.earl.gpns.ui.models.TripFormUi
 
 interface OnSearchFormClickListener {
-    fun showDetails(details: SearchFormsDetails)
+    fun showDetails(role: String, details: SearchFormsDetails)
 }
 
 class TripFormsRecyclerAdapter(
@@ -40,7 +40,7 @@ class TripFormsRecyclerAdapter(
                 binding.schduleEd
             )
             binding.lookTripDetailsBtn.setOnClickListener {
-                clickListener.showDetails(item.provideDetails())
+                clickListener.showDetails(item.provideTripRole(), item.provideDetails())
             }
         }
     }

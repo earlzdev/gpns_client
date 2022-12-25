@@ -26,6 +26,8 @@ interface TripFormUi : Same<TripFormUi> {
 
     fun provideDetails() : SearchFormsDetails
 
+    fun provideTripRole() : String
+
     class Base(
         private val username: String,
         private val userImage: String,
@@ -66,12 +68,14 @@ interface TripFormUi : Same<TripFormUi> {
         override fun provideDetails() : SearchFormsDetails {
             return if (companionRole == COMPANION_ROLE) {
                 details as CompanionFormDetailsUi
-                details.provideCompanionFormDetails()
+                details.provideCompanionFormDetails(username, userImage, from, to, schedule)
             } else {
                 details as DriverFormDetailsUi
-                details.provideDriverDetails()
+                details.provideDriverDetails(username, userImage, from, to, schedule)
             }
         }
+
+        override fun provideTripRole() = companionRole
     }
 
     companion object {

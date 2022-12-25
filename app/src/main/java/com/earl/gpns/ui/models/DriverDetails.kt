@@ -3,6 +3,11 @@ package com.earl.gpns.ui.models
 import com.earl.gpns.ui.SearchFormsDetails
 
 data class DriverDetails(
+    val username: String,
+    val userImage: String,
+    val from: String,
+    val to: String,
+    val schedule: String,
     val catchCompanionFrom: String,
     val alsoCanDriveTo: String,
     val ableToDriveInTurn: Int,
