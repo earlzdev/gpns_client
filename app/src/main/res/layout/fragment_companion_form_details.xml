@@ -33,6 +33,9 @@
         app:layout_constraintStart_toEndOf="@id/back_btn"
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
+        android:src="@drawable/default_avatar"
+        android:scaleType="centerCrop"
+        app:riv_oval="true"
         />
 
     <TextView

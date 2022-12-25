@@ -4,7 +4,13 @@ import com.earl.gpns.domain.TripFormDetails
 
 interface DriverFormDetailsUi : TripFormDetails {
 
-    fun provideDriverDetails() : DriverDetails
+    fun provideDriverDetails(
+        username: String,
+        userImage: String,
+        from: String,
+        to: String,
+        schedule: String
+    ) : DriverDetails
 
     class Base(
         private val catchCompanionFrom: String,
@@ -19,7 +25,18 @@ interface DriverFormDetailsUi : TripFormDetails {
         private val tripPrice: Int,
         private val driverComment: String
     ) : DriverFormDetailsUi {
-        override fun provideDriverDetails() = DriverDetails(
+        override fun provideDriverDetails(
+            username: String,
+            userImage: String,
+            from: String,
+            to: String,
+            schedule: String
+        ) = DriverDetails(
+            username,
+            userImage,
+            from,
+            to,
+            schedule,
             catchCompanionFrom,
             alsoCanDriveTo,
             ableToDriveInTurn,

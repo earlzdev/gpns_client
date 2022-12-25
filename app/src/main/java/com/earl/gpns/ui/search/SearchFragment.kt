@@ -40,12 +40,18 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
         }
     }
 
-    override fun showDetails(details: SearchFormsDetails) {
+    override fun showDetails(role: String, details: SearchFormsDetails) {
+        if (role == COMPANION_ROLE) {
+            navigator.companionFormDetails(details)
+        } else {
+            navigator.driverFormDetails(details)
+        }
         Log.d("tag", "showDetails: ${details.toString()}")
     }
 
     companion object {
 
         fun newInstance() = SearchFragment()
+        private const val COMPANION_ROLE = "COMPANION_ROLE"
     }
 }
