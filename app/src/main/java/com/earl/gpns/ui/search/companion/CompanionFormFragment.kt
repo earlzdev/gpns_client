@@ -136,6 +136,8 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
                 binding.compPriceEd.text.toString() ?: "",
                 binding.editTextDriverComment.text.toString() ?: ""
             )
+            preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, true)
+            preferenceManager.putBoolean(Keys.IS_DRIVER, false)
             viewModel.sendNewCompanionForm(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 form

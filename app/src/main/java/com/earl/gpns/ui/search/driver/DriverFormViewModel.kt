@@ -7,8 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.earl.gpns.R
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.models.DriverFormDomain
+import com.earl.gpns.domain.models.TripNotificationDomain
 import com.earl.gpns.ui.mappers.DriverFormUiToDomainMapper
+import com.earl.gpns.ui.mappers.TripNotificationUiToDomainMapper
 import com.earl.gpns.ui.models.DriverFormUi
+import com.earl.gpns.ui.models.TripNotificationUi
 import com.earl.gpns.ui.search.SpinnerInterfaceInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DriverFormViewModel @Inject constructor(
     private val interactor: Interactor,
-    private val driverFormUiToDomainMapper: DriverFormUiToDomainMapper<DriverFormDomain>
+    private val driverFormUiToDomainMapper: DriverFormUiToDomainMapper<DriverFormDomain>,
+    private val tripNotificationUiToDomainMapper: TripNotificationUiToDomainMapper<TripNotificationDomain>
 ): ViewModel(), SpinnerInterfaceInitializer {
 
     override fun initSpinnerAdapter(
@@ -35,6 +39,12 @@ class DriverFormViewModel @Inject constructor(
     fun sendNewDriverForm(token: String, driverForm: DriverFormUi) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.sendNewDriverForm(token, driverForm.mapToDomain(driverFormUiToDomainMapper))
+        }
+    }
+
+    fun inviteDriver(token: String, notificationUi: TripNotificationUi) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.inviteDriver(token, notificationUi.mapToDomain(tripNotificationUiToDomainMapper))
         }
     }
 }

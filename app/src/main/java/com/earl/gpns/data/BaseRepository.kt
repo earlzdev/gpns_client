@@ -4,10 +4,7 @@ import android.util.Log
 import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
-import com.earl.gpns.data.models.remote.CompanionFormRemote
-import com.earl.gpns.data.models.remote.CompanionTripFormDetailsRemote
-import com.earl.gpns.data.models.remote.DriverFormRemote
-import com.earl.gpns.data.models.remote.DriverTripFormDetailsRemote
+import com.earl.gpns.data.models.remote.*
 import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.data.retrofit.Service
@@ -47,7 +44,9 @@ class BaseRepository @Inject constructor(
     private val companionFormDataToDomainMapper: CompanionFormDataToDomainMapper<CompanionFormDomain>,
     private val companionFormDetailsRemoteToDataMapper: CompanionTripFormDetailsRemoteToDataMapper<CompanionFormDetailsData>,
     private val driverFormDetailsRemoteToDataMapper: DriverTripFormDetailsRemoteToDataMapper<DriverFormDetailsData>,
-    private val tripFormDataToDomainMapper: TripFormDataToDomainMapper<TripFormDomain>
+    private val tripFormDataToDomainMapper: TripFormDataToDomainMapper<TripFormDomain>,
+    private val tripNotificationDomainToDataMapper: TripNotificationDomainToDataMapper<TripNotificationData>,
+    private val tripNotificationDataToRemoteMapper: TripNotificationDataToRemoteMapper<TripNotificationRemote>
 ) : Repository {
 
     override suspend fun register(registerRequest: RegisterRequest, callback: AuthResultListener) {
@@ -300,6 +299,32 @@ class BaseRepository @Inject constructor(
             Log.d("tag", "fetchAllTripForms: $e")
             e.printStackTrace()
             emptyList()
+        }
+    }
+
+    override suspend fun inviteDriver(token: String, notification: TripNotificationDomain) {
+        try {
+            service.inviteDriver(
+                "Bearer $token",
+                notification
+                    .mapToData(tripNotificationDomainToDataMapper)
+                    .mapToRemote(tripNotificationDataToRemoteMapper)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun inviteCompanion(token: String, notification: TripNotificationDomain) {
+        try {
+            service.inviteCompanion(
+                "Bearer $token",
+                notification
+                    .mapToData(tripNotificationDomainToDataMapper)
+                    .mapToRemote(tripNotificationDataToRemoteMapper)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

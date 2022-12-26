@@ -1,5 +1,7 @@
 package com.earl.gpns.data.models.remote
 
+import com.earl.gpns.data.mappers.TripFormRemoteToDataMapper
+import com.earl.gpns.data.models.TripFormData
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,4 +13,17 @@ data class TripFormRemote (
     val to: String,
     val schedule: String,
     val details: String
-)
+) {
+    fun map(mapper: TripFormRemoteToDataMapper<TripFormData>) : TripFormData {
+        return if (companionRole == COMPANION_ROLE) {
+            mapper.mapCompanionDetails(username, userImage, companionRole, from, to, schedule, details)
+        } else {
+            mapper.mapDriverDetails(username, userImage, companionRole, from, to, schedule, details)
+        }
+    }
+
+    companion object {
+        private const val COMPANION_ROLE = "COMPANION_ROLE"
+
+    }
+}

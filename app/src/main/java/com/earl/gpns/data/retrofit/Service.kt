@@ -141,4 +141,18 @@ interface Service {
     suspend fun fetchAllCompForms(
         @Header("Authorization") token: String
     ) : List<TripFormRemote>
+
+    @Headers("Content-Type: application/json")
+    @POST("/inviteDriver")
+    suspend fun inviteDriver(
+        @Header("Authorization") token: String,
+        @Body invite: TripNotificationRemote
+    )
+
+    @Headers("Content-Type: application/json")
+    @POST("/inviteCompanion")
+    suspend fun inviteCompanion(
+        @Header("Authorization") token: String,
+        @Body invite: TripNotificationRemote
+    )
 }
