@@ -6,14 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentSearchBinding
+import com.earl.gpns.domain.webSocketActions.services.SearchingSocketService
 import com.earl.gpns.ui.SearchFormsDetails
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickListener {
+class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickListener, SearchingSocketService {
 
     lateinit var viewModel: SearchViewModel
 
@@ -25,7 +29,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
-        viewModel.fetchAllTripForms(preferenceManager.getString(Keys.KEY_JWT) ?: "")
+        initSearchingSocket()
         recycler()
         binding.newFormBtn.setOnClickListener {
             navigator.newSearchForm()
@@ -35,8 +39,17 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
     private fun recycler() {
         val adapter = TripFormsRecyclerAdapter(this)
         binding.recyclerTripForms.adapter = adapter
-        viewModel.observeSearchTripFormsLiveData(this) {
-            adapter.submitList(it)
+//        viewModel.observeSearchTripFormsLiveData(this) {
+//            adapter.submitList(it)
+//        }
+        lifecycleScope.launchWhenStarted {
+            viewModel._tripForms
+                .onEach {
+                        forms ->
+                    Log.d("tag", "recycler: new $forms")
+                    adapter.submitList(forms)
+                }
+                .collect()
         }
     }
 
@@ -46,7 +59,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
         } else {
             navigator.driverFormDetails(details)
         }
-        Log.d("tag", "showDetails: ${details.toString()}")
+    }
+
+    private fun initSearchingSocket() {
+        viewModel.initSearchingSocket(preferenceManager.getString(Keys.KEY_JWT) ?: "", this)
     }
 
     companion object {

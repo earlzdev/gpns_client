@@ -222,6 +222,8 @@ class SecondDriverFormFragment(
                 binding.editTextDriverComment.text.toString() ?: ""
             )
             Log.d("tag", "sendNewDriverForm: DRIVER FORM -> ${Json.encodeToString(driverForm)}")
+            preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, true)
+            preferenceManager.putBoolean(Keys.IS_DRIVER, true)
             viewModel.sendNewDriverForm(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 driverForm

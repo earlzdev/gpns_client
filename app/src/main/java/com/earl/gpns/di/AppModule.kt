@@ -12,10 +12,7 @@ import com.earl.gpns.data.localDb.RoomDb
 import com.earl.gpns.data.localDb.RoomsDao
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
-import com.earl.gpns.data.models.remote.CompanionFormRemote
-import com.earl.gpns.data.models.remote.DriverFormRemote
-import com.earl.gpns.data.models.remote.GroupMessageRemote
-import com.earl.gpns.data.models.remote.MessageRemote
+import com.earl.gpns.data.models.remote.*
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import com.earl.gpns.data.models.remote.requests.TypingStatusInGroupRequest
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
@@ -71,7 +68,9 @@ object AppModule {
         companionFormDataToDomainMapper: CompanionFormDataToDomainMapper<CompanionFormDomain>,
         companionFormDetailsRemoteToDataMapper: CompanionTripFormDetailsRemoteToDataMapper<CompanionFormDetailsData>,
         driverFormDetailsRemoteToDataMapper: DriverTripFormDetailsRemoteToDataMapper<DriverFormDetailsData>,
-        tripFormDataToDomainMapper: TripFormDataToDomainMapper<TripFormDomain>
+        tripFormDataToDomainMapper: TripFormDataToDomainMapper<TripFormDomain>,
+        tripNotificationDomainToDataMapper: TripNotificationDomainToDataMapper<TripNotificationData>,
+        tripNotificationDataToRemoteMapper: TripNotificationDataToRemoteMapper<TripNotificationRemote>
     ) : Repository {
         return BaseRepository(
             service,
@@ -101,7 +100,9 @@ object AppModule {
             companionFormDataToDomainMapper,
             companionFormDetailsRemoteToDataMapper,
             driverFormDetailsRemoteToDataMapper,
-            tripFormDataToDomainMapper
+            tripFormDataToDomainMapper,
+            tripNotificationDomainToDataMapper,
+            tripNotificationDataToRemoteMapper
         )
     }
 
@@ -137,7 +138,9 @@ object AppModule {
         groupMessageRemoteToDataMapper: GroupMessageRemoteToDataMapper<GroupMessageData>,
         groupMessageDataToDomainMapper: GroupMessageDataToDomainMapper<GroupMessageDomain>,
         groupMessageDomainToDataMapper: GroupMessageDomainToDataMapper<GroupMessageData>,
-        groupMessageDataToRemoteMapper: GroupMessageDataToRemoteMapper<GroupMessageRemote>
+        groupMessageDataToRemoteMapper: GroupMessageDataToRemoteMapper<GroupMessageRemote>,
+        tripFormRemoteToDataMapper: TripFormRemoteToDataMapper<TripFormData>,
+        tripFormDataToDomainMapper: TripFormDataToDomainMapper<TripFormDomain>,
     ) : SocketsRepository {
         return BaseSocketRepository(
             socketHttpClient,
@@ -156,6 +159,8 @@ object AppModule {
             groupMessageDataToDomainMapper,
             groupMessageDomainToDataMapper,
             groupMessageDataToRemoteMapper,
+            tripFormRemoteToDataMapper,
+            tripFormDataToDomainMapper
         )
     }
 

@@ -3,10 +3,7 @@ package com.earl.gpns.di
 import com.earl.gpns.data.localDb.RoomDb
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
-import com.earl.gpns.data.models.remote.CompanionFormRemote
-import com.earl.gpns.data.models.remote.DriverFormRemote
-import com.earl.gpns.data.models.remote.GroupMessageRemote
-import com.earl.gpns.data.models.remote.MessageRemote
+import com.earl.gpns.data.models.remote.*
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import com.earl.gpns.data.models.remote.requests.TypingStatusInGroupRequest
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
@@ -422,6 +419,54 @@ object MappersModule {
         return BaseTripFormDomainToUiMapper(
             driverFormDetailsDomainToUiMapper,
             companionFormDetailsDomainToUiMapper
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripNotificationRemoteToDataMapper() : TripNotificationRemoteToDataMapper<TripNotificationData> {
+        return BaseTripNotificationRemoteToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripNotificationDataToDomainMapper() : TripNotificationDataToDomainMapper<TripNotificationDomain> {
+        return BaseTripNotificationDataToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripNotificationDomainToUiMapper() : TripNotificationDomainToUiMapper<TripNotificationUi> {
+        return BaseTripNotificationDomainToUiMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripNotificationUiToDomainMapper() : TripNotificationUiToDomainMapper<TripNotificationDomain> {
+        return BaseTripNotificationUiToDomainMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripNotificationDomainToDataMapper() : TripNotificationDomainToDataMapper<TripNotificationData> {
+        return BaseTripNotificationDomainToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripNotificationDataToRemoteMapper() : TripNotificationDataToRemoteMapper<TripNotificationRemote> {
+        return BaseTripNotificationDataToRemoteMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripFormDetailsRemoteToDataMapper(
+        companionFormDetailsRemoteToDataMapper: CompanionTripFormDetailsRemoteToDataMapper<CompanionFormDetailsData>,
+        driverFormDetailsRemoteToDataMapper: DriverTripFormDetailsRemoteToDataMapper<DriverFormDetailsData>,
+    ) : TripFormRemoteToDataMapper<TripFormData> {
+        return BaseTripFormRemoteToDataMapper(
+            companionFormDetailsRemoteToDataMapper,
+            driverFormDetailsRemoteToDataMapper
         )
     }
 }

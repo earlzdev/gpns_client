@@ -7,6 +7,7 @@ import com.earl.gpns.data.models.*
 import com.earl.gpns.data.models.remote.GroupMessageRemote
 import com.earl.gpns.data.models.remote.MessageRemote
 import com.earl.gpns.data.models.remote.ObservingSocketModel
+import com.earl.gpns.data.models.remote.TripFormRemote
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import com.earl.gpns.data.models.remote.responses.RoomIdResponse
 import com.earl.gpns.data.models.remote.responses.RoomResponse
@@ -14,13 +15,11 @@ import com.earl.gpns.domain.SocketsRepository
 import com.earl.gpns.domain.mappers.GroupMessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.MessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
-import com.earl.gpns.domain.models.GroupMessageDomain
-import com.earl.gpns.domain.models.MessageDomain
-import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
-import com.earl.gpns.domain.models.RoomDomain
+import com.earl.gpns.domain.models.*
 import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
+import com.earl.gpns.domain.webSocketActions.services.SearchingSocketService
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
@@ -48,7 +47,9 @@ class BaseSocketRepository @Inject constructor(
     private val groupMessageRemoteToDataMapper: GroupMessageRemoteToDataMapper<GroupMessageData>,
     private val groupMessageDataToDomainMapper: GroupMessageDataToDomainMapper<GroupMessageDomain>,
     private val groupMessageDomainToDataMapper: GroupMessageDomainToDataMapper<GroupMessageData>,
-    private val groupMessageDataToRemoteMapper: GroupMessageDataToRemoteMapper<GroupMessageRemote>
+    private val groupMessageDataToRemoteMapper: GroupMessageDataToRemoteMapper<GroupMessageRemote>,
+    private val tripFormRemoteToDataMapper: TripFormRemoteToDataMapper<TripFormData>,
+    private val tripFormDataToDomainMapper: TripFormDataToDomainMapper<TripFormDomain>,
 ) : SocketsRepository {
 
     private var roomsSocket: WebSocketSession? = null
@@ -71,6 +72,20 @@ class BaseSocketRepository @Inject constructor(
             e.printStackTrace()
             Log.d("tag", "initRoomsSocket: $e")
             SocketOperationResultListener.Error(e.localizedMessage ?: "unknown error $e")
+        }
+    }
+
+    override suspend fun initSearchingSocket(token: String): Boolean {
+        return try {
+            searchSocket = socketClient.webSocketSession {
+                url(WebSocketService.Endpoints.Searching.url)
+                header("Authorization", "Bearer $token")
+            }
+            searchSocket?.isActive == true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("tag", "initSearchingSocket: $e")
+            false
         }
     }
 
@@ -150,6 +165,31 @@ class BaseSocketRepository @Inject constructor(
                         }
                         else -> {
                             // todo test and don't need
+                            return@map null
+                        }
+                    }
+                }!!
+        } catch (e: Exception) {
+            e.printStackTrace()
+            flow {  }
+        }
+    }
+
+    override suspend fun observeSearchingFormsSocket(service: SearchingSocketService): Flow<TripFormDomain?> {
+        return try {
+            searchSocket?.incoming
+                ?.receiveAsFlow()
+                ?.filter { it is Frame.Text }
+                ?.map {
+                    val json = (it as? Frame.Text)?.readText() ?: "bag msg transcription"
+                    val socketModel = Json.decodeFromString<ObservingSocketModel>(json)
+                    socketActionsParser.setSearchingSocketService(service)
+                    when(socketModel.action) {
+                        NEW_SEARCHING_FORM -> {
+                            val newForm = Json.decodeFromString<TripFormRemote>(socketModel.value)
+                            return@map newForm.map(tripFormRemoteToDataMapper).map(tripFormDataToDomainMapper)
+                        }
+                        else -> {
                             return@map null
                         }
                     }
@@ -270,5 +310,6 @@ class BaseSocketRepository @Inject constructor(
         private const val UPDATE_TYPING_MESSAGE_STATUS_IN_GROUP = "UPDATE_TYPING_MESSAGE_STATUS_IN_GROUP"
         private const val MARK_MESSAGES_AS_READ_IN_GROUP = "MARK_MESSAGES_AS_READ_IN_GROUP"
         private const val MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP = "MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP"
+        private const val NEW_SEARCHING_FORM = "NEW_SEARCHING_FORM"
     }
 }

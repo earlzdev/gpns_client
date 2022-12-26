@@ -13,6 +13,7 @@ import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
+import com.earl.gpns.domain.webSocketActions.services.SearchingSocketService
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -27,6 +28,7 @@ class SocketActionsParser @Inject constructor(
     private var roomObservingService: RoomsObservingSocketService? = null
     private var roomsMessagingSocketActionsService: RoomsMessagingSocketActionsService? = null
     private var groupMessagingSocketActionsService: GroupMessagingSocketActionsService? = null
+    private var searchingSocketService: SearchingSocketService? = null
 
     fun setRoomObservingService(service: RoomsObservingSocketService) {
         roomObservingService = service
@@ -43,6 +45,10 @@ class SocketActionsParser @Inject constructor(
     fun removeDeletedByAnotherUserRoomFromDb(json: String) {
         val roomResponse = Json.decodeFromString<RoomResponse>(json)
         roomObservingService?.removeDeletedByAnotherUserRoomFromDb(roomResponse.roomId, roomResponse.title)
+    }
+
+    fun setSearchingSocketService(service: SearchingSocketService) {
+        searchingSocketService = service
     }
 
     fun updateLastMessageInRoomReadState(json: String) {

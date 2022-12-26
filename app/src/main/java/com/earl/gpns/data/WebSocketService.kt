@@ -14,5 +14,6 @@ interface WebSocketService {
         object Chat: Endpoints("$BASE_URL/chat")
         object Messaging: Endpoints("$BASE_URL/messaging")
         object GroupMessaging: Endpoints("$BASE_URL/group")
+        object Searching: Endpoints("$BASE_URL/searching")
     }
 }

@@ -46,4 +46,8 @@ interface Repository {
     suspend fun sendNewCompanionForm(token: String, companionForm: CompanionFormDomain)
 
     suspend fun fetchAllTripForms(token: String) : List<TripFormDomain>
+
+    suspend fun inviteDriver(token: String, notification: TripNotificationDomain)
+
+    suspend fun inviteCompanion(token: String, notification: TripNotificationDomain)
 }

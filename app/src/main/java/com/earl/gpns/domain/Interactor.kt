@@ -8,6 +8,7 @@ import com.earl.gpns.domain.models.*
 import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
+import com.earl.gpns.domain.webSocketActions.services.SearchingSocketService
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -90,6 +91,14 @@ interface Interactor {
     suspend fun sendNewCompanionForm(token: String, companionForm: CompanionFormDomain)
 
     suspend fun fetchAllTripForms(token: String) : List<TripFormDomain>
+
+    suspend fun inviteDriver(token: String, notification: TripNotificationDomain)
+
+    suspend fun inviteCompanion(token: String, notification: TripNotificationDomain)
+
+    suspend fun initSearchingSocket(token: String) : Boolean
+
+    suspend fun observeSearchingForms(service: SearchingSocketService) : Flow<TripFormDomain?>
 
     class Base @Inject constructor(
         private val repository: Repository,
@@ -253,5 +262,19 @@ interface Interactor {
 
         override suspend fun fetchAllTripForms(token: String) = repository.fetchAllTripForms(token)
 
+
+        override suspend fun inviteDriver(token: String, notification: TripNotificationDomain) {
+            repository.inviteDriver(token, notification)
+        }
+
+        override suspend fun inviteCompanion(token: String, notification: TripNotificationDomain) {
+            repository.inviteCompanion(token, notification)
+        }
+
+        override suspend fun initSearchingSocket(token: String) =
+            socketRepository.initSearchingSocket(token)
+
+        override suspend fun observeSearchingForms(service: SearchingSocketService) =
+            socketRepository.observeSearchingFormsSocket(service)
     }
 }

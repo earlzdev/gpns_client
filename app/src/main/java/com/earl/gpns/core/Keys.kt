@@ -11,4 +11,6 @@ object Keys {
     const val KEY_USER_BIO = "USER_BIO"
     const val KEY_IMAGE = "IMAGE"
     const val KEY_JWT = "JWT"
+    const val HAS_SEARCH_FORM = "HAS_SEARCH_FORM"
+    const val IS_DRIVER = "IS_DRIVER"
 }
