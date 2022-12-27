@@ -189,6 +189,11 @@ class BaseSocketRepository @Inject constructor(
                             val newForm = Json.decodeFromString<TripFormRemote>(socketModel.value)
                             return@map newForm.map(tripFormRemoteToDataMapper).map(tripFormDataToDomainMapper)
                         }
+                        NEW_INVITE -> {
+                            socketActionsParser.newNotification(socketModel.value)
+                            Log.d("tag", "observeSearchingFormsSocket: NEW INVITE")
+                            return@map null
+                        }
                         else -> {
                             return@map null
                         }
@@ -311,5 +316,6 @@ class BaseSocketRepository @Inject constructor(
         private const val MARK_MESSAGES_AS_READ_IN_GROUP = "MARK_MESSAGES_AS_READ_IN_GROUP"
         private const val MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP = "MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP"
         private const val NEW_SEARCHING_FORM = "NEW_SEARCHING_FORM"
+        private const val NEW_INVITE = "NEW_INVITE"
     }
 }

@@ -6,10 +6,7 @@ import com.earl.gpns.data.BaseDatabaseRepository
 import com.earl.gpns.data.BaseRepository
 import com.earl.gpns.data.BaseSocketRepository
 import com.earl.gpns.data.SocketActionsParser
-import com.earl.gpns.data.localDb.AppDataBase
-import com.earl.gpns.data.localDb.GroupsDao
-import com.earl.gpns.data.localDb.RoomDb
-import com.earl.gpns.data.localDb.RoomsDao
+import com.earl.gpns.data.localDb.*
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
 import com.earl.gpns.data.models.remote.*
@@ -70,7 +67,9 @@ object AppModule {
         driverFormDetailsRemoteToDataMapper: DriverTripFormDetailsRemoteToDataMapper<DriverFormDetailsData>,
         tripFormDataToDomainMapper: TripFormDataToDomainMapper<TripFormDomain>,
         tripNotificationDomainToDataMapper: TripNotificationDomainToDataMapper<TripNotificationData>,
-        tripNotificationDataToRemoteMapper: TripNotificationDataToRemoteMapper<TripNotificationRemote>
+        tripNotificationDataToRemoteMapper: TripNotificationDataToRemoteMapper<TripNotificationRemote>,
+        tripNotificationRemoteToDataMapper: TripNotificationRemoteToDataMapper<TripNotificationData>,
+        tripNotificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>
     ) : Repository {
         return BaseRepository(
             service,
@@ -102,7 +101,9 @@ object AppModule {
             driverFormDetailsRemoteToDataMapper,
             tripFormDataToDomainMapper,
             tripNotificationDomainToDataMapper,
-            tripNotificationDataToRemoteMapper
+            tripNotificationDataToRemoteMapper,
+            tripNotificationRemoteToDataMapper,
+            tripNotificationDataToDomainMapper
         )
     }
 
@@ -169,22 +170,28 @@ object AppModule {
     fun provideDatabaseRepository(
         roomsDao: RoomsDao,
         groupsDao: GroupsDao,
+        notificationsDao: NotificationsDao,
         newRoomDataToDbMapper: NewRoomDataToDbMapper<RoomDb>,
         newRoomDomainToDataMapper: NewRoomDomainToDataMapper<NewRoomDtoData>,
         roomDbToDataMapper: RoomDbToDataMapper<RoomData>,
         roomDataToDomainMapper: RoomDataToDomainMapper<RoomDomain>,
         groupMessagesCounterDbToDataMapper: GroupMessagesCounterDbToDataMapper<GroupMessagesCounterData>,
-        groupMessagesCounterDataToDomainMapper: GroupMessagesCounterDataToDomainMapper<GroupMessagesCounterDomain>
+        groupMessagesCounterDataToDomainMapper: GroupMessagesCounterDataToDomainMapper<GroupMessagesCounterDomain>,
+        notificationsDbToDataMapper: NotificationDbToDataMapper<TripNotificationData>,
+        notificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>
     ) : DatabaseRepository {
         return BaseDatabaseRepository(
             roomsDao,
             groupsDao,
+            notificationsDao,
             newRoomDataToDbMapper,
             newRoomDomainToDataMapper,
             roomDbToDataMapper,
             roomDataToDomainMapper,
             groupMessagesCounterDbToDataMapper,
-            groupMessagesCounterDataToDomainMapper
+            groupMessagesCounterDataToDomainMapper,
+            notificationsDbToDataMapper,
+            notificationDataToDomainMapper
         )
     }
 
@@ -207,6 +214,10 @@ object AppModule {
     @Singleton
     @Provides
     fun provideGroupsMessagesCounterDao(db: AppDataBase) = db.groupsDao()
+
+    @Provides
+    @Singleton
+    fun provideTripNotificationsDao(db: AppDataBase) = db.tripNotificationsDao()
 
     @Singleton
     @Provides

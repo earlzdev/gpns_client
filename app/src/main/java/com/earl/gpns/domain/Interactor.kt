@@ -100,6 +100,10 @@ interface Interactor {
 
     suspend fun observeSearchingForms(service: SearchingSocketService) : Flow<TripFormDomain?>
 
+    suspend fun fetchAllTripNotificationFromLocalDb() : List<TripNotificationDomain>
+
+    suspend fun fetchAllTripNotifications(token: String) : List<TripNotificationDomain>
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -189,10 +193,7 @@ interface Interactor {
             repository.markMessagesAsRead(token, roomId)
         }
 
-        override suspend fun markAuthoredMessageAsRead(
-            token: String,
-            roomId: String,
-            authorName: String
+        override suspend fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String
         ) {
             repository.markAuthoredMessageAsRead(token, roomId, authorName)
         }
@@ -276,5 +277,11 @@ interface Interactor {
 
         override suspend fun observeSearchingForms(service: SearchingSocketService) =
             socketRepository.observeSearchingFormsSocket(service)
+
+        override suspend fun fetchAllTripNotificationFromLocalDb() =
+            localDatabaseRepository.fetchAllTripNotificationsFromLocalDb()
+
+        override suspend fun fetchAllTripNotifications(token: String) =
+            repository.fetchAllTripNotifications(token)
     }
 }

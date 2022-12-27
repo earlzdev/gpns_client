@@ -155,4 +155,10 @@ interface Service {
         @Header("Authorization") token: String,
         @Body invite: TripNotificationRemote
     )
+
+    @Headers("Content-Type: application/json")
+    @POST("/fetchAllNotifications")
+    suspend fun fetchAllNotifications(
+        @Header("Authorization") token: String
+    ) : List<TripNotificationRemote>
 }

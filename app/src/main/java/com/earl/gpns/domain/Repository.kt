@@ -50,4 +50,6 @@ interface Repository {
     suspend fun inviteDriver(token: String, notification: TripNotificationDomain)
 
     suspend fun inviteCompanion(token: String, notification: TripNotificationDomain)
+
+    suspend fun fetchAllTripNotifications(token: String) : List<TripNotificationDomain>
 }

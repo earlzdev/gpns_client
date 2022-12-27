@@ -1,6 +1,7 @@
 package com.earl.gpns.ui.search.companion
 
 import android.content.Context
+import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +13,7 @@ import com.earl.gpns.ui.mappers.CompanionFormUiToDomainMapper
 import com.earl.gpns.ui.mappers.TripNotificationUiToDomainMapper
 import com.earl.gpns.ui.models.CompanionFormUi
 import com.earl.gpns.ui.models.TripNotificationUi
-import com.earl.gpns.ui.search.SpinnerInterfaceInitializer
+import com.earl.gpns.ui.search.SpinnerInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,7 +24,7 @@ class CompanionFormViewModel @Inject constructor(
     private val interactor: Interactor,
     private val companionFormUiToDomainMapper: CompanionFormUiToDomainMapper<CompanionFormDomain>,
     private val tripNotificationUiToDomainMapper: TripNotificationUiToDomainMapper<TripNotificationDomain>
-): ViewModel(), SpinnerInterfaceInitializer {
+): ViewModel(), SpinnerInitializer {
 
     override fun initSpinnerAdapter(
         textResource: Int,
@@ -43,7 +44,9 @@ class CompanionFormViewModel @Inject constructor(
     }
 
     fun inviteCompanion(token: String, notification: TripNotificationUi) {
+        Log.d("tag", "inviteCompanion: viewmodel")
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("tag", "inviteCompanion: async viewmodel")
             interactor.inviteCompanion(
                 token,
                 notification.mapToDomain(tripNotificationUiToDomainMapper)

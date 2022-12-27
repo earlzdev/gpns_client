@@ -46,7 +46,9 @@ class BaseRepository @Inject constructor(
     private val driverFormDetailsRemoteToDataMapper: DriverTripFormDetailsRemoteToDataMapper<DriverFormDetailsData>,
     private val tripFormDataToDomainMapper: TripFormDataToDomainMapper<TripFormDomain>,
     private val tripNotificationDomainToDataMapper: TripNotificationDomainToDataMapper<TripNotificationData>,
-    private val tripNotificationDataToRemoteMapper: TripNotificationDataToRemoteMapper<TripNotificationRemote>
+    private val tripNotificationDataToRemoteMapper: TripNotificationDataToRemoteMapper<TripNotificationRemote>,
+    private val tripNotificationRemoteToDataMapper: TripNotificationRemoteToDataMapper<TripNotificationData>,
+    private val tripNotificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>
 ) : Repository {
 
     override suspend fun register(registerRequest: RegisterRequest, callback: AuthResultListener) {
@@ -316,7 +318,9 @@ class BaseRepository @Inject constructor(
     }
 
     override suspend fun inviteCompanion(token: String, notification: TripNotificationDomain) {
+        Log.d("tag", "inviteCompanion: repository")
         try {
+            Log.d("tag", "inviteCompanion: repository")
             service.inviteCompanion(
                 "Bearer $token",
                 notification
@@ -324,13 +328,24 @@ class BaseRepository @Inject constructor(
                     .mapToRemote(tripNotificationDataToRemoteMapper)
             )
         } catch (e: Exception) {
+            Log.d("tag", "inviteCompanion: $e")
             e.printStackTrace()
+        }
+    }
+
+    override suspend fun fetchAllTripNotifications(token: String): List<TripNotificationDomain> {
+        return try {
+            service.fetchAllNotifications("Bearer $token")
+                .map { it.map(tripNotificationRemoteToDataMapper) }
+                .map { it.mapToDomain(tripNotificationDataToDomainMapper) }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
         }
     }
 
     companion object {
         private const val KEY_SUCCESS = "success"
         private const val COMPANION_ROLE = "COMPANION_ROLE"
-        private const val DRIVER_ROLE = "DRIVER_ROLE"
-    }
+     }
 }

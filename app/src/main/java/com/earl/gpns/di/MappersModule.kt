@@ -1,5 +1,6 @@
 package com.earl.gpns.di
 
+import com.earl.gpns.data.localDb.NotificationsDb
 import com.earl.gpns.data.localDb.RoomDb
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
@@ -468,6 +469,18 @@ object MappersModule {
             companionFormDetailsRemoteToDataMapper,
             driverFormDetailsRemoteToDataMapper
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripNotificationDbToDataMapper() : NotificationDbToDataMapper<TripNotificationData> {
+        return BaseTripNotificationDbToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripNotificationDataToDbMapper() : TripNotificationDataToDbMapper<NotificationsDb> {
+        return BaseTripNotificationDataToDbMapper()
     }
 }
 

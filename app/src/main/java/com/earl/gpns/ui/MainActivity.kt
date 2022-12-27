@@ -87,6 +87,10 @@ class MainActivity : AppCompatActivity(), NavigationContract {
         showFragment(FragmentUsers.newInstance())
     }
 
+    override fun tripNotifications() {
+        showFragment(TripNotificationsFragment.newInstance())
+    }
+
     override fun chat(chatInfo: ChatInfo) {
         showFragment(ChatFragment.newInstance(chatInfo))
     }
