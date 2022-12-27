@@ -3,6 +3,7 @@ package com.earl.gpns.domain
 import com.earl.gpns.domain.models.GroupMessagesCounterDomain
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain
+import com.earl.gpns.domain.models.TripNotificationDomain
 
 interface DatabaseRepository {
 
@@ -21,4 +22,6 @@ interface DatabaseRepository {
     suspend fun updateMessagesReadCounter(groupId: String, counter: Int)
 
     suspend fun clearLocalDataBase()
+
+    suspend fun fetchAllTripNotificationsFromLocalDb() : List<TripNotificationDomain>
 }

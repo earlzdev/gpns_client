@@ -40,7 +40,6 @@ class SecondDriverFormFragment(
             navigator.back()
         }
         binding.finishDriverForm.setOnClickListener {
-            Toast.makeText(requireContext(), "ENDED", Toast.LENGTH_SHORT).show()
             sendNewDriverForm()
         }
     }
@@ -185,7 +184,7 @@ class SecondDriverFormFragment(
     }
 
     private fun sendNewDriverForm() {
-        if (validate()) {
+        if (validate() && !preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM)) {
             val car = if (binding.spinnerDriverCarModel.isVisible) {
                 binding.spinnerDriverCarModel.selectedItem.toString()
             } else {
@@ -228,6 +227,8 @@ class SecondDriverFormFragment(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 driverForm
             )
+        } else {
+            Toast.makeText(requireContext(), "У Вас уже есть форма", Toast.LENGTH_SHORT).show()
         }
     }
 

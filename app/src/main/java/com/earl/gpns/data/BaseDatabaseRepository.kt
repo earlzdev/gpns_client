@@ -1,30 +1,32 @@
 package com.earl.gpns.data
 
 import android.util.Log
-import com.earl.gpns.data.localDb.GroupMessagesCountDb
-import com.earl.gpns.data.localDb.GroupsDao
-import com.earl.gpns.data.localDb.RoomDb
-import com.earl.gpns.data.localDb.RoomsDao
+import com.earl.gpns.data.localDb.*
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.GroupMessagesCounterData
 import com.earl.gpns.data.models.NewRoomDtoData
 import com.earl.gpns.data.models.RoomData
+import com.earl.gpns.data.models.TripNotificationData
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain
 import com.earl.gpns.domain.DatabaseRepository
 import com.earl.gpns.domain.models.GroupMessagesCounterDomain
+import com.earl.gpns.domain.models.TripNotificationDomain
 import javax.inject.Inject
 
 class BaseDatabaseRepository @Inject constructor(
     private val roomsDao: RoomsDao,
     private val groupsDao: GroupsDao,
+    private val notificationsDao: NotificationsDao,
     private val newRoomDataToDbMapper: NewRoomDataToDbMapper<RoomDb>,
     private val newRoomDomainToDataMapper: NewRoomDomainToDataMapper<NewRoomDtoData>,
     private val roomDbToDataMapper: RoomDbToDataMapper<RoomData>,
     private val roomDataToDomainMapper: RoomDataToDomainMapper<RoomDomain>,
     private val groupMessagesCounterDbToDataMapper: GroupMessagesCounterDbToDataMapper<GroupMessagesCounterData>,
-    private val groupMessagesCounterDataToDomainMapper: GroupMessagesCounterDataToDomainMapper<GroupMessagesCounterDomain>
+    private val groupMessagesCounterDataToDomainMapper: GroupMessagesCounterDataToDomainMapper<GroupMessagesCounterDomain>,
+    private val notificationsDbToDataMapper: NotificationDbToDataMapper<TripNotificationData>,
+    private val notificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>
 ) : DatabaseRepository {
 
     override suspend fun insertNewRoomIntoLocalDb(room: NewRoomDtoDomain) {
@@ -63,6 +65,12 @@ class BaseDatabaseRepository @Inject constructor(
             ?.map(groupMessagesCounterDbToDataMapper)
             ?.map(groupMessagesCounterDataToDomainMapper)
     }
+
+    override suspend fun fetchAllTripNotificationsFromLocalDb() =
+        notificationsDao.fetchAllFromNotificationsDb()
+            .map { it.map(notificationsDbToDataMapper) }
+            .map { it.mapToDomain(notificationDataToDomainMapper) }
+
 
     override suspend fun insertGroupMessagesCounter(groupId: String, counter: Int) {
         try {

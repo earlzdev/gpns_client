@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
@@ -110,7 +111,7 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
     }
 
     private fun sendNewCompanionForm() {
-        if (validate()) {
+        if (validate() && !preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM)) {
             val from = if (binding.spinnerCompanionFrom.isVisible) {
                 binding.spinnerCompanionFrom.selectedItem.toString()
             } else {
@@ -142,6 +143,9 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 form
             )
+            Toast.makeText(requireContext(), "Отправлено", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "У Вас уже есть форма", Toast.LENGTH_SHORT).show()
         }
     }
 

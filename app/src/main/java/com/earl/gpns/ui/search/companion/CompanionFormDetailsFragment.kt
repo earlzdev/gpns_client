@@ -1,6 +1,7 @@
 package com.earl.gpns.ui.search.companion
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,8 +66,10 @@ class CompanionFormDetailsFragment(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 notification
             )
+            Toast.makeText(requireContext(), "sended", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "Несовпадение условий", Toast.LENGTH_SHORT).show()
         }
-        Toast.makeText(requireContext(), "sended", Toast.LENGTH_SHORT).show()
     }
 
     companion object {

@@ -40,5 +40,7 @@ interface NavigationContract {
 
     fun groupMessaging(groupInfo: GroupInfo)
 
+    fun tripNotifications()
+
     fun exit()
 }

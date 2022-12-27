@@ -12,7 +12,7 @@ import com.earl.gpns.ui.mappers.DriverFormUiToDomainMapper
 import com.earl.gpns.ui.mappers.TripNotificationUiToDomainMapper
 import com.earl.gpns.ui.models.DriverFormUi
 import com.earl.gpns.ui.models.TripNotificationUi
-import com.earl.gpns.ui.search.SpinnerInterfaceInitializer
+import com.earl.gpns.ui.search.SpinnerInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,7 +23,7 @@ class DriverFormViewModel @Inject constructor(
     private val interactor: Interactor,
     private val driverFormUiToDomainMapper: DriverFormUiToDomainMapper<DriverFormDomain>,
     private val tripNotificationUiToDomainMapper: TripNotificationUiToDomainMapper<TripNotificationDomain>
-): ViewModel(), SpinnerInterfaceInitializer {
+): ViewModel(), SpinnerInitializer {
 
     override fun initSpinnerAdapter(
         textResource: Int,

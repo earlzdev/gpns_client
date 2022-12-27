@@ -1,3 +1,5 @@
 package com.earl.gpns.domain.webSocketActions.services
 
-interface SearchingSocketService
+import com.earl.gpns.domain.webSocketActions.NewTripInviteNotification
+
+interface SearchingSocketService : NewTripInviteNotification

@@ -1,15 +1,15 @@
 package com.earl.gpns.data
 
-import com.earl.gpns.data.mappers.GroupLastMessageDataToDomainMapper
-import com.earl.gpns.data.mappers.GroupLastMessageResponseToDataMapper
-import com.earl.gpns.data.mappers.NewLastMsgDataToDomainMapper
-import com.earl.gpns.data.mappers.NewLastMsgResponseToDataMapper
+import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.GroupLastMessageData
 import com.earl.gpns.data.models.NewLastMessageInRoomData
+import com.earl.gpns.data.models.TripNotificationData
+import com.earl.gpns.data.models.remote.TripNotificationRemote
 import com.earl.gpns.data.models.remote.requests.TypingStatusInGroupRequest
 import com.earl.gpns.data.models.remote.responses.*
 import com.earl.gpns.domain.models.GroupLastMessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
+import com.earl.gpns.domain.models.TripNotificationDomain
 import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
@@ -22,7 +22,9 @@ class SocketActionsParser @Inject constructor(
     private val lastMsgResponseToDataMapper: NewLastMsgResponseToDataMapper<NewLastMessageInRoomData>,
     private val lastMsgDataToDomainMapper: NewLastMsgDataToDomainMapper<NewLastMessageInRoomDomain>,
     private val groupLastMessageResponseToDataMapper: GroupLastMessageResponseToDataMapper<GroupLastMessageData>,
-    private val groupLastMessageDataToDomainMapper: GroupLastMessageDataToDomainMapper<GroupLastMessageDomain>
+    private val groupLastMessageDataToDomainMapper: GroupLastMessageDataToDomainMapper<GroupLastMessageDomain>,
+    private val tripNotificationRemoteToDataMapper: TripNotificationRemoteToDataMapper<TripNotificationData>,
+    private val tripNotificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>
 )  {
 
     private var roomObservingService: RoomsObservingSocketService? = null
@@ -101,5 +103,13 @@ class SocketActionsParser @Inject constructor(
     fun markAuthoredMessagesAsReadInGroup(json: String) {
         val response = Json.decodeFromString<MarkAuthoredMessagesAsReadInGroup>(json)
         roomObservingService?.markAuthoredMessagesAsReadInGroup(response.groupId)
+    }
+
+    fun newNotification(json: String) {
+        val response = Json.decodeFromString<TripNotificationRemote>(json)
+        searchingSocketService?.showNotification(response
+            .map(tripNotificationRemoteToDataMapper)
+            .mapToDomain(tripNotificationDataToDomainMapper)
+        )
     }
 }
