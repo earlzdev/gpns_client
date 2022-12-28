@@ -7,11 +7,12 @@ import com.earl.gpns.data.models.GroupMessagesCounterData
 import com.earl.gpns.data.models.NewRoomDtoData
 import com.earl.gpns.data.models.RoomData
 import com.earl.gpns.data.models.TripNotificationData
+import com.earl.gpns.domain.DatabaseRepository
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
+import com.earl.gpns.domain.mappers.TripNotificationDomainToDataMapper
+import com.earl.gpns.domain.models.GroupMessagesCounterDomain
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.DatabaseRepository
-import com.earl.gpns.domain.models.GroupMessagesCounterDomain
 import com.earl.gpns.domain.models.TripNotificationDomain
 import javax.inject.Inject
 
@@ -26,7 +27,9 @@ class BaseDatabaseRepository @Inject constructor(
     private val groupMessagesCounterDbToDataMapper: GroupMessagesCounterDbToDataMapper<GroupMessagesCounterData>,
     private val groupMessagesCounterDataToDomainMapper: GroupMessagesCounterDataToDomainMapper<GroupMessagesCounterDomain>,
     private val notificationsDbToDataMapper: NotificationDbToDataMapper<TripNotificationData>,
-    private val notificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>
+    private val notificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>,
+    private val notificationDomainToDataMapper: TripNotificationDomainToDataMapper<TripNotificationData>,
+    private val notificationDataToDbMapper: TripNotificationDataToDbMapper<NotificationsDb>
 ) : DatabaseRepository {
 
     override suspend fun insertNewRoomIntoLocalDb(room: NewRoomDtoDomain) {
@@ -91,5 +94,17 @@ class BaseDatabaseRepository @Inject constructor(
     override suspend fun updateMessagesReadCounter(groupId: String, counter: Int) {
         Log.d("tag", "updateMessagesReadCounter")
         groupsDao.updateReadMessagesCount(groupId, counter)
+    }
+
+    override suspend fun insertNotificationIntoDb(notificationDomain: TripNotificationDomain) {
+        notificationsDao.insertNewNotification(
+            notificationDomain
+                .mapToData(notificationDomainToDataMapper)
+                .mapToDb(notificationDataToDbMapper)
+        )
+    }
+
+    override suspend fun clearNotificationsDb() {
+        notificationsDao.clearNotificationDb()
     }
 }

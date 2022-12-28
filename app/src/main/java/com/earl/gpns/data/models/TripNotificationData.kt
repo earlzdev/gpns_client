@@ -1,5 +1,6 @@
 package com.earl.gpns.data.models
 
+import com.earl.gpns.data.mappers.TripNotificationDataToDbMapper
 import com.earl.gpns.data.mappers.TripNotificationDataToDomainMapper
 import com.earl.gpns.data.mappers.TripNotificationDataToRemoteMapper
 
@@ -8,6 +9,8 @@ interface TripNotificationData {
     fun <T> mapToRemote(mapper: TripNotificationDataToRemoteMapper<T>) : T
 
     fun <T> mapToDomain(mapper: TripNotificationDataToDomainMapper<T>) : T
+
+    fun <T> mapToDb(mapper: TripNotificationDataToDbMapper<T>) : T
 
     class Base(
         private val id: String,
@@ -23,6 +26,9 @@ interface TripNotificationData {
             mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp)
 
         override fun <T> mapToDomain(mapper: TripNotificationDataToDomainMapper<T>) =
+            mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp)
+
+        override fun <T> mapToDb(mapper: TripNotificationDataToDbMapper<T>) =
             mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp)
     }
 }

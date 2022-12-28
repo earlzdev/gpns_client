@@ -10,7 +10,7 @@ interface DriverFormDetailsUi : TripFormDetails {
         from: String,
         to: String,
         schedule: String
-    ) : DriverDetails
+    ) : DriverDetailsUi
 
     class Base(
         private val catchCompanionFrom: String,
@@ -31,7 +31,7 @@ interface DriverFormDetailsUi : TripFormDetails {
             from: String,
             to: String,
             schedule: String
-        ) = DriverDetails(
+        ) = DriverDetailsUi(
             username,
             userImage,
             from,

@@ -24,4 +24,8 @@ interface DatabaseRepository {
     suspend fun clearLocalDataBase()
 
     suspend fun fetchAllTripNotificationsFromLocalDb() : List<TripNotificationDomain>
+
+    suspend fun insertNotificationIntoDb(notificationDomain: TripNotificationDomain)
+
+    suspend fun clearNotificationsDb()
 }

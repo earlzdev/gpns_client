@@ -13,4 +13,7 @@ interface NotificationsDao {
 
     @Query("select * from notifications")
     fun fetchAllFromNotificationsDb() : List<NotificationsDb>
+
+    @Query("delete from notifications")
+    fun clearNotificationDb()
 }

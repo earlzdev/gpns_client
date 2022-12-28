@@ -56,6 +56,11 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun removeDeletedSearchingForm(username: String) {
+        val form = tripForms.value.find { it.sameUsername(username) }!!
+        tripForms.value -= form
+    }
+
     fun observeSearchTripFormsLiveData(owner: LifecycleOwner, observer: Observer<List<TripFormUi>>) {
         searchTripFormsLiveData.observe(owner, observer)
     }

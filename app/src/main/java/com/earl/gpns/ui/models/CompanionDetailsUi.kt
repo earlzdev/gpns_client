@@ -2,7 +2,7 @@ package com.earl.gpns.ui.models
 
 import com.earl.gpns.ui.SearchFormsDetails
 
-data class CompanionDetails(
+data class CompanionDetailsUi(
     val username: String,
     val userImage: String,
     val from: String,

@@ -118,6 +118,8 @@
     <string name="compa">Попутчик</string>
     <string name="driv">Водитель</string>
     <string name="trip_notifications_chapter">Уведомления о приглашениях:</string>
+    <string name="deny">Отказаться</string>
+    <string name="agree">Согласиться</string>
 
     // spinners
     <string-array name="spinner_drive_from">

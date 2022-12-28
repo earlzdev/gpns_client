@@ -2,7 +2,7 @@ package com.earl.gpns.ui.models
 
 import com.earl.gpns.ui.SearchFormsDetails
 
-data class DriverDetails(
+data class DriverDetailsUi(
     val username: String,
     val userImage: String,
     val from: String,

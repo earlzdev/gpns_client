@@ -161,4 +161,30 @@ interface Service {
     suspend fun fetchAllNotifications(
         @Header("Authorization") token: String
     ) : List<TripNotificationRemote>
+
+    @Headers("Content-Type: application/json")
+    @POST("/fetchCompanionForm")
+    suspend fun fetchCompanionForm(
+        @Header("Authorization") token: String,
+        @Body username: UserNameDto
+    ) : CompanionFormRemote
+
+    @Headers("Content-Type: application/json")
+    @POST("/fetchDriverForm")
+    suspend fun fetchDriverForm(
+        @Header("Authorization") token: String,
+        @Body username: UserNameDto
+    ) : DriverFormRemote
+
+    @Headers("Content-Type: application/json")
+    @POST("/deleteDriverForm")
+    suspend fun deleteDriverForm(
+        @Header("Authorization") token: String,
+    )
+
+    @Headers("Content-Type: application/json")
+    @POST("/deleteCompanionForm")
+    suspend fun deleteCompanionForm(
+        @Header("Authorization") token: String,
+    )
 }

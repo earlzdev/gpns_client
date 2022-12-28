@@ -1,24 +1,26 @@
 package com.earl.gpns.ui.search.companion
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentCompanionFormDetailsBinding
 import com.earl.gpns.ui.SearchFormsDetails
-import com.earl.gpns.ui.models.CompanionDetails
+import com.earl.gpns.ui.models.CompanionDetailsUi
 import com.earl.gpns.ui.models.TripNotificationUi
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.UUID
 
 @AndroidEntryPoint
 class CompanionFormDetailsFragment(
-    private val details: SearchFormsDetails
+    private val details: SearchFormsDetails,
+    private val viewRegime: String
 ) : BaseFragment<FragmentCompanionFormDetailsBinding>() {
 
     private lateinit var viewModel: CompanionFormViewModel
@@ -41,7 +43,21 @@ class CompanionFormDetailsFragment(
     }
 
     private fun initViews() {
-        details as CompanionDetails
+        details as CompanionDetailsUi
+        when (viewRegime) {
+            NOTIFICATION -> {
+                if (details.username != preferenceManager.getString(Keys.KEY_NAME)) {
+                    binding.suggestPlace.visibility = View.GONE
+                    binding.deny.visibility = View.GONE
+                } else {
+                    binding.suggestPlace.text = getString(R.string.agree)
+                    binding.deny.isVisible = true
+                }
+            }
+            DETAILS -> {
+
+            }
+        }
         binding.userName.text = details.username
         binding.from.text = details.from
         binding.driveTo.text = details.to
@@ -66,17 +82,19 @@ class CompanionFormDetailsFragment(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 notification
             )
-            Toast.makeText(requireContext(), "sended", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Приглашение отправлено", Toast.LENGTH_LONG).show()
         } else {
-            Toast.makeText(requireContext(), "Несовпадение условий", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Чтобы отправить уведомление этому пользователю, нужно иметь активную анкету водителя!", Toast.LENGTH_LONG).show()
         }
     }
 
     companion object {
 
-        fun newInstance(details: SearchFormsDetails) = CompanionFormDetailsFragment(details)
+        fun newInstance(details: SearchFormsDetails, viewRegime: String) = CompanionFormDetailsFragment(details, viewRegime)
         private const val DRIVER_ROLE = "DRIVER_ROLE"
         private const val COMPANION_ROLE = "COMPANION_ROLE"
         private const val INVITE = 1
+        private const val DETAILS = "DETAILS"
+        private const val NOTIFICATION = "NOTIFICATION"
     }
 }

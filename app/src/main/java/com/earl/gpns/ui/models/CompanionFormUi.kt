@@ -6,6 +6,8 @@ interface CompanionFormUi {
 
     fun <T> mapToDomain(mapper: CompanionFormUiToDomainMapper<T>) : T
 
+    fun provideCompanionDetailsUi() : CompanionDetailsUi
+
     class Base(
         private val username: String,
         private val userImage: String,
@@ -18,5 +20,16 @@ interface CompanionFormUi {
     ) : CompanionFormUi {
         override fun <T> mapToDomain(mapper: CompanionFormUiToDomainMapper<T>) =
             mapper.map(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment)
+
+        override fun provideCompanionDetailsUi() = CompanionDetailsUi(
+            username,
+            userImage,
+            from,
+            to,
+            schedule,
+            actualTripTime,
+            ableToPay ?: "",
+            comment
+        )
     }
 }

@@ -1,22 +1,16 @@
 package com.earl.gpns.ui.search
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentNotificationsBinding
 import com.earl.gpns.domain.mappers.TripNotificationDomainToUiMapper
-import com.earl.gpns.domain.models.TripNotificationDomain
-import com.earl.gpns.domain.webSocketActions.NewTripInviteNotification
 import com.earl.gpns.ui.models.TripNotificationUi
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -42,7 +36,11 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
     }
 
     private fun recycler() {
-        recyclerAdapter = TripNotificationsRecyclerAdapter(this)
+        recyclerAdapter = TripNotificationsRecyclerAdapter(
+            preferenceManager.getString(Keys.KEY_NAME) ?: "",
+            if (preferenceManager.getBoolean(Keys.IS_DRIVER)) DRIVER_ROLE else COMPANION_ROLE,
+            this
+        )
         binding.notificationsRecycler.adapter = recyclerAdapter
         viewModel.fetchAllTripNotificationsFromLocalDb()
         viewModel.fetchNotifications(preferenceManager.getString(Keys.KEY_JWT) ?: "")
@@ -58,11 +56,35 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
         }
     }
 
-    override fun showNotificationDetails(id: String) {
-
+    override fun showNotificationDetails(id: String, username: String, tripRole: String) {
+        viewModel.insertNotificationIntoDb(id)
+        if (tripRole == COMPANION_ROLE) {
+            viewModel.fetchCompanionForm(
+                preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                username
+            )
+            viewModel.observeCompanionFormLiveData(this) {
+                if (it != null) {
+                    navigator.companionFormDetails(it.provideCompanionDetailsUi(), NOTIFICATION)
+                }
+            }
+        } else {
+            viewModel.fetchDriverForm(
+                preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                username)
+            viewModel.observeDriverFormLiveData(this) {
+                if (it != null) {
+                    navigator.driverFormDetails(it.provideDriverFormDetailsUi(), NOTIFICATION)
+                }
+            }
+        }
     }
 
     companion object {
         fun newInstance() = TripNotificationsFragment()
+        private const val COMPANION_ROLE = "COMPANION_ROLE"
+        private const val DRIVER_ROLE = "DRIVER_ROLE"
+        private const val DETAILS = "DETAILS"
+        private const val NOTIFICATION = "NOTIFICATION"
     }
 }

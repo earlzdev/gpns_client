@@ -8,13 +8,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.earl.gpns.databinding.RecyclerNotificationItemBinding
 import com.earl.gpns.ui.models.TripNotificationRecyclerItemUi
-import com.earl.gpns.ui.models.TripNotificationUi
 
 interface NotificationOnClickListener {
-    fun showNotificationDetails(id: String)
+    fun showNotificationDetails(id: String, username: String, tripRole: String)
 }
 
 class TripNotificationsRecyclerAdapter(
+    private val username: String,
+    private val tripRole: String,
     private val clickListener: NotificationOnClickListener
 ) : ListAdapter<TripNotificationRecyclerItemUi, TripNotificationsRecyclerAdapter.ItemViewHolder>(Diff)  {
 
@@ -27,14 +28,23 @@ class TripNotificationsRecyclerAdapter(
         val item = getItem(position)
         holder.bind(item)
         holder.itemView.setOnClickListener {
-            clickListener.showNotificationDetails(item.id)
+            if (item.authorName == username && item.authorTripRole == tripRole) {
+                clickListener.showNotificationDetails(item.id, item.receiverName, item.receiverTripRole)
+            } else {
+                clickListener.showNotificationDetails(item.id, item.authorName, item.authorTripRole)
+            }
         }
     }
 
     inner class ItemViewHolder(private val binding: RecyclerNotificationItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: TripNotificationRecyclerItemUi) {
-            val tripRole = if (item.authorTripRole == COMPANION_ROLE) "Попутчик" else "Водитель"
-            binding.inviteText.text = "$tripRole ${item.authorName} приглашает Вас ездить вместе"
+            val tripRoleInviter = if (item.authorTripRole == COMPANION_ROLE) "Попутчик" else "Водитель"
+            val tripRoleInviting = if (item.receiverTripRole == COMPANION_ROLE) "попутчика" else "водителя"
+            if (item.authorName == username) {
+                binding.inviteText.text = "Вы пригласили $tripRoleInviting ${item.receiverName} ездить вместе"
+            } else {
+                binding.inviteText.text = "$tripRoleInviter ${item.authorName} приглашает Вас ездить вместе"
+            }
             binding.timestamp.text = item.timestamp
             binding.newNotificationIndicator.isVisible = item.read == 0
         }
@@ -44,5 +54,6 @@ class TripNotificationsRecyclerAdapter(
         override fun areItemsTheSame(oldItem: TripNotificationRecyclerItemUi, newItem: TripNotificationRecyclerItemUi) = oldItem.same(newItem)
         override fun areContentsTheSame(oldItem: TripNotificationRecyclerItemUi, newItem: TripNotificationRecyclerItemUi) = oldItem.equals(newItem)
         private const val COMPANION_ROLE = "COMPANION_ROLE"
+        private const val DRIVER_ROLE = "DRIVER_ROLE"
     }
 }
