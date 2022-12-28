@@ -104,6 +104,18 @@ interface Interactor {
 
     suspend fun fetchAllTripNotifications(token: String) : List<TripNotificationDomain>
 
+    suspend fun insertNewNotificationIntoDb(notification: TripNotificationDomain)
+
+    suspend fun fetchDriverForm(token: String, username: String) : DriverFormDomain?
+
+    suspend fun fetchCompanionForm(token: String, username: String) : CompanionFormDomain?
+
+    suspend fun deleteDriverForm(token: String)
+
+    suspend fun deleteCompanionForm(token: String)
+
+    suspend fun clearNotificationsDb()
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -283,5 +295,27 @@ interface Interactor {
 
         override suspend fun fetchAllTripNotifications(token: String) =
             repository.fetchAllTripNotifications(token)
+
+        override suspend fun insertNewNotificationIntoDb(notification: TripNotificationDomain) {
+            localDatabaseRepository.insertNotificationIntoDb(notification)
+        }
+
+        override suspend fun fetchDriverForm(token: String, username: String) =
+            repository.fetchDriverForm(token, username)
+
+        override suspend fun fetchCompanionForm(token: String, username: String) =
+            repository.fetchCompanionForm(token, username)
+
+        override suspend fun deleteDriverForm(token: String) {
+            repository.deleteDriverForm(token)
+        }
+
+        override suspend fun deleteCompanionForm(token: String) {
+            repository.deleteCompanionForm(token)
+        }
+
+        override suspend fun clearNotificationsDb() {
+            localDatabaseRepository.clearNotificationsDb()
+        }
     }
 }

@@ -14,6 +14,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="50dp"
         android:text="EXIT"
+        android:background="@color/white"
+        />
+
+    <Button
+        android:id="@+id/delete_trip_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/exit_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/white"
+        android:text="DELETE TRIP FORM"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

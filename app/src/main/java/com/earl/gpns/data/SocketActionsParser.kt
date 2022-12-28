@@ -112,4 +112,9 @@ class SocketActionsParser @Inject constructor(
             .mapToDomain(tripNotificationDataToDomainMapper)
         )
     }
+
+    fun removeDeletedSearchingFormFromList(json: String) {
+        val response = Json.decodeFromString<DeletedSearchingFormDto>(json).username
+        searchingSocketService?.removeDeletedSearchingFormFromList(response)
+    }
 }

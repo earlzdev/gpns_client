@@ -178,7 +178,9 @@ object AppModule {
         groupMessagesCounterDbToDataMapper: GroupMessagesCounterDbToDataMapper<GroupMessagesCounterData>,
         groupMessagesCounterDataToDomainMapper: GroupMessagesCounterDataToDomainMapper<GroupMessagesCounterDomain>,
         notificationsDbToDataMapper: NotificationDbToDataMapper<TripNotificationData>,
-        notificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>
+        notificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>,
+        notificationDomainToDataMapper: TripNotificationDomainToDataMapper<TripNotificationData>,
+        notificationDataToDbMapper: TripNotificationDataToDbMapper<NotificationsDb>
     ) : DatabaseRepository {
         return BaseDatabaseRepository(
             roomsDao,
@@ -191,7 +193,9 @@ object AppModule {
             groupMessagesCounterDbToDataMapper,
             groupMessagesCounterDataToDomainMapper,
             notificationsDbToDataMapper,
-            notificationDataToDomainMapper
+            notificationDataToDomainMapper,
+            notificationDomainToDataMapper,
+            notificationDataToDbMapper
         )
     }
 

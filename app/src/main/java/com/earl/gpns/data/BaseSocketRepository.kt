@@ -191,7 +191,10 @@ class BaseSocketRepository @Inject constructor(
                         }
                         NEW_INVITE -> {
                             socketActionsParser.newNotification(socketModel.value)
-                            Log.d("tag", "observeSearchingFormsSocket: NEW INVITE")
+                            return@map null
+                        }
+                        REMOVE_DELETED_FORM -> {
+                            socketActionsParser.removeDeletedSearchingFormFromList(socketModel.value)
                             return@map null
                         }
                         else -> {
@@ -317,5 +320,6 @@ class BaseSocketRepository @Inject constructor(
         private const val MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP = "MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP"
         private const val NEW_SEARCHING_FORM = "NEW_SEARCHING_FORM"
         private const val NEW_INVITE = "NEW_INVITE"
+        private const val REMOVE_DELETED_FORM = "REMOVE_DELETED_FORM"
     }
 }

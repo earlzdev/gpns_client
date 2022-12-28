@@ -10,7 +10,7 @@ interface CompanionFormDetailsUi : TripFormDetails {
         from: String,
         to: String,
         schedule: String
-    ) : CompanionDetails
+    ) : CompanionDetailsUi
 
     class Base(
         private val actualTripTime: String,
@@ -24,7 +24,7 @@ interface CompanionFormDetailsUi : TripFormDetails {
             from: String,
             to: String,
             schedule: String
-        ) = CompanionDetails(
+        ) = CompanionDetailsUi(
             username,
             userImage,
             from,

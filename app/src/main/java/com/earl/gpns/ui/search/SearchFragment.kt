@@ -29,6 +29,7 @@ import javax.inject.Inject
 class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickListener, SearchingSocketService {
 
     private lateinit var viewModel: SearchViewModel
+    private lateinit var recyclerAdapter: TripFormsRecyclerAdapter
     @Inject
     lateinit var tripNotificationDomainToUiMapper: TripNotificationDomainToUiMapper<TripNotificationUi>
 
@@ -49,17 +50,21 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
             navigator.tripNotifications()
             binding.newNotificationIcon.isVisible = false
         }
+        binding.searchChapter.setOnClickListener {
+            preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, false)
+            preferenceManager.putBoolean(Keys.IS_DRIVER, false)
+            Toast.makeText(requireContext(), "Done", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun recycler() {
-        val adapter = TripFormsRecyclerAdapter(this)
-        binding.recyclerTripForms.adapter = adapter
+        recyclerAdapter = TripFormsRecyclerAdapter(this)
+        binding.recyclerTripForms.adapter = recyclerAdapter
         lifecycleScope.launchWhenStarted {
             viewModel._tripForms
                 .onEach {
                         forms ->
-                    Log.d("tag", "recycler: new $forms")
-                    adapter.submitList(forms)
+                    recyclerAdapter.submitList(forms)
                 }
                 .collect()
         }
@@ -67,9 +72,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
 
     override fun showDetails(role: String, details: SearchFormsDetails) {
         if (role == COMPANION_ROLE) {
-            navigator.companionFormDetails(details)
+            navigator.companionFormDetails(details, DETAILS)
         } else {
-            navigator.driverFormDetails(details)
+            navigator.driverFormDetails(details, DETAILS)
         }
     }
 
@@ -79,10 +84,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
 
     override fun showNotification(notification: TripNotificationDomain) {
         lifecycleScope.launch(Dispatchers.Main) {
-//            val notificationUi = notification.mapToUi(tripNotificationDomainToUiMapper).provideDataForNotification()
-//            Log.d("tag", "showNotification search fragment: ${notificationUi}")
             binding.newNotificationIcon.isVisible = true
-            Toast.makeText(requireContext(), "NEW INVITE", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Кто-то пригласил Вас ездить вместе, проверьте уведомления", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun removeDeletedSearchingFormFromList(username: String) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (recyclerAdapter.currentList.isNotEmpty()) {
+                viewModel.removeDeletedSearchingForm(username)
+            }
         }
     }
 
@@ -90,5 +101,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
 
         fun newInstance() = SearchFragment()
         private const val COMPANION_ROLE = "COMPANION_ROLE"
+        private const val DETAILS = "DETAILS"
+        private const val NOTIFICATION = "NOTIFICATION"
     }
 }

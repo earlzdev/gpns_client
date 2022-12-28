@@ -52,4 +52,12 @@ interface Repository {
     suspend fun inviteCompanion(token: String, notification: TripNotificationDomain)
 
     suspend fun fetchAllTripNotifications(token: String) : List<TripNotificationDomain>
+
+    suspend fun fetchCompanionForm(token: String, username: String) : CompanionFormDomain?
+
+    suspend fun fetchDriverForm(token: String, username: String) : DriverFormDomain?
+
+    suspend fun deleteDriverForm(token: String)
+
+    suspend fun deleteCompanionForm(token: String)
 }

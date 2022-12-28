@@ -13,6 +13,8 @@ interface TripNotificationUi : Same<TripNotificationUi> {
 
     fun provideId() : String
 
+    fun provideReceiverName() : String
+
     class Base(
         private val id: String,
         private val authorName: String,
@@ -27,9 +29,11 @@ interface TripNotificationUi : Same<TripNotificationUi> {
             mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp)
 
         override fun provideTripNotificationUiRecyclerItem() = TripNotificationRecyclerItemUi(
-            id, authorName, authorTripRole, isInvite, timestamp, 0
+            id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp, 0
         )
 
         override fun provideId() = id
+
+        override fun provideReceiverName() = receiverName
     }
 }

@@ -26,6 +26,15 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         binding.exitBtn.setOnClickListener {
             logOut()
         }
+        binding.deleteTripForm.setOnClickListener {
+            if (preferenceManager.getBoolean(Keys.IS_DRIVER)) {
+                viewModel.deleteDriverFormForm(preferenceManager.getString(Keys.KEY_JWT) ?: "")
+            } else {
+                viewModel.deleteCompanionForm(preferenceManager.getString(Keys.KEY_JWT) ?: "")
+            }
+            preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, false)
+            preferenceManager.putBoolean(Keys.IS_DRIVER, false)
+        }
     }
 
     private fun logOut() {

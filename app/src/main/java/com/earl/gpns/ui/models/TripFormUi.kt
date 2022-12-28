@@ -28,6 +28,8 @@ interface TripFormUi : Same<TripFormUi> {
 
     fun provideTripRole() : String
 
+    fun sameUsername(name: String) : Boolean
+
     class Base(
         private val username: String,
         private val userImage: String,
@@ -76,6 +78,8 @@ interface TripFormUi : Same<TripFormUi> {
         }
 
         override fun provideTripRole() = companionRole
+
+        override fun sameUsername(name: String) = name == username
     }
 
     companion object {

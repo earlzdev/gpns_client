@@ -7,6 +7,8 @@ interface DriverFormUi {
 
     fun <T> mapToDomain(mapper: DriverFormUiToDomainMapper<T>) : T
 
+    fun provideDriverFormDetailsUi() : DriverDetailsUi
+
     @Serializable
     class Base(
         private val username: String,
@@ -45,5 +47,24 @@ interface DriverFormUi {
                 tripPrice,
                 driverComment
             )
+
+        override fun provideDriverFormDetailsUi() = DriverDetailsUi(
+            username,
+            userImage,
+            driveFrom,
+            driveTo,
+            schedule,
+            catchCompanionFrom,
+            alsoCanDriveTo,
+            ableToDriveInTurn,
+            actualTripTime,
+            car,
+            carModel,
+            carColor,
+            passengersCount.toInt(),
+            carGovNumber,
+            tripPrice.toInt(),
+            driverComment
+        )
     }
 }

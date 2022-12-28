@@ -344,6 +344,44 @@ class BaseRepository @Inject constructor(
         }
     }
 
+    override suspend fun fetchCompanionForm(token: String, username: String): CompanionFormDomain? {
+        return try {
+            service.fetchCompanionForm("Bearer $token", UserNameDto(username))
+                .mapToData(companionFormRemoteToDataMapper)
+                .mapToDomain(companionFormDataToDomainMapper)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    override suspend fun fetchDriverForm(token: String, username: String): DriverFormDomain? {
+        return try {
+             service.fetchDriverForm("Bearer $token", UserNameDto(username))
+                 .mapToData(driverFormRemoteToDataMapper)
+                 .mapToDomain(driverFormDataToDomainMapper)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    override suspend fun deleteDriverForm(token: String) {
+        try {
+            service.deleteDriverForm("Bearer $token")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun deleteCompanionForm(token: String) {
+        try {
+            service.deleteCompanionForm("Bearer $token")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     companion object {
         private const val KEY_SUCCESS = "success"
         private const val COMPANION_ROLE = "COMPANION_ROLE"
