@@ -28,4 +28,10 @@ interface DatabaseRepository {
     suspend fun insertNotificationIntoDb(notificationDomain: TripNotificationDomain)
 
     suspend fun clearNotificationsDb()
+
+    suspend fun insertNewWatchedNotificationId(id: String)
+
+    suspend fun clearWatchedNotificationsDb()
+
+    suspend fun fetchAllWatchedNotificationsIds() : List<String>
 }

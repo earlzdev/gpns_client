@@ -116,6 +116,12 @@ interface Interactor {
 
     suspend fun clearNotificationsDb()
 
+    suspend fun insertNewWatchedNotificationId(id: String)
+
+    suspend fun clearWatchedNotificationsDb()
+
+    suspend fun fetchAllWatchedNotificationsIds() : List<String>
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -317,5 +323,16 @@ interface Interactor {
         override suspend fun clearNotificationsDb() {
             localDatabaseRepository.clearNotificationsDb()
         }
+
+        override suspend fun insertNewWatchedNotificationId(id: String) {
+            localDatabaseRepository.insertNewWatchedNotificationId(id)
+        }
+
+        override suspend fun clearWatchedNotificationsDb() {
+            localDatabaseRepository.clearWatchedNotificationsDb()
+        }
+
+        override suspend fun fetchAllWatchedNotificationsIds() =
+            localDatabaseRepository.fetchAllWatchedNotificationsIds()
     }
 }

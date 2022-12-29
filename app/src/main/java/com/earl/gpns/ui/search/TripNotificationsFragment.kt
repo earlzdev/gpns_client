@@ -30,6 +30,10 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[TripNotificationsViewModel::class.java]
         recycler()
+        viewModel.fetchNotifications(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            preferenceManager.getString(Keys.KEY_NAME) ?: ""
+        )
         binding.backBtn.setOnClickListener {
             navigator.back()
         }
@@ -42,22 +46,22 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
             this
         )
         binding.notificationsRecycler.adapter = recyclerAdapter
-        viewModel.fetchAllTripNotificationsFromLocalDb()
-        viewModel.fetchNotifications(preferenceManager.getString(Keys.KEY_JWT) ?: "")
-        val existedList = viewModel.provideExistedTripNotificationsLiveData()
-        val existedNotificationsIdsList = existedList.map { it.provideId() }
+//        viewModel.fetchAllTripNotificationsFromLocalDb()
+//        viewModel.fetchNotifications(preferenceManager.getString(Keys.KEY_JWT) ?: "")
+//        val existedList = viewModel.provideExistedTripNotificationsLiveData()
+//        val existedNotificationsIdsList = existedList.map { it.provideId() }
         viewModel.observeTripNotificationsLiveData(this) { list ->
-            list.onEach { notification ->
-                if (existedNotificationsIdsList.contains(notification.id)) {
-                    notification.read = 1
-                }
-            }
+//            list.onEach { notification ->
+//                if (existedNotificationsIdsList.contains(notification.id)) {
+//                    notification.read = 1
+//                }
+//            }
             recyclerAdapter.submitList(list)
         }
     }
 
     override fun showNotificationDetails(id: String, username: String, tripRole: String) {
-        viewModel.insertNotificationIntoDb(id)
+        viewModel.insertNotificationIdIntoDb(id)
         if (tripRole == COMPANION_ROLE) {
             viewModel.fetchCompanionForm(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",

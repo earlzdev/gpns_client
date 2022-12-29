@@ -16,4 +16,13 @@ interface NotificationsDao {
 
     @Query("delete from notifications")
     fun clearNotificationDb()
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertNewWatchedNotifications(watchedId: WatchedNotificationsDb)
+
+    @Query("delete from Watchednotificationsdb")
+    fun clearWatchedNotificationsDb()
+
+    @Query("select * from WatchedNotificationsDb")
+    fun fetchAllFromWatchedNotificationId() : List<WatchedNotificationsDb>
 }

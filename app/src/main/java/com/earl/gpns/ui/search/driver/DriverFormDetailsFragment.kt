@@ -25,6 +25,7 @@ class DriverFormDetailsFragment(
 ) : BaseFragment<FragmentDriverFormDetailsBinding>() {
 
     private lateinit var viewModel: DriverFormViewModel
+    private var notificationSent: Boolean = false
 
     override fun viewBinding(
         inflater: LayoutInflater,
@@ -35,6 +36,7 @@ class DriverFormDetailsFragment(
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[DriverFormViewModel::class.java]
         initViews()
+        viewModel.fetchExistedNotificationsFromDb()
         binding.backBtn.setOnClickListener {
             navigator.back()
         }
@@ -73,29 +75,38 @@ class DriverFormDetailsFragment(
     }
 
     private fun inviteDriver() {
-        var existedNotificationsList = mutableListOf<TripNotificationUi>()
-        Log.d("tag", "inviteDriver:  existed $existedNotificationsList")
-        viewModel.fetchExistedNotificationsFromDb()
-        viewModel.observeTripNotificationsLiveData(this) {
-            existedNotificationsList = it.toMutableList()
-        }
-        if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && !preferenceManager.getBoolean(Keys.IS_DRIVER)) {
-            val notification = TripNotificationUi.Base(
-                UUID.randomUUID().toString(),
-                preferenceManager.getString(Keys.KEY_NAME) ?: "",
-                binding.userName.text.toString(),
-                COMPANION_ROLE,
-                DRIVER_ROLE,
-                INVITE,
-                ""
-            )
-            viewModel.inviteDriver(
-                preferenceManager.getString(Keys.KEY_JWT) ?: "",
-                notification
-            )
-            Toast.makeText(requireContext(), "Приглашение отправлено", Toast.LENGTH_SHORT).show()
+        val existedList = viewModel.provideExistedNotificationsListLiveData()?.map { it.provideTripNotificationUiRecyclerItem() }
+        val existedNotification = existedList?.find {  it.receiverName == binding.userName.text.toString() || it.authorName == binding.userName.text.toString()}
+        Log.d("tag", "inviteDriver: existedlist -> $existedList")
+        Log.d("tag", "inviteDriver: existed -> $existedNotification")
+        if (!notificationSent) {
+            if (existedNotification == null) {
+                if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && !preferenceManager.getBoolean(Keys.IS_DRIVER)) {
+                    val notification = TripNotificationUi.Base(
+                        UUID.randomUUID().toString(),
+                        preferenceManager.getString(Keys.KEY_NAME) ?: "",
+                        binding.userName.text.toString(),
+                        COMPANION_ROLE,
+                        DRIVER_ROLE,
+                        INVITE,
+                        ""
+                    )
+                    viewModel.inviteDriver(
+                        preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                        notification
+                    )
+                    Toast.makeText(requireContext(), "Приглашение отправлено", Toast.LENGTH_SHORT).show()
+                    notificationSent = true
+                } else {
+                    Toast.makeText(requireContext(), "Чтобы отправить уведомление этому пользователю, нужно иметь активную анкету попутчика!", Toast.LENGTH_SHORT).show()
+                }
+            } else if (existedNotification.receiverName == binding.userName.text.toString()){
+                Toast.makeText(requireContext(), "Вы уже отправяли приглашение этому пользователю, дождитесь ответа", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "У вас уже есть приглашение от этого пользователя", Toast.LENGTH_SHORT).show()
+            }
         } else {
-            Toast.makeText(requireContext(), "Чтобы отправить уведомление этому пользователю, нужно иметь активную анкету попутчика!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Вы уже отправяли приглашение этому пользователю, дождитесь ответа", Toast.LENGTH_SHORT).show()
         }
     }
 

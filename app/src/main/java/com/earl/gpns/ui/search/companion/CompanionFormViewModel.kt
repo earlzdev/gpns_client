@@ -3,10 +3,12 @@ package com.earl.gpns.ui.search.companion
 import android.content.Context
 import android.util.Log
 import android.widget.ArrayAdapter
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.earl.gpns.R
 import com.earl.gpns.domain.Interactor
+import com.earl.gpns.domain.mappers.TripNotificationDomainToUiMapper
 import com.earl.gpns.domain.models.CompanionFormDomain
 import com.earl.gpns.domain.models.TripNotificationDomain
 import com.earl.gpns.ui.mappers.CompanionFormUiToDomainMapper
@@ -17,14 +19,18 @@ import com.earl.gpns.ui.search.SpinnerInitializer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class CompanionFormViewModel @Inject constructor(
     private val interactor: Interactor,
     private val companionFormUiToDomainMapper: CompanionFormUiToDomainMapper<CompanionFormDomain>,
-    private val tripNotificationUiToDomainMapper: TripNotificationUiToDomainMapper<TripNotificationDomain>
+    private val tripNotificationUiToDomainMapper: TripNotificationUiToDomainMapper<TripNotificationDomain>,
+    private val tripNotificationDomainToUiMapper: TripNotificationDomainToUiMapper<TripNotificationUi>
 ): ViewModel(), SpinnerInitializer {
+
+    private val tripNotificationsLiveData = MutableLiveData<List<TripNotificationUi>>()
 
     override fun initSpinnerAdapter(
         textResource: Int,
@@ -52,5 +58,25 @@ class CompanionFormViewModel @Inject constructor(
                 notification.mapToDomain(tripNotificationUiToDomainMapper)
             )
         }
+        insertNewNotificationIntoDb(notification)
     }
+
+    private fun insertNewNotificationIntoDb(notificationUi: TripNotificationUi) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.insertNewNotificationIntoDb(notificationUi.mapToDomain(tripNotificationUiToDomainMapper))
+            interactor.insertNewWatchedNotificationId(notificationUi.provideId())
+        }
+    }
+
+    fun fetchExistedNotificationsFromDb() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = interactor.fetchAllTripNotificationFromLocalDb().map { it.mapToUi(tripNotificationDomainToUiMapper) }
+            withContext(Dispatchers.Main) {
+                tripNotificationsLiveData.value = list
+            }
+        }
+    }
+
+    fun provideTripNotificationsLiveData() = tripNotificationsLiveData.value
+
 }

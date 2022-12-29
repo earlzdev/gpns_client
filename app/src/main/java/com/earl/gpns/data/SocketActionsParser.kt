@@ -107,7 +107,7 @@ class SocketActionsParser @Inject constructor(
 
     fun newNotification(json: String) {
         val response = Json.decodeFromString<TripNotificationRemote>(json)
-        searchingSocketService?.showNotification(response
+        searchingSocketService?.reactOnNewNotification(response
             .map(tripNotificationRemoteToDataMapper)
             .mapToDomain(tripNotificationDataToDomainMapper)
         )
