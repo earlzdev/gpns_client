@@ -10,7 +10,8 @@ data class TripNotificationRecyclerItemUi(
     val receiverTripRole: String,
     val isInvite: Int,
     val timestamp: String,
-    var read: Int
+    var read: Int,
+    var watchable: Int
 ) : Same<TripNotificationRecyclerItemUi> {
     override fun same(value: TripNotificationRecyclerItemUi) = this == value
 }

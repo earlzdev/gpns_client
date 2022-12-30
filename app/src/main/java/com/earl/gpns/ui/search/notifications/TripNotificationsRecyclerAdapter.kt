@@ -1,5 +1,6 @@
 package com.earl.gpns.ui.search.notifications
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -10,7 +11,7 @@ import com.earl.gpns.databinding.RecyclerNotificationItemBinding
 import com.earl.gpns.ui.models.TripNotificationRecyclerItemUi
 
 interface NotificationOnClickListener {
-    fun showNotificationDetails(id: String, username: String, tripRole: String)
+    fun showNotificationDetails(id: String, username: String, tripRole: String, watchable: Boolean)
 }
 
 class TripNotificationsRecyclerAdapter(
@@ -31,9 +32,9 @@ class TripNotificationsRecyclerAdapter(
         holder.bind(item)
         holder.itemView.setOnClickListener {
             if (item.authorName == username && item.authorTripRole == tripRole) {
-                clickListener.showNotificationDetails(item.id, item.receiverName, item.receiverTripRole)
+                clickListener.showNotificationDetails(item.id, item.receiverName, item.receiverTripRole, item.watchable == 1)
             } else {
-                clickListener.showNotificationDetails(item.id, item.authorName, item.authorTripRole)
+                clickListener.showNotificationDetails(item.id, item.authorName, item.authorTripRole, item.watchable == 1)
             }
         }
     }
@@ -42,7 +43,12 @@ class TripNotificationsRecyclerAdapter(
         fun bind(item: TripNotificationRecyclerItemUi) {
             val tripRoleInviter = if (item.authorTripRole == COMPANION_ROLE) "Попутчик" else "Водитель"
             val tripRoleInviting = if (item.receiverTripRole == COMPANION_ROLE) "попутчика" else "водителя"
-            if (item.isInvite == 2) {
+            Log.d("tag", "bind: $item")
+            if (item.isInvite == 3 && item.receiverName != username) {
+                binding.inviteText.text = "Вы приняли приглашение $tripRoleInviting ${item.receiverName} ездить вместе и были добавлены в группу попутчиков"
+            } else if (item.isInvite == 3 && item.receiverName == username) {
+                binding.inviteText.text = "$tripRoleInviter ${item.authorName} принял Ваше приглашение ездить вместе. Вы добавлены в совместную группу попутчиков, где можно детальнее договориться о поездке."
+            } else if (item.isInvite == 2) {
                 binding.inviteText.text = "Водитель ${item.authorName}, с которым Вы ездили вместе, удалил свою анкету. Вам нужно найти нового водителя"
             } else {
                 if (item.authorName == username) {

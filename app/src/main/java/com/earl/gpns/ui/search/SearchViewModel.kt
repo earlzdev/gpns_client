@@ -86,6 +86,10 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    override fun updateNotificationsList() {
+
+    }
+
     override fun reactOnNewNotification(notification: TripNotificationDomain) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.insertNewNotificationIntoDb(notification)

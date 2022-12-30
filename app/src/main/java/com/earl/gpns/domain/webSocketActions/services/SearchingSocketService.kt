@@ -2,5 +2,6 @@ package com.earl.gpns.domain.webSocketActions.services
 
 import com.earl.gpns.domain.webSocketActions.NewTripInviteNotification
 import com.earl.gpns.domain.webSocketActions.RemoveDeletedSearchingFormFromList
+import com.earl.gpns.domain.webSocketActions.UpdateNotificationsList
 
-interface SearchingSocketService : NewTripInviteNotification, RemoveDeletedSearchingFormFromList
+interface SearchingSocketService : NewTripInviteNotification, RemoveDeletedSearchingFormFromList, UpdateNotificationsList

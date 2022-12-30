@@ -91,7 +91,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
 
     private fun observeNewNotifications() {
         viewModel.observeNotificationLiveData(this) {
-            Toast.makeText(requireContext(), "У Вас новое приглашение о совместной поездке!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "У Вас новое уведомление!", Toast.LENGTH_SHORT).show()
             binding.newNotificationIcon.isVisible = true
         }
     }
