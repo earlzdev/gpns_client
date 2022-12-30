@@ -4,10 +4,7 @@ import android.util.Log
 import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
-import com.earl.gpns.data.models.remote.GroupMessageRemote
-import com.earl.gpns.data.models.remote.MessageRemote
-import com.earl.gpns.data.models.remote.ObservingSocketModel
-import com.earl.gpns.data.models.remote.TripFormRemote
+import com.earl.gpns.data.models.remote.*
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
 import com.earl.gpns.data.models.remote.responses.RoomIdResponse
 import com.earl.gpns.data.models.remote.responses.RoomResponse
@@ -143,6 +140,14 @@ class BaseSocketRepository @Inject constructor(
                             val newRoom = Json.decodeFromString<RoomResponse>(socketModel.value)
                             return@map newRoom.map(roomResponseToDataMapper).map(roomDataToDomainMapper)
                         }
+                        NEW_GROUP -> {
+                            socketActionsParser.addNewGroup(socketModel.value)
+                            return@map null
+                        }
+                        REMOVE_DELETED_GROUP -> {
+                            socketActionsParser.removeDeletedGroup(socketModel.value)
+                            return@map null
+                        }
                         UPDATE_LAST_MESSAGE_IN_ROOM -> {
                             socketActionsParser.updateLastMessageInRoom(socketModel.value)
                             return@map null
@@ -189,7 +194,7 @@ class BaseSocketRepository @Inject constructor(
                             val newForm = Json.decodeFromString<TripFormRemote>(socketModel.value)
                             return@map newForm.map(tripFormRemoteToDataMapper).map(tripFormDataToDomainMapper)
                         }
-                        NEW_INVITE -> {
+                        NEW_NOTIFICATION -> {
                             socketActionsParser.newNotification(socketModel.value)
                             return@map null
                         }
@@ -319,7 +324,9 @@ class BaseSocketRepository @Inject constructor(
         private const val MARK_MESSAGES_AS_READ_IN_GROUP = "MARK_MESSAGES_AS_READ_IN_GROUP"
         private const val MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP = "MARK_AUTHORED_MESSAGES_AS_READ_IN_GROUP"
         private const val NEW_SEARCHING_FORM = "NEW_SEARCHING_FORM"
-        private const val NEW_INVITE = "NEW_INVITE"
+        private const val NEW_NOTIFICATION = "NEW_NOTIFICATION"
         private const val REMOVE_DELETED_FORM = "REMOVE_DELETED_FORM"
+        private const val NEW_GROUP = "NEW_GROUP"
+        private const val REMOVE_DELETED_GROUP = "REMOVE_DELETED_GROUP"
     }
 }

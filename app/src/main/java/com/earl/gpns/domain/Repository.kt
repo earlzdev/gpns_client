@@ -60,4 +60,12 @@ interface Repository {
     suspend fun deleteDriverForm(token: String)
 
     suspend fun deleteCompanionForm(token: String)
+
+    suspend fun acceptDriverToRideTogether(token: String, driverUsername: String)
+
+    suspend fun denyDriverToRideTogether(token: String, driverUsername: String)
+
+    suspend fun acceptCompanionToRideTogether(token: String, companionUsername: String)
+
+    suspend fun denyCompanionToRideTogether(token: String, companionUsername: String)
 }

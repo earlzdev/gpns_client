@@ -36,26 +36,54 @@ class CompanionFormDetailsFragment(
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[CompanionFormViewModel::class.java]
         initViews()
+        initClickListeners()
         viewModel.fetchExistedNotificationsFromDb()
+
+    }
+
+    private fun initClickListeners() {
         binding.backBtn.setOnClickListener {
             navigator.back()
         }
         binding.suggestPlace.setOnClickListener {
-            inviteCompanion()
+            when (viewRegime) {
+                NOTIFICATION -> {
+                    acceptCompanionToRideTogether(binding.userName.text.toString())
+                }
+                DETAILS -> {
+                    inviteCompanion()
+                }
+            }
         }
+        binding.deny.setOnClickListener {
+            denyCompanionToDriveTogether(binding.userName.text.toString())
+        }
+    }
+
+    private fun acceptCompanionToRideTogether(companionUsername: String) {
+        viewModel.acceptCompanionToRideTogether(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            companionUsername
+        )
+    }
+
+    private fun denyCompanionToDriveTogether(companionUsername: String) {
+        viewModel.denyCompanionToRideTogether(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            companionUsername
+        )
     }
 
     private fun initViews() {
         details as CompanionDetailsUi
         when (viewRegime) {
             NOTIFICATION -> {
-                if (details.username != preferenceManager.getString(Keys.KEY_NAME)) {
-                    binding.suggestPlace.visibility = View.GONE
-                    binding.deny.visibility = View.GONE
-                } else {
-                    binding.suggestPlace.text = getString(R.string.agree)
-                    binding.deny.isVisible = true
-                }
+                binding.suggestPlace.text = getString(R.string.agree)
+                binding.deny.isVisible = true
+            }
+            OWN_INVITE -> {
+                binding.suggestPlace.visibility = View.GONE
+                binding.deny.visibility = View.GONE
             }
             DETAILS -> {
 
@@ -115,5 +143,6 @@ class CompanionFormDetailsFragment(
         private const val INVITE = 1
         private const val DETAILS = "DETAILS"
         private const val NOTIFICATION = "NOTIFICATION"
+        private const val OWN_INVITE = "OWN_INVITE"
     }
 }

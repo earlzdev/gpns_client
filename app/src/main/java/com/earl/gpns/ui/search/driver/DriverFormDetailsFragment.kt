@@ -36,26 +36,53 @@ class DriverFormDetailsFragment(
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[DriverFormViewModel::class.java]
         initViews()
+        initClickListeners()
         viewModel.fetchExistedNotificationsFromDb()
+    }
+
+    private fun initClickListeners() {
         binding.backBtn.setOnClickListener {
             navigator.back()
         }
         binding.seggustDriveTogether.setOnClickListener {
-            if (viewRegime != NOTIFICATION) inviteDriver()  // todo send agree
+            when(viewRegime) {
+                NOTIFICATION -> {
+                    acceptDriverToRideTogether(binding.userName.text.toString())
+                }
+                DETAILS -> {
+                    inviteDriver()
+                }
+            }
         }
+        binding.deny.setOnClickListener {
+            denyDriverToDriveTogether(binding.userName.text.toString())
+        }
+    }
+
+    private fun acceptDriverToRideTogether(driverUsername: String) {
+        viewModel.acceptDriverToRideTogether(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            driverUsername
+        )
+    }
+
+    private fun denyDriverToDriveTogether(driverUsername: String) {
+        viewModel.denyDriverToRideTogether(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            driverUsername
+        )
     }
 
     private fun initViews() {
         details as DriverDetailsUi
         when (viewRegime) {
             NOTIFICATION -> {
-                if (details.username == preferenceManager.getString(Keys.KEY_NAME)) {
-                    binding.seggustDriveTogether.visibility = View.GONE
-                    binding.deny.visibility = View.GONE
-                } else {
-                    binding.seggustDriveTogether.text = getString(R.string.agree)
-                    binding.deny.isVisible = true
-                }
+                binding.seggustDriveTogether.text = getString(R.string.agree)
+                binding.deny.isVisible = true
+            }
+            OWN_INVITE -> {
+                binding.seggustDriveTogether.visibility = View.GONE
+                binding.deny.visibility = View.GONE
             }
             DETAILS -> {
 
@@ -118,5 +145,6 @@ class DriverFormDetailsFragment(
         private const val INVITE = 1
         private const val DETAILS = "DETAILS"
         private const val NOTIFICATION = "NOTIFICATION"
+        private const val OWN_INVITE = "OWN_INVITE"
     }
 }

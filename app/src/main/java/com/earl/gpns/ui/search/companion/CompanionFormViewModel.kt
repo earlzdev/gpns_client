@@ -79,4 +79,15 @@ class CompanionFormViewModel @Inject constructor(
 
     fun provideTripNotificationsLiveData() = tripNotificationsLiveData.value
 
+    fun acceptCompanionToRideTogether(token: String, companionUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.acceptCompanionToRideTogether(token, companionUsername)
+        }
+    }
+
+    fun denyCompanionToRideTogether(token: String, companionUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.denyCompanionToRideTogether(token, companionUsername)
+        }
+    }
 }

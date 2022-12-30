@@ -122,6 +122,16 @@ interface Interactor {
 
     suspend fun fetchAllWatchedNotificationsIds() : List<String>
 
+    suspend fun acceptDriverToRideTogether(token: String, driverUsername: String)
+
+    suspend fun denyDriverToRideTogether(token: String, driverUsername: String)
+
+    suspend fun acceptCompanionToRideTogether(token: String, companionUsername: String)
+
+    suspend fun denyCompanionToRideTogether(token: String, companionUsername: String)
+
+    suspend fun fetchTripNotification(id: String) : TripNotificationDomain
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -334,5 +344,24 @@ interface Interactor {
 
         override suspend fun fetchAllWatchedNotificationsIds() =
             localDatabaseRepository.fetchAllWatchedNotificationsIds()
+
+        override suspend fun acceptDriverToRideTogether(token: String, driverUsername: String) {
+            repository.acceptDriverToRideTogether(token, driverUsername)
+        }
+
+        override suspend fun denyDriverToRideTogether(token: String, driverUsername: String) {
+            repository.denyDriverToRideTogether(token, driverUsername)
+        }
+
+        override suspend fun acceptCompanionToRideTogether(token: String, companionUsername: String) {
+            repository.acceptCompanionToRideTogether(token, companionUsername)
+        }
+
+        override suspend fun denyCompanionToRideTogether(token: String, companionUsername: String) {
+            repository.denyCompanionToRideTogether(token, companionUsername)
+        }
+
+        override suspend fun fetchTripNotification(id: String) =
+            localDatabaseRepository.fetchTripNotification(id)
     }
 }

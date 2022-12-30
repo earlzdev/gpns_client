@@ -25,4 +25,7 @@ interface NotificationsDao {
 
     @Query("select * from WatchedNotificationsDb")
     fun fetchAllFromWatchedNotificationId() : List<WatchedNotificationsDb>
+
+    @Query("select * from notifications where id =:notificationId")
+    fun fetchTripNotification(notificationId: String) : NotificationsDb
 }

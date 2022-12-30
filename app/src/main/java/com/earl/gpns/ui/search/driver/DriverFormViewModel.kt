@@ -83,4 +83,16 @@ class DriverFormViewModel @Inject constructor(
     }
 
     fun provideExistedNotificationsListLiveData() = tripNotificationsLiveData.value
+
+    fun acceptDriverToRideTogether(token: String, driverUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.acceptDriverToRideTogether(token, driverUsername)
+        }
+    }
+
+    fun denyDriverToRideTogether(token: String, driverUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.denyDriverToRideTogether(token, driverUsername)
+        }
+    }
 }

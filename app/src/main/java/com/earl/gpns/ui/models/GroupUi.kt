@@ -110,7 +110,7 @@ interface GroupUi : Same<GroupUi> {
             }
         }
 
-        override fun provideGroupInfo() = GroupInfo(groupId, messagesCount, lastMessageAuthor)
+        override fun provideGroupInfo() = GroupInfo(groupId, title, messagesCount, lastMessageAuthor)
 
         override fun sameId(id: String) = groupId == id
 

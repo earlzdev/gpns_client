@@ -120,4 +120,8 @@ class BaseDatabaseRepository @Inject constructor(
     override suspend fun fetchAllWatchedNotificationsIds() =
         notificationsDao.fetchAllFromWatchedNotificationId().map { it.notificationId }
 
+    override suspend fun fetchTripNotification(id: String) =
+        notificationsDao.fetchTripNotification(id)
+            .map(notificationsDbToDataMapper)
+            .mapToDomain(notificationDataToDomainMapper)
 }

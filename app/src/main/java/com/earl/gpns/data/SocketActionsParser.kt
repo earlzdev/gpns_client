@@ -1,12 +1,15 @@
 package com.earl.gpns.data
 
 import com.earl.gpns.data.mappers.*
+import com.earl.gpns.data.models.GroupData
 import com.earl.gpns.data.models.GroupLastMessageData
 import com.earl.gpns.data.models.NewLastMessageInRoomData
 import com.earl.gpns.data.models.TripNotificationData
+import com.earl.gpns.data.models.remote.GroupRemote
 import com.earl.gpns.data.models.remote.TripNotificationRemote
 import com.earl.gpns.data.models.remote.requests.TypingStatusInGroupRequest
 import com.earl.gpns.data.models.remote.responses.*
+import com.earl.gpns.domain.models.GroupDomain
 import com.earl.gpns.domain.models.GroupLastMessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.models.TripNotificationDomain
@@ -14,6 +17,8 @@ import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketAction
 import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
 import com.earl.gpns.domain.webSocketActions.services.SearchingSocketService
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -24,7 +29,9 @@ class SocketActionsParser @Inject constructor(
     private val groupLastMessageResponseToDataMapper: GroupLastMessageResponseToDataMapper<GroupLastMessageData>,
     private val groupLastMessageDataToDomainMapper: GroupLastMessageDataToDomainMapper<GroupLastMessageDomain>,
     private val tripNotificationRemoteToDataMapper: TripNotificationRemoteToDataMapper<TripNotificationData>,
-    private val tripNotificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>
+    private val tripNotificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>,
+    private val groupRemoteToDataMapper: GroupRemoteToDataMapper<GroupData>,
+    private val groupDataToDomainMapper: GroupDataToDomainMapper<GroupDomain>
 )  {
 
     private var roomObservingService: RoomsObservingSocketService? = null
@@ -116,5 +123,17 @@ class SocketActionsParser @Inject constructor(
     fun removeDeletedSearchingFormFromList(json: String) {
         val response = Json.decodeFromString<DeletedSearchingFormDto>(json).username
         searchingSocketService?.removeDeletedSearchingFormFromList(response)
+    }
+
+    fun addNewGroup(json: String) {
+        val group = Json.decodeFromString<GroupRemote>(json)
+        roomObservingService?.addNewGroup(group.map(groupRemoteToDataMapper)
+            .mapToDomain(groupDataToDomainMapper))
+    }
+
+    fun removeDeletedGroup(json: String) {
+        val group = Json.decodeFromString<GroupRemote>(json)
+        roomObservingService?.removeDeletedGroup(group.map(groupRemoteToDataMapper)
+            .mapToDomain(groupDataToDomainMapper))
     }
 }

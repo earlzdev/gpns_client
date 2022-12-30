@@ -39,6 +39,8 @@ class RoomsViewModel @Inject constructor(
     private val rooms: MutableStateFlow<List<RoomUi>> = MutableStateFlow(emptyList())
     val _rooms = rooms.asStateFlow()
     private val groupsLiveData = MutableLiveData<List<GroupUi>>()
+    private val groups: MutableStateFlow<List<GroupUi>> = MutableStateFlow(emptyList())
+    val _groups = groups.asStateFlow()
 
     private fun fetchRooms(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -58,7 +60,8 @@ class RoomsViewModel @Inject constructor(
             }
 //            val list = interactor.fetchGroups(token).map { it.mapToUi(groupDomainToUiMapper) }
             withContext(Dispatchers.Main) {
-                groupsLiveData.value = list
+//                groupsLiveData.value = list
+                groups.value += list
             }
         }
     }
@@ -159,6 +162,21 @@ class RoomsViewModel @Inject constructor(
 
     fun observeGroupsLiveData(owner: LifecycleOwner, observer: Observer<List<GroupUi>>) {
         groupsLiveData.observe(owner, observer)
+    }
+
+    fun insertNewGroup(group: GroupUi) {
+        viewModelScope.launch(Dispatchers.IO) {
+            groups.value += group
+        }
+    }
+
+    fun removeDeletedGroup(groupUi: GroupUi) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val groupToDelete = groups.value.find { it.provideId() == groupUi.provideId() }
+            if (groupToDelete != null) {
+                groups.value -= groupToDelete
+            }
+        }
     }
 
     private fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String) {
