@@ -97,6 +97,7 @@ class BaseDatabaseRepository @Inject constructor(
     }
 
     override suspend fun insertNotificationIntoDb(notificationDomain: TripNotificationDomain) {
+        Log.d("tag", "insertNotificationIntoDb repository")
         notificationsDao.insertNewNotification(
             notificationDomain
                 .mapToData(notificationDomainToDataMapper)
@@ -107,4 +108,20 @@ class BaseDatabaseRepository @Inject constructor(
     override suspend fun clearNotificationsDb() {
         notificationsDao.clearNotificationDb()
     }
+
+    override suspend fun insertNewWatchedNotificationId(id: String) {
+        notificationsDao.insertNewWatchedNotifications(WatchedNotificationsDb(0, id))
+    }
+
+    override suspend fun clearWatchedNotificationsDb() {
+        notificationsDao.clearWatchedNotificationsDb()
+    }
+
+    override suspend fun fetchAllWatchedNotificationsIds() =
+        notificationsDao.fetchAllFromWatchedNotificationId().map { it.notificationId }
+
+    override suspend fun fetchTripNotification(id: String) =
+        notificationsDao.fetchTripNotification(id)
+            .map(notificationsDbToDataMapper)
+            .mapToDomain(notificationDataToDomainMapper)
 }

@@ -12,7 +12,6 @@ import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.TripNotificationDomainToUiMapper
 import com.earl.gpns.domain.models.DriverFormDomain
 import com.earl.gpns.domain.models.TripNotificationDomain
-import com.earl.gpns.ui.mappers.BaseTripNotificationDomainToUiMapper
 import com.earl.gpns.ui.mappers.DriverFormUiToDomainMapper
 import com.earl.gpns.ui.mappers.TripNotificationUiToDomainMapper
 import com.earl.gpns.ui.models.DriverFormUi
@@ -58,6 +57,12 @@ class DriverFormViewModel @Inject constructor(
         insertNewNotificationIntoDb(notificationUi)
     }
 
+    private fun fetchNotificationsList() {
+        viewModelScope.launch(Dispatchers.IO) {
+
+        }
+    }
+
     private fun insertNewNotificationIntoDb(notificationUi: TripNotificationUi) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.insertNewNotificationIntoDb(notificationUi.mapToDomain(tripNotificationUiToDomainMapper))
@@ -75,5 +80,19 @@ class DriverFormViewModel @Inject constructor(
 
     fun observeTripNotificationsLiveData(owner: LifecycleOwner, observer: Observer<List<TripNotificationUi>>) {
         tripNotificationsLiveData.observe(owner, observer)
+    }
+
+    fun provideExistedNotificationsListLiveData() = tripNotificationsLiveData.value
+
+    fun acceptDriverToRideTogether(token: String, driverUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.acceptDriverToRideTogether(token, driverUsername)
+        }
+    }
+
+    fun denyDriverToRideTogether(token: String, driverUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.denyDriverToRideTogether(token, driverUsername)
+        }
     }
 }

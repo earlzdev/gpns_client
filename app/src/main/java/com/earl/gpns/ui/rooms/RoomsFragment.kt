@@ -13,16 +13,16 @@ import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentRoomsBinding
+import com.earl.gpns.domain.mappers.GroupDomainToUiMapper
 import com.earl.gpns.domain.mappers.GroupLastMessageDomainToUiMapper
 import com.earl.gpns.domain.mappers.NewLastMessageInRoomDomainToUiMapper
+import com.earl.gpns.domain.models.GroupDomain
 import com.earl.gpns.domain.models.GroupLastMessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
-import com.earl.gpns.ui.models.ChatInfo
-import com.earl.gpns.ui.models.GroupInfo
-import com.earl.gpns.ui.models.GroupLastMessageUi
-import com.earl.gpns.ui.models.NewLastMessageInRoomUi
+import com.earl.gpns.ui.models.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -39,6 +39,8 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
     lateinit var newLastMsgInRoomDomainToUiMapper: NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi>
     @Inject
     lateinit var groupLastMessageDomainToUiMapper: GroupLastMessageDomainToUiMapper<GroupLastMessageUi>
+    @Inject
+    lateinit var groupDomainToUiMapper: GroupDomainToUiMapper<GroupUi>
 
     override fun viewBinding(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentRoomsBinding.inflate(inflater, container, false)
@@ -68,7 +70,7 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
     }
 
     private fun initRoomController() {
-        roomController = RoomsObservingSocketController.Base(newLastMsgInRoomDomainToUiMapper, groupLastMessageDomainToUiMapper)
+        roomController = RoomsObservingSocketController.Base(newLastMsgInRoomDomainToUiMapper, groupLastMessageDomainToUiMapper, groupDomainToUiMapper)
         roomController.setPreferenceManager(preferenceManager)
         roomController.setRoomsRecyclerAdapter(roomsRecyclerAdapter)
         roomController.setGroupsRecyclerAdapter(groupsRecyclerAdapter)
@@ -108,13 +110,15 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
             this
         )
         binding.groupsRecycler.adapter = groupsRecyclerAdapter
-        viewModel.observeGroupsLiveData(this) {
-            if (it != null) {
-//                it.onEach { group ->
-//                    viewModel.updateActualUnreadMessagesCounterInGroup(group)
-//                }
-                groupsRecyclerAdapter.submitList(it)
-            }
+        lifecycleScope.launchWhenStarted {
+            viewModel._groups
+                .onEach {
+                        groups ->
+                    if (groups.isNotEmpty()) {
+                        groupsRecyclerAdapter.submitList(groups)
+                    }
+                }
+                .collect()
         }
     }
 
@@ -160,6 +164,10 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
         roomController.updateLastMessageInGroup(newLastMessageDomain)
     }
 
+    override fun addNewGroup(group: GroupDomain) {
+        viewModel.insertNewGroup(group.mapToUi(groupDomainToUiMapper))
+    }
+
     override fun joinGroup(groupInfo: GroupInfo) {
         viewModel.updateMessagesReadCounterInGroup(groupInfo.groupId, groupInfo.counter)
         if (groupInfo.lastMessageAuthor != preferenceManager.getString(Keys.KEY_NAME)) {
@@ -168,12 +176,15 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
                 groupInfo.groupId
             )
         }
-//        groupsRecyclerAdapter.updateGroup(groupInfo.groupId)
         navigator.groupMessaging(groupInfo)
     }
 
     override fun markAuthoredMessagesAsReadInGroup(groupId: String) {
         roomController.markAuthoredMessagesAsReadInGroup(groupId)
+    }
+
+    override fun removeDeletedGroup(group: GroupDomain) {
+        viewModel.removeDeletedGroup(group.mapToUi(groupDomainToUiMapper))
     }
 
     private fun backPressedCallback() {

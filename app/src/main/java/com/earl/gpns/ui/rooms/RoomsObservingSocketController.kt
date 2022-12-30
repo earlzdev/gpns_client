@@ -1,12 +1,16 @@
 package com.earl.gpns.ui.rooms
 
+import android.util.Log
 import com.earl.gpns.core.Keys
 import com.earl.gpns.core.SharedPreferenceManager
+import com.earl.gpns.domain.mappers.GroupDomainToUiMapper
 import com.earl.gpns.domain.mappers.GroupLastMessageDomainToUiMapper
 import com.earl.gpns.domain.mappers.NewLastMessageInRoomDomainToUiMapper
+import com.earl.gpns.domain.models.GroupDomain
 import com.earl.gpns.domain.models.GroupLastMessageDomain
 import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.ui.models.GroupLastMessageUi
+import com.earl.gpns.ui.models.GroupUi
 import com.earl.gpns.ui.models.NewLastMessageInRoomUi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,9 +39,12 @@ interface RoomsObservingSocketController {
 
     fun markAuthoredMessagesAsReadInGroup(groupId: String)
 
+    fun addNewGroup(group: GroupDomain)
+
     class Base @Inject constructor(
         private val newLastMsgInRoomDomainToUiMapper: NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi>,
-        private val groupLastMessageDomainToUiMapper: GroupLastMessageDomainToUiMapper<GroupLastMessageUi>
+        private val groupLastMessageDomainToUiMapper: GroupLastMessageDomainToUiMapper<GroupLastMessageUi>,
+        private val groupDomainToUiMapper: GroupDomainToUiMapper<GroupUi>
     ) : RoomsObservingSocketController {
 
         private var roomsRecyclerAdapter: RoomsRecyclerAdapter? = null
@@ -145,6 +152,15 @@ interface RoomsObservingSocketController {
         override fun markAuthoredMessagesAsReadInGroup(groupId: String) {
             CoroutineScope(Dispatchers.Main).launch {
                 groupsRecyclerAdapter?.markAuthoredMessagesAsRead(groupId)
+            }
+        }
+
+        override fun addNewGroup(group: GroupDomain) {
+            CoroutineScope(Dispatchers.Main).launch {
+                Log.d("tag", "addNewGroup: added")
+//                groupsRecyclerAdapter?.addNewItem(group.mapToUi(groupDomainToUiMapper))
+//                groupsRecyclerAdapter?.currentList?.toMutableList()?.add(group.mapToUi(groupDomainToUiMapper))
+//                groupsRecyclerAdapter?.notifyDataSetChanged()
             }
         }
     }

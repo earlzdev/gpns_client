@@ -382,6 +382,50 @@ class BaseRepository @Inject constructor(
         }
     }
 
+    override suspend fun acceptDriverToRideTogether(token: String, driverUsername: String) {
+        try {
+            service.acceptDriverToDriverTogether(
+                "Bearer $token",
+                UserNameDto(driverUsername)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun denyDriverToRideTogether(token: String, driverUsername: String) {
+        try {
+            service.denyDriverToDriverTogether(
+                "Bearer $token",
+                UserNameDto(driverUsername)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun acceptCompanionToRideTogether(token: String, companionUsername: String) {
+        try {
+            service.acceptCompanionToDriverTogether(
+                "Bearer $token",
+                UserNameDto(companionUsername)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun denyCompanionToRideTogether(token: String, companionUsername: String) {
+        try {
+            service.denyCompanionToDriverTogether(
+                "Bearer $token",
+                UserNameDto(companionUsername)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     companion object {
         private const val KEY_SUCCESS = "success"
         private const val COMPANION_ROLE = "COMPANION_ROLE"

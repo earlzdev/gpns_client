@@ -46,6 +46,7 @@ class GroupMessagingFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[GroupMessagingViewModel::class.java]
+        initViews()
         initGroupMessagingSocket()
         recycler()
         initGroupSocketController()
@@ -62,6 +63,10 @@ class GroupMessagingFragment(
         binding.contactName.setOnClickListener {
             viewModel.deleteGroupMessagesCounter(groupInfo.groupId)
         }
+    }
+
+    private fun initViews() {
+        binding.contactName.text = groupInfo.title
     }
 
     private fun initGroupSocketController() {
@@ -118,7 +123,6 @@ class GroupMessagingFragment(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 messageEntity
             )
-//            viewModel.increaseReadMessagesCounterInGroup(groupInfo.groupId, 1)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.earl.gpns.ui.search
+package com.earl.gpns.ui.search.notifications
 
 import androidx.lifecycle.*
 import com.earl.gpns.domain.Interactor
@@ -26,36 +26,32 @@ class TripNotificationsViewModel @Inject constructor(
     private val driverFormDomainToUiMapper: DriverFormDomainToUiMapper<DriverFormUi>
 ) : ViewModel() {
 
-    private val existedTripNotificationsLiveData = MutableLiveData<List<TripNotificationUi>>()
     private val tripNotificationsLiveData = MutableLiveData<List<TripNotificationRecyclerItemUi>>()
     private val companionFormLiveData = MutableLiveData<CompanionFormUi?>()
     private val driverFormLiveData = MutableLiveData<DriverFormUi?>()
-    private var fetchedList = mutableListOf<TripNotificationUi>()
+    private val existedTripNotificationLiveData = MutableLiveData<TripNotificationUi>()
 
-    fun fetchAllTripNotificationsFromLocalDb() {
+    fun fetchNotifications(token: String, username: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = interactor.fetchAllTripNotificationFromLocalDb().map { it.mapToUi(tripNotificationDomainToUiMapper) }
+            val remoteList = interactor.fetchAllTripNotifications(token)
+                .map { it.mapToUi(tripNotificationDomainToUiMapper) }
+                .map { it.provideTripNotificationUiRecyclerItem() }
+            val watchedNotificationsIdsList = interactor.fetchAllWatchedNotificationsIds()
             withContext(Dispatchers.Main) {
-                existedTripNotificationsLiveData.value = list
+                tripNotificationsLiveData.value = remoteList.onEach {
+                    if (watchedNotificationsIdsList.contains(it.id) || it.authorName == username) {
+                        it.read = 1
+                    }
+                }
             }
         }
     }
 
-    fun fetchNotifications(token: String) {
+    fun insertNotificationIdIntoDb(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = interactor.fetchAllTripNotifications(token).map { it.mapToUi(tripNotificationDomainToUiMapper) }
-            withContext(Dispatchers.Main) {
-                tripNotificationsLiveData.value = list.map { it.provideTripNotificationUiRecyclerItem() }
-                fetchedList = list.toMutableList()
-            }
-        }
-    }
-
-    fun insertNotificationIntoDb(id: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val wathcedNotification = fetchedList.find { it.provideId() == id }
-            if (wathcedNotification != null) {
-                interactor.insertNewNotificationIntoDb(wathcedNotification.mapToDomain(tripNotificationUiToDomainMapper))
+            val existedList = interactor.fetchAllWatchedNotificationsIds()
+            if (!existedList.contains(id)) {
+                interactor.insertNewWatchedNotificationId(id)
             }
         }
     }
@@ -78,8 +74,13 @@ class TripNotificationsViewModel @Inject constructor(
         }
     }
 
-    fun provideExistedTripNotificationsLiveData() : List<TripNotificationUi> {
-        return existedTripNotificationsLiveData.value ?: emptyList()
+    fun fetchTripNotificationById(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val notificationUi = interactor.fetchTripNotification(id).mapToUi(tripNotificationDomainToUiMapper)
+            withContext(Dispatchers.Main) {
+                existedTripNotificationLiveData.value = notificationUi
+            }
+        }
     }
 
     fun observeTripNotificationsLiveData(owner: LifecycleOwner, observer: Observer<List<TripNotificationRecyclerItemUi>>) {
@@ -92,5 +93,9 @@ class TripNotificationsViewModel @Inject constructor(
 
     fun observeDriverFormLiveData(owner: LifecycleOwner, observer: Observer<DriverFormUi?>) {
         driverFormLiveData.observe(owner, observer)
+    }
+
+    fun observeExistedTripNotificationLiveData(owner: LifecycleOwner, observer: Observer<TripNotificationUi>) {
+        existedTripNotificationLiveData.observe(owner, observer)
     }
 }

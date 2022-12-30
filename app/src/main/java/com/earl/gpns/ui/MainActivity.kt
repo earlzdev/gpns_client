@@ -25,6 +25,7 @@ import com.earl.gpns.ui.search.companion.CompanionFormFragment
 import com.earl.gpns.ui.search.driver.DriverFormDetailsFragment
 import com.earl.gpns.ui.search.driver.FirstDriverFormFragment
 import com.earl.gpns.ui.search.driver.SecondDriverFormFragment
+import com.earl.gpns.ui.search.notifications.TripNotificationsFragment
 import com.earl.gpns.ui.usersFragment.FragmentUsers
 import dagger.hilt.android.AndroidEntryPoint
 

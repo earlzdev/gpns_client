@@ -1,4 +1,4 @@
-package com.earl.gpns.ui.search
+package com.earl.gpns.ui.search.notifications
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +14,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), NotificationOnClickListener {
+class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(),
+    NotificationOnClickListener {
 
     private lateinit var viewModel: TripNotificationsViewModel
     private lateinit var recyclerAdapter: TripNotificationsRecyclerAdapter
@@ -30,6 +31,10 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[TripNotificationsViewModel::class.java]
         recycler()
+        viewModel.fetchNotifications(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+            preferenceManager.getString(Keys.KEY_NAME) ?: ""
+        )
         binding.backBtn.setOnClickListener {
             navigator.back()
         }
@@ -42,39 +47,40 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
             this
         )
         binding.notificationsRecycler.adapter = recyclerAdapter
-        viewModel.fetchAllTripNotificationsFromLocalDb()
-        viewModel.fetchNotifications(preferenceManager.getString(Keys.KEY_JWT) ?: "")
-        val existedList = viewModel.provideExistedTripNotificationsLiveData()
-        val existedNotificationsIdsList = existedList.map { it.provideId() }
         viewModel.observeTripNotificationsLiveData(this) { list ->
-            list.onEach { notification ->
-                if (existedNotificationsIdsList.contains(notification.id)) {
-                    notification.read = 1
-                }
-            }
             recyclerAdapter.submitList(list)
         }
     }
 
     override fun showNotificationDetails(id: String, username: String, tripRole: String) {
-        viewModel.insertNotificationIntoDb(id)
-        if (tripRole == COMPANION_ROLE) {
-            viewModel.fetchCompanionForm(
-                preferenceManager.getString(Keys.KEY_JWT) ?: "",
-                username
-            )
-            viewModel.observeCompanionFormLiveData(this) {
-                if (it != null) {
-                    navigator.companionFormDetails(it.provideCompanionDetailsUi(), NOTIFICATION)
-                }
+        viewModel.insertNotificationIdIntoDb(id)
+        viewModel.fetchTripNotificationById(id)
+        viewModel.observeExistedTripNotificationLiveData(this) {
+            val notification = it.provideTripNotificationUiRecyclerItem()
+            val viewRegime = if (notification.authorName == (preferenceManager.getString(Keys.KEY_NAME) ?: "")) {
+                OWN_INVITE
+            } else {
+                NOTIFICATION
             }
-        } else {
-            viewModel.fetchDriverForm(
-                preferenceManager.getString(Keys.KEY_JWT) ?: "",
-                username)
-            viewModel.observeDriverFormLiveData(this) {
-                if (it != null) {
-                    navigator.driverFormDetails(it.provideDriverFormDetailsUi(), NOTIFICATION)
+            if (tripRole == COMPANION_ROLE) {
+                viewModel.fetchCompanionForm(
+                    preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                    username
+                )
+                viewModel.observeCompanionFormLiveData(this) {
+                    if (it != null) {
+                        navigator.companionFormDetails(it.provideCompanionDetailsUi(), viewRegime)
+                    }
+                }
+            } else {
+                viewModel.fetchDriverForm(
+                    preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                    username
+                )
+                viewModel.observeDriverFormLiveData(this) {
+                    if (it != null) {
+                        navigator.driverFormDetails(it.provideDriverFormDetailsUi(), viewRegime)
+                    }
                 }
             }
         }
@@ -86,5 +92,6 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
         private const val DRIVER_ROLE = "DRIVER_ROLE"
         private const val DETAILS = "DETAILS"
         private const val NOTIFICATION = "NOTIFICATION"
+        private const val OWN_INVITE = "OWN_INVITE"
     }
 }

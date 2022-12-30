@@ -15,6 +15,7 @@ import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentSearchBinding
 import com.earl.gpns.domain.mappers.TripNotificationDomainToUiMapper
 import com.earl.gpns.domain.models.TripNotificationDomain
+import com.earl.gpns.domain.webSocketActions.RemoveDeletedSearchingFormFromList
 import com.earl.gpns.domain.webSocketActions.services.SearchingSocketService
 import com.earl.gpns.ui.SearchFormsDetails
 import com.earl.gpns.ui.models.TripNotificationUi
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickListener, SearchingSocketService {
+class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickListener {
 
     private lateinit var viewModel: SearchViewModel
     private lateinit var recyclerAdapter: TripFormsRecyclerAdapter
@@ -43,6 +44,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
         viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
         initSearchingSocket()
         recycler()
+        observeNewNotifications()
+        initViews()
         binding.newFormBtn.setOnClickListener {
             navigator.newSearchForm()
         }
@@ -51,9 +54,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
             binding.newNotificationIcon.isVisible = false
         }
         binding.searchChapter.setOnClickListener {
-            preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, false)
-            preferenceManager.putBoolean(Keys.IS_DRIVER, false)
-            Toast.makeText(requireContext(), "Done", Toast.LENGTH_SHORT).show()
+            viewModel.clearTripNotificationDb()
+        }
+    }
+
+    private fun initViews() {
+        viewModel.observeUnwatchedNotificationsLiveData(this) {
+            binding.newNotificationIcon.isVisible = it == NEW_NOTIFICATION
         }
     }
 
@@ -79,21 +86,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
     }
 
     private fun initSearchingSocket() {
-        viewModel.initSearchingSocket(preferenceManager.getString(Keys.KEY_JWT) ?: "", this)
+        viewModel.initSearchingSocket(preferenceManager.getString(Keys.KEY_JWT) ?: "")
     }
 
-    override fun showNotification(notification: TripNotificationDomain) {
-        lifecycleScope.launch(Dispatchers.Main) {
+    private fun observeNewNotifications() {
+        viewModel.observeNotificationLiveData(this) {
+            Toast.makeText(requireContext(), "У Вас новое приглашение о совместной поездке!", Toast.LENGTH_SHORT).show()
             binding.newNotificationIcon.isVisible = true
-            Toast.makeText(requireContext(), "Кто-то пригласил Вас ездить вместе, проверьте уведомления", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    override fun removeDeletedSearchingFormFromList(username: String) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            if (recyclerAdapter.currentList.isNotEmpty()) {
-                viewModel.removeDeletedSearchingForm(username)
-            }
         }
     }
 
@@ -103,5 +102,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
         private const val COMPANION_ROLE = "COMPANION_ROLE"
         private const val DETAILS = "DETAILS"
         private const val NOTIFICATION = "NOTIFICATION"
+        private const val NEW_NOTIFICATION = 1
     }
 }

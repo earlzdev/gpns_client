@@ -1,4 +1,4 @@
-package com.earl.gpns.ui.search
+package com.earl.gpns.ui.search.notifications
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -17,7 +17,9 @@ class TripNotificationsRecyclerAdapter(
     private val username: String,
     private val tripRole: String,
     private val clickListener: NotificationOnClickListener
-) : ListAdapter<TripNotificationRecyclerItemUi, TripNotificationsRecyclerAdapter.ItemViewHolder>(Diff)  {
+) : ListAdapter<TripNotificationRecyclerItemUi, TripNotificationsRecyclerAdapter.ItemViewHolder>(
+    Diff
+)  {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = RecyclerNotificationItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -40,10 +42,14 @@ class TripNotificationsRecyclerAdapter(
         fun bind(item: TripNotificationRecyclerItemUi) {
             val tripRoleInviter = if (item.authorTripRole == COMPANION_ROLE) "Попутчик" else "Водитель"
             val tripRoleInviting = if (item.receiverTripRole == COMPANION_ROLE) "попутчика" else "водителя"
-            if (item.authorName == username) {
-                binding.inviteText.text = "Вы пригласили $tripRoleInviting ${item.receiverName} ездить вместе"
+            if (item.isInvite == 2) {
+                binding.inviteText.text = "Водитель ${item.authorName}, с которым Вы ездили вместе, удалил свою анкету. Вам нужно найти нового водителя"
             } else {
-                binding.inviteText.text = "$tripRoleInviter ${item.authorName} приглашает Вас ездить вместе"
+                if (item.authorName == username) {
+                    binding.inviteText.text = "Вы пригласили $tripRoleInviting ${item.receiverName} ездить вместе"
+                } else {
+                    binding.inviteText.text = "$tripRoleInviter ${item.authorName} приглашает Вас ездить вместе"
+                }
             }
             binding.timestamp.text = item.timestamp
             binding.newNotificationIndicator.isVisible = item.read == 0

@@ -23,12 +23,15 @@ class ProfileViewModel @Inject constructor(
 
     fun deleteDriverFormForm(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            interactor.clearWatchedNotificationsDb()
+            interactor.clearNotificationsDb()
             interactor.deleteDriverForm(token)
         }
     }
 
     fun deleteCompanionForm(token: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            interactor.clearWatchedNotificationsDb()
             interactor.clearNotificationsDb()
             interactor.deleteCompanionForm(token)
         }

@@ -187,4 +187,32 @@ interface Service {
     suspend fun deleteCompanionForm(
         @Header("Authorization") token: String,
     )
+
+    @Headers("Content-Type: application/json")
+    @POST("/acceptCompanionToDrive")
+    suspend fun acceptCompanionToDriverTogether(
+        @Header("Authorization") token: String,
+        @Body username: UserNameDto
+    )
+
+    @Headers("Content-Type: application/json")
+    @POST("/denyCompanionToDrive")
+    suspend fun denyCompanionToDriverTogether(
+        @Header("Authorization") token: String,
+        @Body username: UserNameDto
+    )
+
+    @Headers("Content-Type: application/json")
+    @POST("/acceptDriverToDrive")
+    suspend fun acceptDriverToDriverTogether(
+        @Header("Authorization") token: String,
+        @Body username: UserNameDto
+    )
+
+    @Headers("Content-Type: application/json")
+    @POST("/denyDriverToDrive")
+    suspend fun denyDriverToDriverTogether(
+        @Header("Authorization") token: String,
+        @Body username: UserNameDto
+    )
 }

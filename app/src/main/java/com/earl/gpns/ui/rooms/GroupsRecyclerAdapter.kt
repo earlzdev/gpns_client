@@ -58,6 +58,20 @@ class GroupsRecyclerAdapter(
         notifyItemChanged(position)
     }
 
+    fun addNewItem(item: GroupUi){
+        val current = currentList
+        val new = mutableListOf<GroupUi>()
+        new.add(item)
+        new.addAll(0, current)
+        Log.d("tag", "addNewItem: list size -> ${currentList.size}")
+        currentList.toMutableList().clear()
+        currentList.toMutableList().addAll(new)
+        Log.d("tag", "addNewItem: list size -> ${currentList.size}")
+//        items.clear() // ->> optional if you need have clear of object
+//        items.addAll(itemsNew)
+        notifyDataSetChanged()
+    }
+
     fun updateGroup(groupId: String) {
         val group = currentList.find { it.sameId(groupId) }
         notifyItemChanged(currentList.indexOf(group))

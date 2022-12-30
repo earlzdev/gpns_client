@@ -3,7 +3,7 @@ package com.earl.gpns.data.localDb
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [RoomDb::class, GroupMessagesCountDb::class, NotificationsDb::class], version = 6)
+@Database(entities = [RoomDb::class, GroupMessagesCountDb::class, NotificationsDb::class, WatchedNotificationsDb::class], version = 7)
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun roomsDao() : RoomsDao

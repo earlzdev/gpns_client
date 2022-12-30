@@ -8,4 +8,6 @@ interface RoomsObservingSocketService :
         UpdateLastMessageInRoom,
         UpdateUserOnlineInRoom,
         UpdateLastMessageInGroup,
-        MarkAuthoredMessagesAsReadInGroup
+        MarkAuthoredMessagesAsReadInGroup,
+        AddNewGroup,
+        RemoveDeletedGroup

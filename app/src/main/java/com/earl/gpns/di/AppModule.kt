@@ -21,6 +21,7 @@ import com.earl.gpns.domain.SocketsRepository
 import com.earl.gpns.domain.mappers.*
 import com.earl.gpns.domain.models.*
 import com.earl.gpns.ui.models.GroupLastMessageUi
+import com.earl.gpns.ui.models.GroupUi
 import com.earl.gpns.ui.models.NewLastMessageInRoomUi
 import com.earl.gpns.ui.rooms.RoomsObservingSocketController
 import dagger.Module
@@ -227,11 +228,13 @@ object AppModule {
     @Provides
     fun provideRoomObserveController(
         newLastMsgInRoomDomainToUiMapper: NewLastMessageInRoomDomainToUiMapper<NewLastMessageInRoomUi>,
-        groupLastMessageDomainToUiMapper: GroupLastMessageDomainToUiMapper<GroupLastMessageUi>
+        groupLastMessageDomainToUiMapper: GroupLastMessageDomainToUiMapper<GroupLastMessageUi>,
+        groupDomainToUiMapper: GroupDomainToUiMapper<GroupUi>
     ) : RoomsObservingSocketController {
         return RoomsObservingSocketController.Base(
             newLastMsgInRoomDomainToUiMapper,
-            groupLastMessageDomainToUiMapper
+            groupLastMessageDomainToUiMapper,
+            groupDomainToUiMapper
         )
     }
 }
