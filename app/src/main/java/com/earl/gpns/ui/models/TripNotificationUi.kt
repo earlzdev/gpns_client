@@ -15,6 +15,8 @@ interface TripNotificationUi : Same<TripNotificationUi> {
 
     fun provideReceiverName() : String
 
+    fun provideAuthorName() : String
+
     class Base(
         private val id: String,
         private val authorName: String,
@@ -35,6 +37,8 @@ interface TripNotificationUi : Same<TripNotificationUi> {
         override fun provideId() = id
 
         override fun provideReceiverName() = receiverName
+
+        override fun provideAuthorName() = authorName
     }
 }
 

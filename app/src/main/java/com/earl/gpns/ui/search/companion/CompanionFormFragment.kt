@@ -135,7 +135,8 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
                 binding.spinnerSchedule.selectedItem.toString(),
                 actualTripTime,
                 binding.compPriceEd.text.toString() ?: "",
-                binding.editTextDriverComment.text.toString() ?: ""
+                binding.editTextDriverComment.text.toString() ?: "",
+                FORM_IS_ACTIVE
             )
             preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, true)
             preferenceManager.putBoolean(Keys.IS_DRIVER, false)
@@ -152,5 +153,6 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
     companion object {
 
         fun newInstance() = CompanionFormFragment()
+        private const val FORM_IS_ACTIVE = 1
     }
 }

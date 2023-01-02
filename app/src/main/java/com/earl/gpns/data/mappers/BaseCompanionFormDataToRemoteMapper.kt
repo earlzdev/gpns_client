@@ -12,6 +12,7 @@ class BaseCompanionFormDataToRemoteMapper @Inject constructor() : CompanionFormD
         schedule: String,
         actualTripTime: String,
         ableToPay: String?,
-        comment: String
-    ) = CompanionFormRemote(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment)
+        comment: String,
+        active: Int
+    ) = CompanionFormRemote(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment, active)
 }

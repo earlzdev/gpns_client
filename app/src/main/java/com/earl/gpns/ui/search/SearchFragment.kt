@@ -86,7 +86,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
     }
 
     private fun initSearchingSocket() {
-        viewModel.initSearchingSocket(preferenceManager.getString(Keys.KEY_JWT) ?: "")
+        viewModel.initSearchingSocket(
+            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+        preferenceManager.getString(Keys.KEY_NAME) ?: ""
+        )
     }
 
     private fun observeNewNotifications() {

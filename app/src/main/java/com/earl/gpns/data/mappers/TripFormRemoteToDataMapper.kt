@@ -9,7 +9,8 @@ interface TripFormRemoteToDataMapper<T> {
         from: String,
         to: String,
         schedule: String,
-        details: String
+        details: String,
+        active: Int
     ) : T
 
     fun mapCompanionDetails(
@@ -19,6 +20,7 @@ interface TripFormRemoteToDataMapper<T> {
         from: String,
         to: String,
         schedule: String,
-        details: String
+        details: String,
+        active: Int
     ) : T
 }

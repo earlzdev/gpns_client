@@ -14,8 +14,9 @@ class BaseCompanionFormDomainToUiMapper @Inject constructor() : CompanionFormDom
         schedule: String,
         actualTripTime: String,
         ableToPay: String?,
-        comment: String
+        comment: String,
+        active: Int
     ) = CompanionFormUi.Base(
-        username, userImage, from, to, schedule, actualTripTime, ableToPay, comment
+        username, userImage, from, to, schedule, actualTripTime, ableToPay, comment, active
     )
 }

@@ -25,12 +25,13 @@ interface DriverFormDomain {
         private val passengersCount: String,
         private val carGovNumber: String,
         private val tripPrice: String,
-        private val driverComment: String
+        private val driverComment: String,
+        private val active: Int
     ) : DriverFormDomain {
         override fun <T> mapToData(mapper: DriverFormDomainToDataMapper<T>) =
-            mapper.map(username, userImage, driveFrom, driveTo, catchCompanionFrom, alsoCanDriveTo, schedule, ableToDriveInTurn, actualTripTime, car, carModel, carColor, passengersCount, carGovNumber, tripPrice, driverComment)
+            mapper.map(username, userImage, driveFrom, driveTo, catchCompanionFrom, alsoCanDriveTo, schedule, ableToDriveInTurn, actualTripTime, car, carModel, carColor, passengersCount, carGovNumber, tripPrice, driverComment, active)
 
         override fun <T> mapToUi(mapper: DriverFormDomainToUiMapper<T>) =
-            mapper.map(username, userImage, driveFrom, driveTo, catchCompanionFrom, alsoCanDriveTo, schedule, ableToDriveInTurn, actualTripTime, car, carModel, carColor, passengersCount, carGovNumber, tripPrice, driverComment)
+            mapper.map(username, userImage, driveFrom, driveTo, catchCompanionFrom, alsoCanDriveTo, schedule, ableToDriveInTurn, actualTripTime, car, carModel, carColor, passengersCount, carGovNumber, tripPrice, driverComment, active)
     }
 }

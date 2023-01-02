@@ -1,5 +1,6 @@
 package com.earl.gpns.ui.search.notifications
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.CompanionFormDomainToUiMapper
@@ -39,8 +40,12 @@ class TripNotificationsViewModel @Inject constructor(
             val watchedNotificationsIdsList = interactor.fetchAllWatchedNotificationsIds()
             withContext(Dispatchers.Main) {
                 tripNotificationsLiveData.value = remoteList.onEach {
-                    if (watchedNotificationsIdsList.contains(it.id) || it.authorName == username) {
+                    if (watchedNotificationsIdsList.contains(it.id) /*|| it.authorName == username*/) {
                         it.read = 1
+                    } else {
+//                        Log.d("tag", "insertNotificationIdIntoDb: INSERTED NEW NOTIFICATION TRIPNOTIFICATIONVIEWIEWMODEL WHEN FETCHING")
+//                        interactor.insertNewWatchedNotificationId(it.id)
+//                        insertNotificationIdIntoDb(it.id)
                     }
                 }
             }
@@ -51,6 +56,7 @@ class TripNotificationsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val existedList = interactor.fetchAllWatchedNotificationsIds()
             if (!existedList.contains(id)) {
+                Log.d("tag", "insertNotificationIdIntoDb: INSERTED NEW NOTIFICATION TRIPNOTIFICATIONVIEWIEWMODEL")
                 interactor.insertNewWatchedNotificationId(id)
             }
         }

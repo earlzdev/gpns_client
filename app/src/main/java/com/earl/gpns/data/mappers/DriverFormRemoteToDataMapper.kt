@@ -18,6 +18,7 @@ interface DriverFormRemoteToDataMapper<T> {
         passengersCount: String,
         carGovNumber: String,
         tripPrice: String,
-        driverComment: String
+        driverComment: String,
+        active: Int
     ) : T
 }

@@ -17,12 +17,13 @@ interface CompanionFormDomain {
         private val schedule: String,
         private val actualTripTime: String,
         private val ableToPay: String?,
-        private val comment: String
+        private val comment: String,
+        private val active: Int
     ) : CompanionFormDomain {
         override fun <T> mapToData(mapper: CompanionFormDomainToDataMapper<T>) =
-            mapper.map(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment)
+            mapper.map(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment, active)
 
         override fun <T> mapToUi(mapper: CompanionFormDomainToUiMapper<T>) =
-            mapper.map(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment)
+            mapper.map(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment, active)
     }
 }

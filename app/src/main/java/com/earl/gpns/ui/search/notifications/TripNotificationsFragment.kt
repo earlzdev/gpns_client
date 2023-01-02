@@ -53,13 +53,16 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
         linearLayoutManager.stackFromEnd = true
         binding.notificationsRecycler.layoutManager = linearLayoutManager
         viewModel.observeTripNotificationsLiveData(this) { list ->
+            list.onEach {
+                viewModel.insertNotificationIdIntoDb(it.id)
+            }
             recyclerAdapter.submitList(list)
         }
     }
 
     override fun showNotificationDetails(id: String, username: String, tripRole: String, isWatchable: Boolean) {
         if (isWatchable) {
-            viewModel.insertNotificationIdIntoDb(id)
+//            viewModel.insertNotificationIdIntoDb(id)
             viewModel.fetchTripNotificationById(id)
             viewModel.observeExistedTripNotificationLiveData(this) {
                 val notification = it.provideTripNotificationUiRecyclerItem()
@@ -91,7 +94,7 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
                 }
             }
         } else {
-            viewModel.insertNotificationIdIntoDb(id)
+//            viewModel.insertNotificationIdIntoDb(id)
         }
     }
 

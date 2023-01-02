@@ -286,8 +286,12 @@ class BaseRepository @Inject constructor(
                     list[i].from,
                     list[i].to,
                     list[i].schedule,
-                    if (list[i].companionRole == COMPANION_ROLE) Json.decodeFromString<CompanionTripFormDetailsRemote>(list[i].details).map(companionFormDetailsRemoteToDataMapper)
-                    else Json.decodeFromString<DriverTripFormDetailsRemote>(list[i].details).map(driverFormDetailsRemoteToDataMapper)
+                    if (list[i].companionRole == COMPANION_ROLE)
+                        Json.decodeFromString<CompanionTripFormDetailsRemote>(list[i].details)
+                        .map(companionFormDetailsRemoteToDataMapper)
+                    else Json.decodeFromString<DriverTripFormDetailsRemote>(list[i].details)
+                        .map(driverFormDetailsRemoteToDataMapper),
+                    list[i].active
                 ))
             }
 //            Log.d("tag", "fetchAllTripForms: data -> $dataList")

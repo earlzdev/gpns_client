@@ -218,7 +218,8 @@ class SecondDriverFormFragment(
                 binding.spinnerDriverCarCountOfPassengers.selectedItem.toString(),
                 binding.editTextGosNumberOfCar.text.toString() ?: "",
                 binding.editTextTripPrice.text.toString() ?: "",
-                binding.editTextDriverComment.text.toString() ?: ""
+                binding.editTextDriverComment.text.toString() ?: "",
+                FORM_IS_ACTIVE
             )
             Log.d("tag", "sendNewDriverForm: DRIVER FORM -> ${Json.encodeToString(driverForm)}")
             preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, true)
@@ -235,5 +236,6 @@ class SecondDriverFormFragment(
     companion object {
 
         fun newInstance(firstPartOfNewDriverForm: FirstPartOfNewDriverForm) = SecondDriverFormFragment(firstPartOfNewDriverForm)
+        private const val FORM_IS_ACTIVE = 1
     }
 }

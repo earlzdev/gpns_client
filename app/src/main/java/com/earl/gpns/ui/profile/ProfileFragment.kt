@@ -34,6 +34,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
             preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, false)
             preferenceManager.putBoolean(Keys.IS_DRIVER, false)
+            preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.earl.gpns.domain
 
+import android.util.Log
 import com.earl.gpns.core.AuthResultListener
 import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.data.models.remote.requests.LoginRequest
@@ -335,6 +336,7 @@ interface Interactor {
         }
 
         override suspend fun insertNewWatchedNotificationId(id: String) {
+            Log.d("tag", "insertNewWatchedNotificationId: INSERTED NEW WATCHED NOTIFICATION")
             localDatabaseRepository.insertNewWatchedNotificationId(id)
         }
 

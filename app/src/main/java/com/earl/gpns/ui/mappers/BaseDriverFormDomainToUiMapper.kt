@@ -23,6 +23,7 @@ class BaseDriverFormDomainToUiMapper @Inject constructor() : DriverFormDomainToU
         carGovNumber: String,
         tripPrice: String,
         driverComment: String,
+        active: Int
     ) = DriverFormUi.Base(
         username,
         userImage,
@@ -39,6 +40,7 @@ class BaseDriverFormDomainToUiMapper @Inject constructor() : DriverFormDomainToU
         passengersCount,
         carGovNumber,
         tripPrice,
-        driverComment
+        driverComment,
+        active
     )
 }

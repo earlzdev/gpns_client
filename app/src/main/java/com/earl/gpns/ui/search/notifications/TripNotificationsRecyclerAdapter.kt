@@ -45,16 +45,18 @@ class TripNotificationsRecyclerAdapter(
             val tripRoleInviting = if (item.receiverTripRole == COMPANION_ROLE) "попутчика" else "водителя"
             Log.d("tag", "bind: $item")
             if (item.isInvite == 3 && item.receiverName != username) {
-                binding.inviteText.text = "Вы приняли приглашение $tripRoleInviting ${item.receiverName} ездить вместе и были добавлены в группу попутчиков"
+                binding.inviteText.text = "Вы приняли приглашение $tripRoleInviting ${item.receiverName} ездить вместе и были добавлены в группу попутчиков, где можно детальнее договориться о поездке."
             } else if (item.isInvite == 3 && item.receiverName == username) {
                 binding.inviteText.text = "$tripRoleInviter ${item.authorName} принял Ваше приглашение ездить вместе. Вы добавлены в совместную группу попутчиков, где можно детальнее договориться о поездке."
-            } else if (item.isInvite == 2) {
-                binding.inviteText.text = "Водитель ${item.authorName}, с которым Вы ездили вместе, удалил свою анкету. Вам нужно найти нового водителя"
+            } else if (item.isInvite == 2 && item.authorName != username) {
+                binding.inviteText.text = "Водитель ${item.authorName}, с которым Вы ездили вместе, удалил свою анкету. Предлагаем найти нового водителя."
+            } else if (item.isInvite == 2 && item.authorName == username) {
+                binding.inviteText.text = "Вы удалили свою анкету водителя."
             } else {
                 if (item.authorName == username) {
-                    binding.inviteText.text = "Вы пригласили $tripRoleInviting ${item.receiverName} ездить вместе"
+                    binding.inviteText.text = "Вы пригласили $tripRoleInviting ${item.receiverName} ездить вместе."
                 } else {
-                    binding.inviteText.text = "$tripRoleInviter ${item.authorName} приглашает Вас ездить вместе"
+                    binding.inviteText.text = "$tripRoleInviter ${item.authorName} приглашает Вас ездить вместе."
                 }
             }
             binding.timestamp.text = item.timestamp
