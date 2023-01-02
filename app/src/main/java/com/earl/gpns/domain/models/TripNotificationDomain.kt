@@ -9,6 +9,8 @@ interface TripNotificationDomain {
 
     fun <T> mapToUi(mapper: TripNotificationDomainToUiMapper<T>) : T
 
+    fun provideId() : String
+
     class Base(
         private val id: String,
         private val authorName: String,
@@ -24,5 +26,7 @@ interface TripNotificationDomain {
 
         override fun <T> mapToUi(mapper: TripNotificationDomainToUiMapper<T>) =
             mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp)
+
+        override fun provideId() = id
     }
 }

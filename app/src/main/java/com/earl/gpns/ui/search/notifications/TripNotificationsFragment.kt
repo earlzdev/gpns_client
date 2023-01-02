@@ -54,7 +54,7 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
         binding.notificationsRecycler.layoutManager = linearLayoutManager
         viewModel.observeTripNotificationsLiveData(this) { list ->
             list.onEach {
-                viewModel.insertNotificationIdIntoDb(it.id)
+//                viewModel.insertNotificationIdIntoDb(it.id)
             }
             recyclerAdapter.submitList(list)
         }

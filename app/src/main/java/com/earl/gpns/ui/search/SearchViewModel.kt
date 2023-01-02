@@ -79,6 +79,7 @@ class SearchViewModel @Inject constructor(
             }
             withContext(Dispatchers.Main) {
                 if (remoteNotificationsIdsList.size != watchedNotificationsIdsList.size) {
+                    Log.d("tag", "fetchAllNotifications: LISTS ARE NOT EQUAL")
                     newUnwatchedNotificationsLiveData.value = NEW_NOTIFICATION
                 }
                 if (newNotificationsList.isNotEmpty()) {
@@ -102,7 +103,7 @@ class SearchViewModel @Inject constructor(
             if (!watchedNotificationsList.contains(newNotification.id) && newNotification.authorName == username) {
                 Log.d("tag", "reactOnNewNotification: insrted")
                 interactor.insertNewWatchedNotificationId(newNotification.id)
-            } else {
+            } else if (!watchedNotificationsList.contains(newNotification.id)){
                 Log.d("tag", "NEW NOTIFICATIONS")
                 withContext(Dispatchers.Main) {
                     newNotificationsLiveData.value = NEW_NOTIFICATION
