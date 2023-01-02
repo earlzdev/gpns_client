@@ -64,7 +64,10 @@ class CompanionFormViewModel @Inject constructor(
     private fun insertNewNotificationIntoDb(notificationUi: TripNotificationUi) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.insertNewNotificationIntoDb(notificationUi.mapToDomain(tripNotificationUiToDomainMapper))
-            interactor.insertNewWatchedNotificationId(notificationUi.provideId())
+            val existedList = interactor.fetchAllWatchedNotificationsIds()
+            if (!existedList.contains(notificationUi.provideId())) {
+                interactor.insertNewWatchedNotificationId(notificationUi.provideId())
+            }
         }
     }
 

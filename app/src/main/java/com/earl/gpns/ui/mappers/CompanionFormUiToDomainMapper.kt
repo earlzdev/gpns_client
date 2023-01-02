@@ -10,6 +10,7 @@ interface CompanionFormUiToDomainMapper<T> {
         schedule: String,
         actualTripTime: String,
         ableToPay: String?,
-        comment: String
+        comment: String,
+        active: Int
     ) : T
 }

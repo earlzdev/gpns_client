@@ -15,6 +15,8 @@ interface TripNotificationUi : Same<TripNotificationUi> {
 
     fun provideReceiverName() : String
 
+    fun provideAuthorName() : String
+
     class Base(
         private val id: String,
         private val authorName: String,
@@ -29,11 +31,22 @@ interface TripNotificationUi : Same<TripNotificationUi> {
             mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp)
 
         override fun provideTripNotificationUiRecyclerItem() = TripNotificationRecyclerItemUi(
-            id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp, 0
+            id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp, 0, if (isInvite == 1) 1 else 0
         )
 
         override fun provideId() = id
 
         override fun provideReceiverName() = receiverName
+
+        override fun provideAuthorName() = authorName
     }
 }
+
+/*
+notification isInvite
+0 - отказ - не исп
+1 - приглашение
+2 - водитель удалил анкету
+3 - согласие
+4 - отказ - не исп
+ */

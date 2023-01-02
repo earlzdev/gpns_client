@@ -22,7 +22,8 @@ class BaseDriverFormDomainToDataMapper @Inject constructor() : DriverFormDomainT
         passengersCount: String,
         carGovNumber: String,
         tripPrice: String,
-        driverComment: String
+        driverComment: String,
+        active: Int
     ) = DriverFormData.Base(
         username,
         userImage,
@@ -39,6 +40,7 @@ class BaseDriverFormDomainToDataMapper @Inject constructor() : DriverFormDomainT
         passengersCount,
         carGovNumber,
         tripPrice,
-        driverComment
+        driverComment,
+        active
     )
 }

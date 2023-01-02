@@ -1,6 +1,5 @@
 package com.earl.gpns.ui.search
 
-import android.content.pm.verify.domain.DomainVerificationUserState
 import android.util.Log
 import androidx.lifecycle.*
 import com.earl.gpns.domain.Interactor
@@ -37,10 +36,12 @@ class SearchViewModel @Inject constructor(
     private val localDbNotificationsList = MutableLiveData<List<TripNotificationUi>>()
     private val newUnwatchedNotificationsLiveData = MutableLiveData<Int>()
     private val remoteNotificationsListLiveData = MutableLiveData<List<TripNotificationUi>>()
+    private var username: String? = null
 
-    fun initSearchingSocket(token: String) {
+    fun initSearchingSocket(token: String, name: String) {
         fetchAllTripForms(token)
         fetchAllNotifications(token)
+        username = name
         viewModelScope.launch(Dispatchers.IO) {
             when (interactor.initSearchingSocket(token)) {
                 true -> {
@@ -71,10 +72,14 @@ class SearchViewModel @Inject constructor(
             for (i in remoteNotificationsIdsList) {
                 if (localDbNotificationsList.find { it.provideId() == i } == null) {
                     newNotificationsList.add(remoteNotificationsList.find { it.provideId() == i }!!)
+                } else if (!watchedNotificationsIdsList.contains(i)
+                    && remoteNotificationsList.find { it.provideId() == i }!!.provideAuthorName() == username) {
+                    interactor.insertNewWatchedNotificationId(remoteNotificationsList.find { it.provideId() == i }?.provideId()!!)
                 }
             }
             withContext(Dispatchers.Main) {
                 if (remoteNotificationsIdsList.size != watchedNotificationsIdsList.size) {
+                    Log.d("tag", "fetchAllNotifications: LISTS ARE NOT EQUAL")
                     newUnwatchedNotificationsLiveData.value = NEW_NOTIFICATION
                 }
                 if (newNotificationsList.isNotEmpty()) {
@@ -86,11 +91,23 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    override fun updateNotificationsList() {
+
+    }
+
     override fun reactOnNewNotification(notification: TripNotificationDomain) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.insertNewNotificationIntoDb(notification)
-            withContext(Dispatchers.Main) {
-                newNotificationsLiveData.value = NEW_NOTIFICATION
+            val watchedNotificationsList = interactor.fetchAllWatchedNotificationsIds()
+            val newNotification = notification.mapToUi(tripNotificationDomainToUiMapper).provideTripNotificationUiRecyclerItem()
+            if (!watchedNotificationsList.contains(newNotification.id) && newNotification.authorName == username) {
+                Log.d("tag", "reactOnNewNotification: insrted")
+                interactor.insertNewWatchedNotificationId(newNotification.id)
+            } else if (!watchedNotificationsList.contains(newNotification.id)){
+                Log.d("tag", "NEW NOTIFICATIONS")
+                withContext(Dispatchers.Main) {
+                    newNotificationsLiveData.value = NEW_NOTIFICATION
+                }
             }
             Log.d("tag", "reactOnNewNotification: reacted on new notification $notification")
         }

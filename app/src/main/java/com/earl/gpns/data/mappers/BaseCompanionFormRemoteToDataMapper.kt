@@ -13,8 +13,9 @@ class BaseCompanionFormRemoteToDataMapper @Inject constructor() : CompanionFormR
         schedule: String,
         actualTripTime: String,
         ableToPay: String?,
-        comment: String
+        comment: String,
+        active: Int
     ) = CompanionFormData.Base(
-        username, userImage, from, to, schedule, actualTripTime, ableToPay, comment
+        username, userImage, from, to, schedule, actualTripTime, ableToPay, comment, active
     )
 }

@@ -20,9 +20,26 @@ data class DriverFormRemote(
     val passengersCount: Int,
     val carGovNumber: String,
     val tripPrice: Int,
-    val driverComment: String
+    val driverComment: String,
+    val active: Int
 ) {
     fun <T> mapToData(mapper: DriverFormRemoteToDataMapper<T>) = mapper.map(
-        username, userImage, driveFrom, driveTo, catchCompanionFrom, alsoCanDriveTo, schedule, ableToDriveInTurn, actualTripTime, car, carModel, carColor, passengersCount.toString(), carGovNumber, tripPrice.toString(), driverComment
+        username,
+        userImage,
+        driveFrom,
+        driveTo,
+        catchCompanionFrom,
+        alsoCanDriveTo,
+        schedule,
+        ableToDriveInTurn,
+        actualTripTime,
+        car,
+        carModel,
+        carColor,
+        passengersCount.toString(),
+        carGovNumber,
+        tripPrice.toString(),
+        driverComment,
+        active
     )
 }

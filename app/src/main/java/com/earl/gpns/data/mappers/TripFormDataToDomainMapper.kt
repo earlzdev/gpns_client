@@ -12,7 +12,8 @@ interface TripFormDataToDomainMapper <T> {
         from: String,
         to: String,
         schedule: String,
-        details: DriverFormDetailsData
+        details: DriverFormDetailsData,
+        active: Int
     ) : T
 
     fun mapCompanionDetails(
@@ -22,6 +23,7 @@ interface TripFormDataToDomainMapper <T> {
         from: String,
         to: String,
         schedule: String,
-        details: CompanionFormDetailsData
+        details: CompanionFormDetailsData,
+        active: Int
     ) : T
 }

@@ -1,5 +1,6 @@
 package com.earl.gpns.ui.search.notifications
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.CompanionFormDomainToUiMapper
@@ -13,6 +14,7 @@ import com.earl.gpns.ui.models.TripNotificationRecyclerItemUi
 import com.earl.gpns.ui.models.TripNotificationUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -30,17 +32,28 @@ class TripNotificationsViewModel @Inject constructor(
     private val companionFormLiveData = MutableLiveData<CompanionFormUi?>()
     private val driverFormLiveData = MutableLiveData<DriverFormUi?>()
     private val existedTripNotificationLiveData = MutableLiveData<TripNotificationUi>()
+    private val watchedNotificationsIdsListLivedData = MutableLiveData<String>()
 
     fun fetchNotifications(token: String, username: String) {
         viewModelScope.launch(Dispatchers.IO) {
+
             val remoteList = interactor.fetchAllTripNotifications(token)
-                .map { it.mapToUi(tripNotificationDomainToUiMapper) }
-                .map { it.provideTripNotificationUiRecyclerItem() }
+            val localDbNotificationsList = interactor.fetchAllTripNotificationFromLocalDb()
+//                .map { it.provideTripNotificationUiRecyclerItem() }
+            val recyclerList = remoteList.map { it.mapToUi(tripNotificationDomainToUiMapper) }.map { it.provideTripNotificationUiRecyclerItem() }
             val watchedNotificationsIdsList = interactor.fetchAllWatchedNotificationsIds()
             withContext(Dispatchers.Main) {
-                tripNotificationsLiveData.value = remoteList.onEach {
-                    if (watchedNotificationsIdsList.contains(it.id) || it.authorName == username) {
+                tripNotificationsLiveData.value = recyclerList.onEach {
+                    if (watchedNotificationsIdsList.contains(it.id) /*|| it.authorName == username*/) {
                         it.read = 1
+                    } else {
+//                        Log.d("tag", "insertNotificationIdIntoDb: INSERTED NEW NOTIFICATION TRIPNOTIFICATIONVIEWIEWMODEL WHEN FETCHING")
+                        viewModelScope.launch(Dispatchers.IO) {
+                            interactor.insertNewWatchedNotificationId(it.id)
+//                            val id = it.id
+//                            interactor.insertNewNotificationIntoDb(remoteList.find { it.provideId() == id }!!)
+//                        insertNotificationIdIntoDb(it.id)
+                        }
                     }
                 }
             }
@@ -49,11 +62,22 @@ class TripNotificationsViewModel @Inject constructor(
 
     fun insertNotificationIdIntoDb(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val existedList = interactor.fetchAllWatchedNotificationsIds()
+            val existedList = fetchAllWatchedNotificationsIdsList()
+            Log.d("tag", "insertNotificationIdIntoDb: existed list -> $existedList")
             if (!existedList.contains(id)) {
+                Log.d("tag", "insertNotificationIdIntoDb: INSERTED NEW NOTIFICATION TRIPNOTIFICATIONVIEWIEWMODEL")
                 interactor.insertNewWatchedNotificationId(id)
             }
         }
+    }
+
+    private suspend fun fetchAllWatchedNotificationsIdsList() : List<String> {
+        return viewModelScope.async(Dispatchers.IO) {
+            val list = interactor.fetchAllWatchedNotificationsIds()
+            withContext(Dispatchers.Main) {
+                return@withContext list
+            }
+        }.await()
     }
 
     fun fetchCompanionForm(token: String, username: String) {

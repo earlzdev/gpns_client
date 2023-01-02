@@ -21,7 +21,8 @@ class BaseTripFormRemoteToDataMapper @Inject constructor(
         from: String,
         to: String,
         schedule: String,
-        details: String
+        details: String,
+        active: Int
     ) = TripFormData.Base(
         username,
         userImage,
@@ -30,7 +31,8 @@ class BaseTripFormRemoteToDataMapper @Inject constructor(
         to,
         schedule,
         Json.decodeFromString<DriverFormDetailsRemote>(details)
-            .map(driverFormDetailsRemoteToDataMapper)
+            .map(driverFormDetailsRemoteToDataMapper),
+        active
     )
 
     override fun mapCompanionDetails(
@@ -40,7 +42,8 @@ class BaseTripFormRemoteToDataMapper @Inject constructor(
         from: String,
         to: String,
         schedule: String,
-        details: String
+        details: String,
+        active: Int
     ) = TripFormData.Base(
         username,
         userImage,
@@ -49,6 +52,7 @@ class BaseTripFormRemoteToDataMapper @Inject constructor(
         to,
         schedule,
         Json.decodeFromString<CompanionFormDetailsRemote>(details)
-            .map(companionFormDetailsRemoteToDataMapper)
+            .map(companionFormDetailsRemoteToDataMapper),
+        active
     )
 }

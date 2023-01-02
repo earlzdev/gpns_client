@@ -37,7 +37,8 @@ interface TripFormUi : Same<TripFormUi> {
         private val from: String,
         private val to: String,
         private val schedule: String,
-        private val details: TripFormDetails
+        private val details: TripFormDetails,
+        private val active: Int
     ) : TripFormUi {
 
         override fun recyclerDetails(

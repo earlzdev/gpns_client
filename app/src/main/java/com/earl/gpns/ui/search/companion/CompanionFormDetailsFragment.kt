@@ -61,10 +61,15 @@ class CompanionFormDetailsFragment(
     }
 
     private fun acceptCompanionToRideTogether(companionUsername: String) {
-        viewModel.acceptCompanionToRideTogether(
-            preferenceManager.getString(Keys.KEY_JWT) ?: "",
-            companionUsername
-        )
+        if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP)) {
+            viewModel.acceptCompanionToRideTogether(
+                preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                companionUsername
+            )
+            preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, true)
+        } else {
+            Toast.makeText(requireContext(), "Вы уже договорились ездить с другим человеком!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun denyCompanionToDriveTogether(companionUsername: String) {
@@ -99,40 +104,44 @@ class CompanionFormDetailsFragment(
     }
 
     private fun inviteCompanion() {
-        viewModel.fetchExistedNotificationsFromDb()
-        val existedList = viewModel.provideTripNotificationsLiveData()?.map { it.provideTripNotificationUiRecyclerItem() }
-        val existedNotification = existedList?.find {  it.receiverName == binding.userName.text.toString() || it.authorName == binding.userName.text.toString()}
-        Log.d("tag", "inviteDriver: existedlist -> $existedList")
-        Log.d("tag", "inviteDriver: existed -> $existedNotification")
-        if (!notificationSent) {
-            if (existedNotification == null) {
-                if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && preferenceManager.getBoolean(Keys.IS_DRIVER)) {
-                    val notification = TripNotificationUi.Base(
-                        UUID.randomUUID().toString(),
-                        preferenceManager.getString(Keys.KEY_NAME) ?: "",
-                        binding.userName.text.toString(),
-                        DRIVER_ROLE,
-                        COMPANION_ROLE,
-                        INVITE,
-                        ""
-                    )
-                    viewModel.inviteCompanion(
-                        preferenceManager.getString(Keys.KEY_JWT) ?: "",
-                        notification
-                    )
-                    Toast.makeText(requireContext(), "Приглашение отправлено", Toast.LENGTH_LONG).show()
-                    notificationSent = true
+//        if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP)) {
+            viewModel.fetchExistedNotificationsFromDb()
+            val existedList = viewModel.provideTripNotificationsLiveData()?.map { it.provideTripNotificationUiRecyclerItem() }
+            val existedNotification = existedList?.find {  it.receiverName == binding.userName.text.toString() || it.authorName == binding.userName.text.toString()}
+            Log.d("tag", "inviteDriver: existedlist -> $existedList")
+            Log.d("tag", "inviteDriver: existed -> $existedNotification")
+            if (!notificationSent) {
+                if (existedNotification == null) {
+                    if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && preferenceManager.getBoolean(Keys.IS_DRIVER)) {
+                        val notification = TripNotificationUi.Base(
+                            UUID.randomUUID().toString(),
+                            preferenceManager.getString(Keys.KEY_NAME) ?: "",
+                            binding.userName.text.toString(),
+                            DRIVER_ROLE,
+                            COMPANION_ROLE,
+                            INVITE,
+                            ""
+                        )
+                        viewModel.inviteCompanion(
+                            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                            notification
+                        )
+                        Toast.makeText(requireContext(), "Приглашение отправлено", Toast.LENGTH_LONG).show()
+                        notificationSent = true
+                    } else {
+                        Toast.makeText(requireContext(), "Чтобы отправить уведомление этому пользователю, нужно иметь активную анкету водителя!", Toast.LENGTH_LONG).show()
+                    }
+                } else if (existedNotification.receiverName == binding.userName.text.toString()) {
+                    Toast.makeText(requireContext(), "Вы уже отправяли приглашение этому пользователю, дождитесь ответа", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(requireContext(), "Чтобы отправить уведомление этому пользователю, нужно иметь активную анкету водителя!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "У вас уже есть приглашение от этого пользователя", Toast.LENGTH_SHORT).show()
                 }
-            } else if (existedNotification.receiverName == binding.userName.text.toString()) {
-                Toast.makeText(requireContext(), "Вы уже отправяли приглашение этому пользователю, дождитесь ответа", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "У вас уже есть приглашение от этого пользователя", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Вы уже отправяли приглашение этому пользователю, дождитесь ответа", Toast.LENGTH_SHORT).show()
             }
-        } else {
-            Toast.makeText(requireContext(), "Вы уже отправяли приглашение этому пользователю, дождитесь ответа", Toast.LENGTH_SHORT).show()
-        }
+//        } else {
+//            Toast.makeText(requireContext(), "Вы уже договорились ездить вместе с другим человеком!", Toast.LENGTH_SHORT).show()
+//        }
     }
 
     companion object {

@@ -26,7 +26,8 @@ interface DriverFormUi {
         private val passengersCount: String,
         private val carGovNumber: String,
         private val tripPrice: String,
-        private val driverComment: String
+        private val driverComment: String,
+        private val active: Int
     ) : DriverFormUi {
         override fun <T> mapToDomain(mapper: DriverFormUiToDomainMapper<T>) =
             mapper.map(
@@ -45,7 +46,8 @@ interface DriverFormUi {
                 passengersCount,
                 carGovNumber,
                 tripPrice,
-                driverComment
+                driverComment,
+                active
             )
 
         override fun provideDriverFormDetailsUi() = DriverDetailsUi(

@@ -21,7 +21,8 @@ class BaseDriverFormRemoteToDataMapper @Inject constructor() : DriverFormRemoteT
         passengersCount: String,
         carGovNumber: String,
         tripPrice: String,
-        driverComment: String
+        driverComment: String,
+        active: Int
     ) = DriverFormData.Base(
         username,
         userImage,
@@ -38,6 +39,7 @@ class BaseDriverFormRemoteToDataMapper @Inject constructor() : DriverFormRemoteT
         passengersCount,
         carGovNumber,
         tripPrice,
-        driverComment
+        driverComment,
+        active
     )
 }

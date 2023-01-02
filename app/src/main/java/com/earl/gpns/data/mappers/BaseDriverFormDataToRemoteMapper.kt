@@ -21,7 +21,8 @@ class BaseDriverFormDataToRemoteMapper @Inject constructor() : DriverFormDataToR
         passengersCount: String,
         carGovNumber: String,
         tripPrice: String,
-        driverComment: String
+        driverComment: String,
+        active: Int
     ) = DriverFormRemote(
         username,
         userImage,
@@ -38,6 +39,7 @@ class BaseDriverFormDataToRemoteMapper @Inject constructor() : DriverFormDataToR
         if (passengersCount == "") 0 else passengersCount.toInt(),
         carGovNumber,
         if (tripPrice == "") 0 else tripPrice.toInt(),
-        driverComment
+        driverComment,
+        active
     )
 }

@@ -13,4 +13,5 @@ object Keys {
     const val KEY_JWT = "JWT"
     const val HAS_SEARCH_FORM = "HAS_SEARCH_FORM"
     const val IS_DRIVER = "IS_DRIVER"
+    const val IS_STILL_IN_COMP_GROUP = "IS_STILL_IN_COMP_GROUP"
 }

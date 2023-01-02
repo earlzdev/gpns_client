@@ -13,8 +13,9 @@ data class CompanionFormRemote(
     val schedule: String,
     val actualTripTime: String,
     val ableToPay: String?,
-    val comment: String
+    val comment: String,
+    val active: Int
 ) {
     fun mapToData(mapper: CompanionFormRemoteToDataMapper<CompanionFormData>) =
-        mapper.map(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment)
+        mapper.map(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment, active)
 }

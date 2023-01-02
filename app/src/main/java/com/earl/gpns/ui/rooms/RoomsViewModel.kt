@@ -160,10 +160,6 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    fun observeGroupsLiveData(owner: LifecycleOwner, observer: Observer<List<GroupUi>>) {
-        groupsLiveData.observe(owner, observer)
-    }
-
     fun insertNewGroup(group: GroupUi) {
         viewModelScope.launch(Dispatchers.IO) {
             groups.value += group
