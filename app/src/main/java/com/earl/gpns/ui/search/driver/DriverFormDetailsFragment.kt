@@ -151,7 +151,7 @@ class DriverFormDetailsFragment(
         fun newInstance(details: SearchFormsDetails, viewRegime: String) = DriverFormDetailsFragment(details, viewRegime)
         private const val DRIVER_ROLE = "DRIVER_ROLE"
         private const val COMPANION_ROLE = "COMPANION_ROLE"
-        private const val INVITE = 1
+        private const val INVITE = "INVITE"
         private const val DETAILS = "DETAILS"
         private const val NOTIFICATION = "NOTIFICATION"
         private const val OWN_INVITE = "OWN_INVITE"

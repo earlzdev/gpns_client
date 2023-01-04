@@ -14,9 +14,9 @@ data class NotificationsDb(
     @ColumnInfo(name = "receiverName") val receiverName: String,
     @ColumnInfo(name = "authorTripRole") val authorTripRole: String,
     @ColumnInfo(name = "receiverTripRole") val receiverTripRole: String,
-    @ColumnInfo(name = "isInvite") val isInvite: Int,
+    @ColumnInfo(name = "type") val type: String,
     @ColumnInfo(name = "timestamp") val timestamp: String,
 ) {
     fun map(mapper: NotificationDbToDataMapper<TripNotificationData>) =
-        mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp)
+        mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp)
 }

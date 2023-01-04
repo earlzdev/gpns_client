@@ -23,15 +23,15 @@ interface TripNotificationUi : Same<TripNotificationUi> {
         private val receiverName: String,
         private val authorTripRole: String,
         private val receiverTripRole: String,
-        private val isInvite: Int,
+        private val type: String,
         private val timestamp: String,
     ) : TripNotificationUi {
 
         override fun <T> mapToDomain(mapper: TripNotificationUiToDomainMapper<T>) =
-            mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp)
+            mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp)
 
         override fun provideTripNotificationUiRecyclerItem() = TripNotificationRecyclerItemUi(
-            id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp, 0, if (isInvite == 1) 1 else 0
+            id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp, 0, if (type == INVITE) 1 else 0
         )
 
         override fun provideId() = id
@@ -39,6 +39,10 @@ interface TripNotificationUi : Same<TripNotificationUi> {
         override fun provideReceiverName() = receiverName
 
         override fun provideAuthorName() = authorName
+    }
+
+    companion object {
+        private const val INVITE = "INVITE"
     }
 }
 

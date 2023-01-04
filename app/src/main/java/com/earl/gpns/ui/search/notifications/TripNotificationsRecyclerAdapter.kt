@@ -44,14 +44,18 @@ class TripNotificationsRecyclerAdapter(
             val tripRoleInviter = if (item.authorTripRole == COMPANION_ROLE) "Попутчик" else "Водитель"
             val tripRoleInviting = if (item.receiverTripRole == COMPANION_ROLE) "попутчика" else "водителя"
             Log.d("tag", "bind: $item")
-            if (item.isInvite == 3 && item.receiverName != username) {
+            if (item.type == AGREED && item.receiverName != username) {
                 binding.inviteText.text = "Вы приняли приглашение $tripRoleInviting ${item.receiverName} ездить вместе и были добавлены в группу попутчиков, где можно детальнее договориться о поездке."
-            } else if (item.isInvite == 3 && item.receiverName == username) {
+            } else if (item.type == AGREED && item.receiverName == username) {
                 binding.inviteText.text = "$tripRoleInviter ${item.authorName} принял Ваше приглашение ездить вместе. Вы добавлены в совместную группу попутчиков, где можно детальнее договориться о поездке."
-            } else if (item.isInvite == 2 && item.authorName != username) {
+            } else if (item.type == DELETED_DRIVER_FORM && item.authorName != username) {
                 binding.inviteText.text = "Водитель ${item.authorName}, с которым Вы ездили вместе, удалил свою анкету. Предлагаем найти нового водителя."
-            } else if (item.isInvite == 2 && item.authorName == username) {
+            } else if (item.type == DELETED_DRIVER_FORM && item.authorName == username) {
                 binding.inviteText.text = "Вы удалили свою анкету водителя."
+            } else if (item.type == REMOVED_COMPANION_FROM_GROUP && item.receiverName == username) {
+                binding.inviteText.text = "$tripRoleInviter ${item.authorName} убрал Вас из совместной группы попутчиков"
+            } else if (item.type == REMOVED_COMPANION_FROM_GROUP && item.receiverName != username) {
+                binding.inviteText.text = "Вы убрали ${item.receiverName} из совместной группы попутчиков"
             } else {
                 if (item.authorName == username) {
                     binding.inviteText.text = "Вы пригласили $tripRoleInviting ${item.receiverName} ездить вместе."
@@ -69,5 +73,9 @@ class TripNotificationsRecyclerAdapter(
         override fun areContentsTheSame(oldItem: TripNotificationRecyclerItemUi, newItem: TripNotificationRecyclerItemUi) = oldItem.equals(newItem)
         private const val COMPANION_ROLE = "COMPANION_ROLE"
         private const val DRIVER_ROLE = "DRIVER_ROLE"
+        private const val INVITE = "INVITE"
+        private const val DELETED_DRIVER_FORM = "DELETED_DRIVER_FORM"
+        private const val AGREED = "AGREED"
+        private const val REMOVED_COMPANION_FROM_GROUP = "REMOVED_COMPANION_FROM_GROUP"
     }
 }

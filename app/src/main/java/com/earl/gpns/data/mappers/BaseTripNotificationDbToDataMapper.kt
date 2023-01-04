@@ -11,9 +11,9 @@ class BaseTripNotificationDbToDataMapper @Inject constructor() : NotificationDbT
         receiverName: String,
         authorTripRole: String,
         receiverTripRole: String,
-        isInvite: Int,
+        type: String,
         timestamp: String
     ) = TripNotificationData.Base(
-        id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp
+        id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp
     )
 }

@@ -8,5 +8,6 @@ interface UserResponseToDataMapper<T> {
         username: String,
         online: Int,
         lastAuth: String,
+        tripRole: String
     ) : T
 }

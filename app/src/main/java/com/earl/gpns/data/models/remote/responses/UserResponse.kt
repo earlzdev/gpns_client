@@ -10,7 +10,8 @@ data class UserResponse (
     @SerializedName("image") val image: String,
     @SerializedName("username") val username: String,
     @SerializedName("online") val online: Int,
-    @SerializedName("lastAuth") val lastAuth: String
+    @SerializedName("lastAuth") val lastAuth: String,
+    @SerializedName("tripRole") val tripRole: String,
 ) {
-    fun <T> map(mapper: UserResponseToDataMapper<T>) = mapper.map(userId, image, username, online, lastAuth)
+    fun <T> map(mapper: UserResponseToDataMapper<T>) = mapper.map(userId, image, username, online, lastAuth, tripRole)
 }

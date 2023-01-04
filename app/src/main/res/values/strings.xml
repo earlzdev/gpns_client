@@ -120,6 +120,9 @@
     <string name="trip_notifications_chapter">Уведомления о приглашениях:</string>
     <string name="deny">Отказаться</string>
     <string name="agree">Согласиться</string>
+    <string name="my_comps">Мои попутчики</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 
     // spinners
     <string-array name="spinner_drive_from">

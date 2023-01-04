@@ -42,5 +42,7 @@ interface NavigationContract {
 
     fun tripNotifications()
 
+    fun companionGroupSettingsFragment(groupId: String)
+
     fun exit()
 }

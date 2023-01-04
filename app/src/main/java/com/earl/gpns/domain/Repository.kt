@@ -68,4 +68,8 @@ interface Repository {
     suspend fun acceptCompanionToRideTogether(token: String, companionUsername: String)
 
     suspend fun denyCompanionToRideTogether(token: String, companionUsername: String)
+
+    suspend fun fetchAllCompanionsInGroup(token: String, groupId: String) : List<UserDomain>
+
+    suspend fun removeCompanionFromGroup(token: String, groupId: String, username: String)
 }

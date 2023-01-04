@@ -430,6 +430,20 @@ class BaseRepository @Inject constructor(
         }
     }
 
+    override suspend fun fetchAllCompanionsInGroup(token: String, groupId: String): List<UserDomain> {
+        return service.fetchAllCompanionsInGroup("Bearer $token", GroupIdRequest(groupId))
+            .map { it.map(userResponseToDataMapper) }
+            .map { it.map(userDataToDomainMapper) }
+    }
+
+    override suspend fun removeCompanionFromGroup(token: String, groupId: String, username: String) {
+        try {
+            service.removeCompanionFromGroup("Bearer $token", RemoveCompanionFromGroupDto(username, groupId))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     companion object {
         private const val KEY_SUCCESS = "success"
         private const val COMPANION_ROLE = "COMPANION_ROLE"

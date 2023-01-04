@@ -7,6 +7,7 @@ interface UserDataToDomainMapper<T> {
         image: String,
         username: String,
         online: Int,
-        lastAuth: String
+        lastAuth: String,
+        tripRole: String
     ) : T
 }
