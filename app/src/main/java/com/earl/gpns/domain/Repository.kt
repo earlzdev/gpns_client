@@ -72,4 +72,8 @@ interface Repository {
     suspend fun fetchAllCompanionsInGroup(token: String, groupId: String) : List<UserDomain>
 
     suspend fun removeCompanionFromGroup(token: String, groupId: String, username: String)
+
+    suspend fun leaveFromCompanionGroup(token: String, groupId: String)
+
+    suspend fun markTripNotificationAsNotActive(token: String, notificationId: String)
 }

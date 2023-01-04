@@ -60,8 +60,8 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
         }
     }
 
-    override fun showNotificationDetails(id: String, username: String, tripRole: String, isWatchable: Boolean) {
-        if (isWatchable) {
+    override fun showNotificationDetails(id: String, username: String, tripRole: String, watchable: Boolean) {
+        if (watchable) {
 //            viewModel.insertNotificationIdIntoDb(id)
             viewModel.fetchTripNotificationById(id)
             viewModel.observeExistedTripNotificationLiveData(this) {
@@ -78,7 +78,7 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
                     )
                     viewModel.observeCompanionFormLiveData(this) {
                         if (it != null) {
-                            navigator.companionFormDetails(it.provideCompanionDetailsUi(), viewRegime)
+                            navigator.companionFormDetails(it.provideCompanionDetailsUi(), viewRegime, id)
                         }
                     }
                 } else {
@@ -88,7 +88,7 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
                     )
                     viewModel.observeDriverFormLiveData(this) {
                         if (it != null) {
-                            navigator.driverFormDetails(it.provideDriverFormDetailsUi(), viewRegime)
+                            navigator.driverFormDetails(it.provideDriverFormDetailsUi(), viewRegime, id)
                         }
                     }
                 }

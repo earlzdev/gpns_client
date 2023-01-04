@@ -15,13 +15,15 @@ import com.earl.gpns.databinding.FragmentDriverFormDetailsBinding
 import com.earl.gpns.ui.SearchFormsDetails
 import com.earl.gpns.ui.models.DriverDetailsUi
 import com.earl.gpns.ui.models.TripNotificationUi
+import com.earl.gpns.ui.search.companion.CompanionFormDetailsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
 class DriverFormDetailsFragment(
     private val details: SearchFormsDetails,
-    private val viewRegime: String
+    private val viewRegime: String,
+    private val notificationId: String
 ) : BaseFragment<FragmentDriverFormDetailsBinding>() {
 
     private lateinit var viewModel: DriverFormViewModel
@@ -65,6 +67,10 @@ class DriverFormDetailsFragment(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 driverUsername
             )
+            viewModel.markTripNotificationAsNotActive(
+                preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                notificationId
+            )
             preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, true)
         } else {
             Toast.makeText(requireContext(), "Вы уже договорились здить с другим человеком!", Toast.LENGTH_SHORT).show()
@@ -107,22 +113,24 @@ class DriverFormDetailsFragment(
     }
 
     private fun inviteDriver() {
-//        if (preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP) && !preferenceManager.getBoolean(Keys.IS_DRIVER)) {
             val existedList = viewModel.provideExistedNotificationsListLiveData()?.map { it.provideTripNotificationUiRecyclerItem() }
             val existedNotification = existedList?.find {  it.receiverName == binding.userName.text.toString() || it.authorName == binding.userName.text.toString()}
             Log.d("tag", "inviteDriver: existedlist -> $existedList")
             Log.d("tag", "inviteDriver: existed -> $existedNotification")
+        if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP)) {
             if (!notificationSent) {
                 if (existedNotification == null) {
                     if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && !preferenceManager.getBoolean(Keys.IS_DRIVER)) {
+                        val notificationId = UUID.randomUUID().toString()
                         val notification = TripNotificationUi.Base(
-                            UUID.randomUUID().toString(),
+                            notificationId,
                             preferenceManager.getString(Keys.KEY_NAME) ?: "",
                             binding.userName.text.toString(),
                             COMPANION_ROLE,
                             DRIVER_ROLE,
                             INVITE,
-                            ""
+                            "",
+                            ACTIVE
                         )
                         viewModel.inviteDriver(
                             preferenceManager.getString(Keys.KEY_JWT) ?: "",
@@ -133,27 +141,28 @@ class DriverFormDetailsFragment(
                     } else {
                         Toast.makeText(requireContext(), "Чтобы отправить уведомление этому пользователю, нужно иметь активную анкету попутчика!", Toast.LENGTH_SHORT).show()
                     }
-                } else if (existedNotification.receiverName == binding.userName.text.toString()){
+                } else if (existedNotification.receiverName == binding.userName.text.toString() && existedNotification.active == ACTIVE) {
                     Toast.makeText(requireContext(), "Вы уже отправяли приглашение этому пользователю, дождитесь ответа", Toast.LENGTH_SHORT).show()
-                } else {
+                } else if (existedNotification.active == ACTIVE) {
                     Toast.makeText(requireContext(), "У вас уже есть приглашение от этого пользователя", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(requireContext(), "Вы уже отправяли приглашение этому пользователю, дождитесь ответа", Toast.LENGTH_SHORT).show()
             }
-//        } else {
-//            Toast.makeText(requireContext(), "Вы уже договорились ездить вместе с другим человеком!", Toast.LENGTH_SHORT).show()
-//        }
+        } else {
+            Toast.makeText(requireContext(), "Вы уже состоите в группе попутчиков, отправлять приглашения может только ее создатель", Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
 
-        fun newInstance(details: SearchFormsDetails, viewRegime: String) = DriverFormDetailsFragment(details, viewRegime)
+        fun newInstance(details: SearchFormsDetails, viewRegime: String, notificationId: String) = DriverFormDetailsFragment(details, viewRegime, notificationId)
         private const val DRIVER_ROLE = "DRIVER_ROLE"
         private const val COMPANION_ROLE = "COMPANION_ROLE"
         private const val INVITE = "INVITE"
         private const val DETAILS = "DETAILS"
         private const val NOTIFICATION = "NOTIFICATION"
         private const val OWN_INVITE = "OWN_INVITE"
+        private const val ACTIVE = 1
     }
 }

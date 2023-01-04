@@ -288,7 +288,7 @@ class BaseRepository @Inject constructor(
                     list[i].schedule,
                     if (list[i].companionRole == COMPANION_ROLE)
                         Json.decodeFromString<CompanionTripFormDetailsRemote>(list[i].details)
-                        .map(companionFormDetailsRemoteToDataMapper)
+                            .map(companionFormDetailsRemoteToDataMapper)
                     else Json.decodeFromString<DriverTripFormDetailsRemote>(list[i].details)
                         .map(driverFormDetailsRemoteToDataMapper),
                     list[i].active
@@ -361,9 +361,9 @@ class BaseRepository @Inject constructor(
 
     override suspend fun fetchDriverForm(token: String, username: String): DriverFormDomain? {
         return try {
-             service.fetchDriverForm("Bearer $token", UserNameDto(username))
-                 .mapToData(driverFormRemoteToDataMapper)
-                 .mapToDomain(driverFormDataToDomainMapper)
+            service.fetchDriverForm("Bearer $token", UserNameDto(username))
+                .mapToData(driverFormRemoteToDataMapper)
+                .mapToDomain(driverFormDataToDomainMapper)
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -444,8 +444,24 @@ class BaseRepository @Inject constructor(
         }
     }
 
+    override suspend fun leaveFromCompanionGroup(token: String, groupId: String) {
+        try {
+            service.leaveFromCompanionGroup("Bearer $token", GroupIdRequest(groupId))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override suspend fun markTripNotificationAsNotActive(token: String, notificationId: String) {
+        try {
+            service.markTripNotificationAsNotActive("Bearer $token", NotificationIdDto(notificationId))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     companion object {
         private const val KEY_SUCCESS = "success"
         private const val COMPANION_ROLE = "COMPANION_ROLE"
-     }
+    }
 }

@@ -12,6 +12,7 @@ class BaseTripNotificationDataToDbMapper @Inject constructor() : TripNotificatio
         authorTripRole: String,
         receiverTripRole: String,
         type: String,
-        timestamp: String
-    ) = NotificationsDb(0, id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp)
+        timestamp: String,
+        active: Int
+    ) = NotificationsDb(0, id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp, active)
 }

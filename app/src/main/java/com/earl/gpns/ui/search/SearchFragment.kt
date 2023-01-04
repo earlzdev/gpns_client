@@ -79,9 +79,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
 
     override fun showDetails(role: String, details: SearchFormsDetails) {
         if (role == COMPANION_ROLE) {
-            navigator.companionFormDetails(details, DETAILS)
+            navigator.companionFormDetails(details, DETAILS, "")
         } else {
-            navigator.driverFormDetails(details, DETAILS)
+            navigator.driverFormDetails(details, DETAILS, "")
         }
     }
 

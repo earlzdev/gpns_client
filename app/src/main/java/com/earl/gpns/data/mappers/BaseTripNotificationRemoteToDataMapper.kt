@@ -12,8 +12,9 @@ class BaseTripNotificationRemoteToDataMapper @Inject constructor() : TripNotific
         authorTripRole: String,
         receiverTripRole: String,
         type: String,
-        timestamp: String
+        timestamp: String,
+        active: Int
     ) = TripNotificationData.Base(
-        id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp
+        id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp, active
     )
 }

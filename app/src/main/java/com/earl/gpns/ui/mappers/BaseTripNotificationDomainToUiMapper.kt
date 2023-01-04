@@ -13,6 +13,7 @@ class BaseTripNotificationDomainToUiMapper @Inject constructor() : TripNotificat
         authorTripRole: String,
         receiverTripRole: String,
         type: String,
-        timestamp: String
-    ) = TripNotificationUi.Base(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp)
+        timestamp: String,
+        active: Int
+    ) = TripNotificationUi.Base(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp, active)
 }

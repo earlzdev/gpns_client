@@ -137,6 +137,10 @@ interface Interactor {
 
     suspend fun removeCompanionFromGroup(token: String, groupId: String, username: String)
 
+    suspend fun leaveFromCompanionGroup(token: String, groupId: String)
+
+    suspend fun markTripNotificationAsNotActive(token: String, notificationId: String)
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -375,6 +379,14 @@ interface Interactor {
 
         override suspend fun removeCompanionFromGroup(token: String, groupId: String, username: String) {
             repository.removeCompanionFromGroup(token, groupId, username)
+        }
+
+        override suspend fun leaveFromCompanionGroup(token: String, groupId: String) {
+            repository.leaveFromCompanionGroup(token, groupId)
+        }
+
+        override suspend fun markTripNotificationAsNotActive(token: String, notificationId: String) {
+            repository.markTripNotificationAsNotActive(token, notificationId)
         }
     }
 }

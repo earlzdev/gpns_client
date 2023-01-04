@@ -93,4 +93,10 @@ class CompanionFormViewModel @Inject constructor(
             interactor.denyCompanionToRideTogether(token, companionUsername)
         }
     }
+
+    fun markTripNotificationAsNotActive(token: String, notificationId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.markTripNotificationAsNotActive(token, notificationId)
+        }
+    }
 }

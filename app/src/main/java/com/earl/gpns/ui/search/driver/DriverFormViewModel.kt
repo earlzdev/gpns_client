@@ -95,4 +95,10 @@ class DriverFormViewModel @Inject constructor(
             interactor.denyDriverToRideTogether(token, driverUsername)
         }
     }
+
+    fun markTripNotificationAsNotActive(token: String, notificationId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.markTripNotificationAsNotActive(token, notificationId)
+        }
+    }
 }

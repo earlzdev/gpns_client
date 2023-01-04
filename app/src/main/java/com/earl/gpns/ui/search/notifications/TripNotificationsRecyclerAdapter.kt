@@ -53,16 +53,20 @@ class TripNotificationsRecyclerAdapter(
             } else if (item.type == DELETED_DRIVER_FORM && item.authorName == username) {
                 binding.inviteText.text = "Вы удалили свою анкету водителя."
             } else if (item.type == REMOVED_COMPANION_FROM_GROUP && item.receiverName == username) {
-                binding.inviteText.text = "$tripRoleInviter ${item.authorName} убрал Вас из совместной группы попутчиков"
+                binding.inviteText.text = "$tripRoleInviter ${item.authorName} убрал Вас из совместной группы попутчиков. Найдите другого водителя"
             } else if (item.type == REMOVED_COMPANION_FROM_GROUP && item.receiverName != username) {
                 binding.inviteText.text = "Вы убрали ${item.receiverName} из совместной группы попутчиков"
+            } else if (item.type == COMPANION_LEAVED_GROUP && item.receiverName == username) {
+                binding.inviteText.text = "$tripRoleInviter ${item.authorName} покинул группу попутчиков"
+            } else if (item.type == COMPANION_LEAVED_GROUP && item.receiverName != username) {
+                binding.inviteText.text = "Вы покинули группу попутчиков $tripRoleInviting ${item.receiverName}"
             } else {
-                if (item.authorName == username) {
-                    binding.inviteText.text = "Вы пригласили $tripRoleInviting ${item.receiverName} ездить вместе."
-                } else {
-                    binding.inviteText.text = "$tripRoleInviter ${item.authorName} приглашает Вас ездить вместе."
+                    if (item.authorName == username) {
+                        binding.inviteText.text = "Вы пригласили $tripRoleInviting ${item.receiverName} ездить вместе."
+                    } else {
+                        binding.inviteText.text = "$tripRoleInviter ${item.authorName} приглашает Вас ездить вместе."
+                    }
                 }
-            }
             binding.timestamp.text = item.timestamp
             binding.newNotificationIndicator.isVisible = item.read == 0
         }
@@ -77,5 +81,6 @@ class TripNotificationsRecyclerAdapter(
         private const val DELETED_DRIVER_FORM = "DELETED_DRIVER_FORM"
         private const val AGREED = "AGREED"
         private const val REMOVED_COMPANION_FROM_GROUP = "REMOVED_COMPANION_FROM_GROUP"
+        private const val COMPANION_LEAVED_GROUP = "COMPANION_LEAVED_GROUP"
     }
 }

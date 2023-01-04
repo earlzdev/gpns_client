@@ -10,5 +10,6 @@ interface TripNotificationUiToDomainMapper<T> {
         receiverTripRole: String,
         type: String,
         timestamp: String,
+        active: Int
     ) : T
 }
