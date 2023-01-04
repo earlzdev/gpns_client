@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class BaseUserResponseToDataMapper @Inject constructor() : UserResponseToDataMapper<UserData> {
 
-    override fun map(userId: String, image: String, username: String, online: Int, lastAuth: String) =
-        UserData.Base(userId, image, username, online, lastAuth)
+    override fun map(userId: String, image: String, username: String, online: Int, lastAuth: String, tripRole: String) =
+        UserData.Base(userId, image, username, online, lastAuth, tripRole)
 }

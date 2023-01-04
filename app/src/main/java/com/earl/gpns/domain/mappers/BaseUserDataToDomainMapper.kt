@@ -6,6 +6,6 @@ import javax.inject.Inject
 
 class BaseUserDataToDomainMapper @Inject constructor() : UserDataToDomainMapper<UserDomain> {
 
-    override fun map(userId: String, image: String, username: String, online: Int, lastAuth: String) =
-        UserDomain.Base(userId, image, username, online, lastAuth)
+    override fun map(userId: String, image: String, username: String, online: Int, lastAuth: String, tripRole: String) =
+        UserDomain.Base(userId, image, username, online, lastAuth, tripRole)
 }

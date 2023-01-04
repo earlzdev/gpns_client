@@ -215,4 +215,18 @@ interface Service {
         @Header("Authorization") token: String,
         @Body username: UserNameDto
     )
+
+    @Headers("Content-Type: application/json")
+    @POST("/fetchAllCompanionsInGroup")
+    suspend fun fetchAllCompanionsInGroup(
+        @Header("Authorization") token: String,
+        @Body groupId: GroupIdRequest
+    ) : List<UserResponse>
+
+    @Headers("Content-Type: application/json")
+    @POST("/removeCompanionFromGroup")
+    suspend fun removeCompanionFromGroup(
+        @Header("Authorization") token: String,
+        @Body dto: RemoveCompanionFromGroupDto
+    )
 }

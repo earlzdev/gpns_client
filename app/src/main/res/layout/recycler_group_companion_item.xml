@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="6dp"
+    android:layout_marginVertical="2dp">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/comp_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="centerCrop"
+        app:riv_oval="true"
+        android:src="@drawable/default_avatar"
+        android:layout_marginStart="10dp"
+        />
+
+    <TextView
+        android:id="@+id/comp_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Иван Иванов"
+        android:textSize="16sp"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="@id/comp_image"
+        app:layout_constraintStart_toEndOf="@id/comp_image"
+        app:layout_constraintBottom_toTopOf="@id/comp_role"
+        android:layout_marginStart="10dp"
+        />
+
+    <TextView
+        android:id="@+id/comp_role"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Попутчик"
+        android:textSize="16sp"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/comp_name"
+        app:layout_constraintBottom_toBottomOf="@id/comp_image"
+        app:layout_constraintStart_toStartOf="@id/comp_name"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/remove_companion_from_group"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:text="Убрать из группы"
+        android:textAllCaps="false"
+        android:fontFamily="@font/montesserat_medium"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:background="@drawable/remove_comp_from_group_button_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="20dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

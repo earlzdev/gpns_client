@@ -8,7 +8,7 @@ data class TripNotificationRecyclerItemUi(
     val receiverName: String,
     val authorTripRole: String,
     val receiverTripRole: String,
-    val isInvite: Int,
+    val type: String,
     val timestamp: String,
     var read: Int,
     var watchable: Int

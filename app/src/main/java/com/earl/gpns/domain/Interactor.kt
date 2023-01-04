@@ -133,6 +133,10 @@ interface Interactor {
 
     suspend fun fetchTripNotification(id: String) : TripNotificationDomain
 
+    suspend fun fetchAllCompanionsInGroup(token: String, groupId: String) : List<UserDomain>
+
+    suspend fun removeCompanionFromGroup(token: String, groupId: String, username: String)
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -365,5 +369,12 @@ interface Interactor {
 
         override suspend fun fetchTripNotification(id: String) =
             localDatabaseRepository.fetchTripNotification(id)
+
+        override suspend fun fetchAllCompanionsInGroup(token: String, groupId: String) =
+            repository.fetchAllCompanionsInGroup(token, groupId)
+
+        override suspend fun removeCompanionFromGroup(token: String, groupId: String, username: String) {
+            repository.removeCompanionFromGroup(token, groupId, username)
+        }
     }
 }

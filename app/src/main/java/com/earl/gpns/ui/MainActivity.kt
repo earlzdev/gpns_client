@@ -15,6 +15,7 @@ import com.earl.gpns.ui.auth.LoginFragment
 import com.earl.gpns.ui.auth.SignUpFragment
 import com.earl.gpns.ui.auth.StartFragment
 import com.earl.gpns.ui.chat.ChatFragment
+import com.earl.gpns.ui.chat.CompanionGroupSettingsFragment
 import com.earl.gpns.ui.chat.GroupMessagingFragment
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.GroupInfo
@@ -98,6 +99,11 @@ class MainActivity : AppCompatActivity(), NavigationContract {
 
     override fun newSearchForm() {
         showFragment(StartNewSearchingFormFragment.newInstance())
+    }
+
+
+    override fun companionGroupSettingsFragment(groupId: String) {
+        showFragment(CompanionGroupSettingsFragment.newInstance(groupId))
     }
 
     override fun startFirstDriverForm() {

@@ -63,10 +63,16 @@ class GroupMessagingFragment(
         binding.contactName.setOnClickListener {
             viewModel.deleteGroupMessagesCounter(groupInfo.groupId)
         }
+        binding.groupSettings.setOnClickListener {
+            navigator.companionGroupSettingsFragment(groupInfo.groupId)
+        }
     }
 
     private fun initViews() {
         binding.contactName.text = groupInfo.title
+        if (!groupInfo.isCompanionGroup) {
+            binding.groupSettings.visibility = View.GONE
+        }
     }
 
     private fun initGroupSocketController() {

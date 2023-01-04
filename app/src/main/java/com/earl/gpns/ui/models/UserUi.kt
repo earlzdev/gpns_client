@@ -9,11 +9,9 @@ import com.earl.gpns.core.Same
 import com.makeramen.roundedimageview.RoundedImageView
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 interface UserUi : Same<UserUi> {
 
@@ -24,6 +22,12 @@ interface UserUi : Same<UserUi> {
         name: TextView,
         lastSeen: TextView,
         onlineIndicator: ImageView
+    )
+
+    fun companionGroupRecyclerDetails(
+        imageView: RoundedImageView,
+        name: TextView,
+        role: TextView
     )
 
     fun chatInfo() : ChatInfo
@@ -40,6 +44,7 @@ interface UserUi : Same<UserUi> {
         private val username: String,
         private val online: Int,
         private val lastAuth: String,
+        private val tripRole: String
     ) : UserUi {
 
         override fun recyclerDetails(
@@ -78,6 +83,15 @@ interface UserUi : Same<UserUi> {
             }
         }
 
+        override fun companionGroupRecyclerDetails(
+            imageView: RoundedImageView,
+            name: TextView,
+            role: TextView
+        ) {
+            name.text = username
+            role.text = if (tripRole == COMPANION) "Попутчик" else "Водитель"
+        }
+
         override fun chatInfo() = ChatInfo(null, username, image, online, lastAuth, username)
 
         override fun provideId() = userId
@@ -85,5 +99,10 @@ interface UserUi : Same<UserUi> {
         override fun provideName() = username
 
         override fun provideImage() = image
+
+        companion object {
+            private const val COMPANION = "Companion"
+            private const val DRIVER = "DRIVER"
+        }
     }
 }

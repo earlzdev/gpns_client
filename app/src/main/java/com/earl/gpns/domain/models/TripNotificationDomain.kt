@@ -17,15 +17,15 @@ interface TripNotificationDomain {
         private val receiverName: String,
         private val authorTripRole: String,
         private val receiverTripRole: String,
-        private val isInvite: Int,
+        private val type: String,
         private val timestamp: String,
     ) : TripNotificationDomain {
 
         override fun <T> mapToData(mapper: TripNotificationDomainToDataMapper<T>) =
-            mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp)
+            mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp)
 
         override fun <T> mapToUi(mapper: TripNotificationDomainToUiMapper<T>) =
-            mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, isInvite, timestamp)
+            mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp)
 
         override fun provideId() = id
     }

@@ -8,7 +8,7 @@ interface TripNotificationUiToDomainMapper<T> {
         receiverName: String,
         authorTripRole: String,
         receiverTripRole: String,
-        isInvite: Int,
+        type: String,
         timestamp: String,
     ) : T
 }
