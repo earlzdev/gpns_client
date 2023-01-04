@@ -60,16 +60,16 @@ class TripNotificationsViewModel @Inject constructor(
         }
     }
 
-    fun insertNotificationIdIntoDb(id: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val existedList = fetchAllWatchedNotificationsIdsList()
-            Log.d("tag", "insertNotificationIdIntoDb: existed list -> $existedList")
-            if (!existedList.contains(id)) {
-                Log.d("tag", "insertNotificationIdIntoDb: INSERTED NEW NOTIFICATION TRIPNOTIFICATIONVIEWIEWMODEL")
-                interactor.insertNewWatchedNotificationId(id)
-            }
-        }
-    }
+//    fun insertNotificationIdIntoDb(id: String) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val existedList = fetchAllWatchedNotificationsIdsList()
+//            Log.d("tag", "insertNotificationIdIntoDb: existed list -> $existedList")
+//            if (!existedList.contains(id)) {
+//                Log.d("tag", "insertNotificationIdIntoDb: INSERTED NEW NOTIFICATION TRIPNOTIFICATIONVIEWIEWMODEL")
+//                interactor.insertNewWatchedNotificationId(id)
+//            }
+//        }
+//    }
 
     private suspend fun fetchAllWatchedNotificationsIdsList() : List<String> {
         return viewModelScope.async(Dispatchers.IO) {

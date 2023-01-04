@@ -12,7 +12,8 @@ data class TripNotificationRemote(
     val receiverTripRole: String,
     val type: String,
     val timestamp: String,
+    val active: Int
 ) {
     fun map(mapper: TripNotificationRemoteToDataMapper<TripNotificationData>) =
-        mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp)
+        mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp, active)
 }

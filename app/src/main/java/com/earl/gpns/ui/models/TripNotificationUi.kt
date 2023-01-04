@@ -25,13 +25,14 @@ interface TripNotificationUi : Same<TripNotificationUi> {
         private val receiverTripRole: String,
         private val type: String,
         private val timestamp: String,
+        private val active: Int
     ) : TripNotificationUi {
 
         override fun <T> mapToDomain(mapper: TripNotificationUiToDomainMapper<T>) =
-            mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp)
+            mapper.map(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp, active)
 
         override fun provideTripNotificationUiRecyclerItem() = TripNotificationRecyclerItemUi(
-            id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp, 0, if (type == INVITE) 1 else 0
+            id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp, 0, if (type == INVITE) 1 else 0, active
         )
 
         override fun provideId() = id

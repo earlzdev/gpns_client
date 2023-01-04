@@ -132,8 +132,10 @@ class SearchViewModel @Inject constructor(
     private fun removeDeletedSearchingForm(username: String) {
         viewModelScope.launch(Dispatchers.Main) {
             if (tripForms.value.isNotEmpty()) {
-                val form = tripForms.value.find { it.sameUsername(username) }!!
-                tripForms.value -= form
+                val form = tripForms.value.find { it.sameUsername(username) }
+                if (form != null) {
+                    tripForms.value -= form
+                }
             }
         }
     }

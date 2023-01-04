@@ -229,4 +229,18 @@ interface Service {
         @Header("Authorization") token: String,
         @Body dto: RemoveCompanionFromGroupDto
     )
+
+    @Headers("Content-Type: application/json")
+    @POST("/leaveFromCompanionGroup")
+    suspend fun leaveFromCompanionGroup(
+        @Header("Authorization") token: String,
+        @Body dto: GroupIdRequest
+    )
+
+    @Headers("Content-Type: application/json")
+    @POST("/markTripNotificationAsNotActive")
+    suspend fun markTripNotificationAsNotActive(
+        @Header("Authorization") token: String,
+        @Body id: NotificationIdDto
+    )
 }

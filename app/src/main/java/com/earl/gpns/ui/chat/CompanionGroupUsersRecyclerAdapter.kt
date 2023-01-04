@@ -1,6 +1,7 @@
 package com.earl.gpns.ui.chat
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,7 +14,8 @@ interface OnCompanionInGroupSettingsClickListener {
 }
 
 class CompanionGroupUsersRecyclerAdapter(
-    private val clickListener: OnCompanionInGroupSettingsClickListener
+    private val clickListener: OnCompanionInGroupSettingsClickListener,
+    private val username: String
 ) : ListAdapter<UserUi, CompanionGroupUsersRecyclerAdapter.ItemViewHolder>(Diff){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -33,6 +35,9 @@ class CompanionGroupUsersRecyclerAdapter(
                 binding.compName,
                 binding.compRole
             )
+            if (item.provideName() == username) {
+                binding.removeCompanionFromGroup.visibility = View.GONE
+            }
             binding.removeCompanionFromGroup.setOnClickListener {
                 clickListener.removeCompanionFromGroup(item.provideName())
             }

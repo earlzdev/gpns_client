@@ -34,9 +34,9 @@ interface NavigationContract {
 
     fun startCompanionForm()
 
-    fun driverFormDetails(details: SearchFormsDetails, viewRegime: String)
+    fun driverFormDetails(details: SearchFormsDetails, viewRegime: String, notificationId: String)
 
-    fun companionFormDetails(details: SearchFormsDetails, viewRegime: String)
+    fun companionFormDetails(details: SearchFormsDetails, viewRegime: String, notificationId: String)
 
     fun groupMessaging(groupInfo: GroupInfo)
 

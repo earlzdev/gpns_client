@@ -118,12 +118,12 @@ class MainActivity : AppCompatActivity(), NavigationContract {
         showFragment(CompanionFormFragment.newInstance())
     }
 
-    override fun driverFormDetails(details: SearchFormsDetails, viewRegime: String) {
-        showFragment(DriverFormDetailsFragment.newInstance(details, viewRegime))
+    override fun driverFormDetails(details: SearchFormsDetails, viewRegime: String, notificationId: String) {
+        showFragment(DriverFormDetailsFragment.newInstance(details, viewRegime, notificationId))
     }
 
-    override fun companionFormDetails(details: SearchFormsDetails, viewRegime: String) {
-        showFragment(CompanionFormDetailsFragment.newInstance(details, viewRegime))
+    override fun companionFormDetails(details: SearchFormsDetails, viewRegime: String, notificationId: String) {
+        showFragment(CompanionFormDetailsFragment.newInstance(details, viewRegime, notificationId))
     }
 
     override fun groupMessaging(groupInfo: GroupInfo) {

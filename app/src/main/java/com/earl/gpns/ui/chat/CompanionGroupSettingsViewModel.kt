@@ -40,4 +40,10 @@ class CompanionGroupSettingsViewModel @Inject constructor(
             }
         }
     }
+
+    fun leaveFromCompanionGroup(token: String, groupId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.leaveFromCompanionGroup(token, groupId)
+        }
+    }
 }

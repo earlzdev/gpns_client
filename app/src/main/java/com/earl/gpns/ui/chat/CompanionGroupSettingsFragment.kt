@@ -45,7 +45,7 @@ class CompanionGroupSettingsFragment(
     }
 
     private fun recycler() {
-        val adapter = CompanionGroupUsersRecyclerAdapter(this)
+        val adapter = CompanionGroupUsersRecyclerAdapter(this, preferenceManager.getString(Keys.KEY_NAME) ?: "")
         binding.recycler.adapter = adapter
         lifecycleScope.launchWhenStarted {
             viewModel._companionsList
@@ -83,18 +83,18 @@ class CompanionGroupSettingsFragment(
             builder.setTitle("Подтвердите действие")
             builder.setMessage("Вы действительно хотите покинуть эту группу попутчиков?")
             builder.setPositiveButton(R.string.yes) { dialog, which ->
-//            viewModel.removeCompanionFromGroup(
-//                preferenceManager.getString(Keys.KEY_JWT) ?: "",
-//                groupId,
-//                username
-//            )
-                // todo
+                viewModel.leaveFromCompanionGroup(
+                    preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                    groupId
+                )
+                navigator.mainFragment()
+                preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
             }
             builder.setNegativeButton(R.string.no) { dialog, which ->
             }
             builder.show()
         } else {
-            Toast.makeText(requireContext(), "Вы не можете покинуть эту группу, если хотите ...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Вы не можете покинуть свою группу попутчиков!", Toast.LENGTH_SHORT).show()
         }
     }
 

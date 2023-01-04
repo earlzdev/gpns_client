@@ -12,6 +12,7 @@ class BaseTripNotificationDataToRemoteMapper @Inject constructor() : TripNotific
         authorTripRole: String,
         receiverTripRole: String,
         type: String,
-        timestamp: String
-    ) = TripNotificationRemote(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp)
+        timestamp: String,
+        active: Int
+    ) = TripNotificationRemote(id, authorName, receiverName, authorTripRole, receiverTripRole, type, timestamp, active)
 }
