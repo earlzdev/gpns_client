@@ -9,6 +9,7 @@ import com.earl.gpns.domain.models.TripNotificationDomain
 import com.earl.gpns.domain.webSocketActions.services.SearchingSocketService
 import com.earl.gpns.ui.mappers.TripNotificationUiToDomainMapper
 import com.earl.gpns.ui.models.TripFormUi
+import com.earl.gpns.ui.models.TripNotificationRecyclerItemUi
 import com.earl.gpns.ui.models.TripNotificationUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -37,10 +38,12 @@ class SearchViewModel @Inject constructor(
     private val newUnwatchedNotificationsLiveData = MutableLiveData<Int>()
     private val remoteNotificationsListLiveData = MutableLiveData<List<TripNotificationUi>>()
     private var username: String? = null
+    private var reactListener: NotificationReactListener? = null
 
-    fun initSearchingSocket(token: String, name: String) {
+    fun initSearchingSocket(token: String, name: String, listener: NotificationReactListener) {
         fetchAllTripForms(token)
         fetchAllNotifications(token)
+        reactListener = listener
         username = name
         viewModelScope.launch(Dispatchers.IO) {
             when (interactor.initSearchingSocket(token)) {
@@ -100,6 +103,7 @@ class SearchViewModel @Inject constructor(
             interactor.insertNewNotificationIntoDb(notification)
             val watchedNotificationsList = interactor.fetchAllWatchedNotificationsIds()
             val newNotification = notification.mapToUi(tripNotificationDomainToUiMapper).provideTripNotificationUiRecyclerItem()
+            reactOnNotification(newNotification)
             if (!watchedNotificationsList.contains(newNotification.id) && newNotification.authorName == username) {
                 Log.d("tag", "reactOnNewNotification: insrted")
                 interactor.insertNewWatchedNotificationId(newNotification.id)
@@ -113,9 +117,36 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    private fun reactOnNotification(notification: TripNotificationRecyclerItemUi) {
+        when(notification.type) {
+            REMOVED_COMPANION_FROM_GROUP -> reactListener?.reactOnRemoveFromCompGroupNotification()
+            AGREED -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val existedList = interactor.fetchAllTripNotificationFromLocalDb()
+                        .map { it.mapToUi(tripNotificationDomainToUiMapper) }
+                        .map { it.provideTripNotificationUiRecyclerItem() }
+                    val existedNotification = existedList.find {
+                        it.authorName == username
+                                && it.receiverName == notification.authorName
+                                && it.type == INVITE
+                    }
+                    if (existedNotification != null) {
+                        markTripNotificationAsNotActive(existedNotification.id)
+                    }
+                }
+            }
+        }
+    }
+
     override fun removeDeletedSearchingFormFromList(username: String) {
         viewModelScope.launch(Dispatchers.Main) {
             removeDeletedSearchingForm(username)
+        }
+    }
+
+    private fun markTripNotificationAsNotActive(notificationId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.markTripNotificationAsNotActiveInLocalDb(notificationId)
         }
     }
 
@@ -161,5 +192,8 @@ class SearchViewModel @Inject constructor(
 
     companion object {
         private const val NEW_NOTIFICATION = 1
+        private const val REMOVED_COMPANION_FROM_GROUP = "REMOVED_COMPANION_FROM_GROUP"
+        private const val AGREED = "AGREED"
+        private const val INVITE = "INVITE"
     }
 }

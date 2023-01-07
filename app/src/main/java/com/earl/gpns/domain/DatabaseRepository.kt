@@ -36,4 +36,6 @@ interface DatabaseRepository {
     suspend fun fetchAllWatchedNotificationsIds() : List<String>
 
     suspend fun fetchTripNotification(id: String) : TripNotificationDomain
+
+    suspend fun markNotificationAsNotActive(id: String)
 }

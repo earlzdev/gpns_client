@@ -101,7 +101,6 @@ class MainActivity : AppCompatActivity(), NavigationContract {
         showFragment(StartNewSearchingFormFragment.newInstance())
     }
 
-
     override fun companionGroupSettingsFragment(groupId: String) {
         showFragment(CompanionGroupSettingsFragment.newInstance(groupId))
     }
@@ -128,6 +127,10 @@ class MainActivity : AppCompatActivity(), NavigationContract {
 
     override fun groupMessaging(groupInfo: GroupInfo) {
         showFragment(GroupMessagingFragment.newInstance(groupInfo))
+    }
+
+    override fun popBackStackTwice() {
+        // todo
     }
 
     private fun showFragment(fragment: Fragment) {

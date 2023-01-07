@@ -87,7 +87,7 @@ class CompanionGroupSettingsFragment(
                     preferenceManager.getString(Keys.KEY_JWT) ?: "",
                     groupId
                 )
-                navigator.mainFragment()
+                onDestroy()
                 preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
             }
             builder.setNegativeButton(R.string.no) { dialog, which ->

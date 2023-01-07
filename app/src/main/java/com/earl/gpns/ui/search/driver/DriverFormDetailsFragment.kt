@@ -113,13 +113,19 @@ class DriverFormDetailsFragment(
     }
 
     private fun inviteDriver() {
-            val existedList = viewModel.provideExistedNotificationsListLiveData()?.map { it.provideTripNotificationUiRecyclerItem() }
-            val existedNotification = existedList?.find {  it.receiverName == binding.userName.text.toString() || it.authorName == binding.userName.text.toString()}
-            Log.d("tag", "inviteDriver: existedlist -> $existedList")
-            Log.d("tag", "inviteDriver: existed -> $existedNotification")
+        val existedList = viewModel.provideExistedNotificationsListLiveData()?.map { it.provideTripNotificationUiRecyclerItem() }
+//            val existedNotification = existedList?.find {  it.receiverName == binding.userName.text.toString() || it.authorName == binding.userName.text.toString()}
+        val existedNotification = existedList?.find {
+            it.receiverName == binding.userName.text.toString()
+                    || it.authorName == binding.userName.text.toString()
+                    && it.type == INVITE
+                    && it.active == ACTIVE
+        }
+        Log.d("tag", "inviteDriver: existedlist -> $existedList")
+        Log.d("tag", "inviteDriver: existed -> $existedNotification")
         if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP)) {
             if (!notificationSent) {
-                if (existedNotification == null) {
+                if (existedNotification == null || existedNotification.active != ACTIVE) {
                     if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && !preferenceManager.getBoolean(Keys.IS_DRIVER)) {
                         val notificationId = UUID.randomUUID().toString()
                         val notification = TripNotificationUi.Base(
@@ -136,6 +142,10 @@ class DriverFormDetailsFragment(
                             preferenceManager.getString(Keys.KEY_JWT) ?: "",
                             notification
                         )
+//                        viewModel.markTripNotificationAsNotActive(
+//                            preferenceManager.getString(Keys.KEY_JWT) ?: "",
+//                            notificationId
+//                        )
                         Toast.makeText(requireContext(), "Приглашение отправлено", Toast.LENGTH_SHORT).show()
                         notificationSent = true
                     } else {
