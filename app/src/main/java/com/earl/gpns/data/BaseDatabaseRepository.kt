@@ -124,4 +124,8 @@ class BaseDatabaseRepository @Inject constructor(
         notificationsDao.fetchTripNotification(id)
             .map(notificationsDbToDataMapper)
             .mapToDomain(notificationDataToDomainMapper)
+
+    override suspend fun markNotificationAsNotActive(id: String) {
+        notificationsDao.markNotificationAsNotActive(id)
+    }
 }

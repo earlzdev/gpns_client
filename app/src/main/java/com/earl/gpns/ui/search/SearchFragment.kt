@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickListener {
+class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickListener, NotificationReactListener {
 
     private lateinit var viewModel: SearchViewModel
     private lateinit var recyclerAdapter: TripFormsRecyclerAdapter
@@ -88,7 +88,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
     private fun initSearchingSocket() {
         viewModel.initSearchingSocket(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
-        preferenceManager.getString(Keys.KEY_NAME) ?: ""
+        preferenceManager.getString(Keys.KEY_NAME) ?: "",
+            this
         )
     }
 
@@ -97,6 +98,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
             Toast.makeText(requireContext(), "У Вас новое уведомление!", Toast.LENGTH_SHORT).show()
             binding.newNotificationIcon.isVisible = true
         }
+    }
+
+    override fun reactOnRemoveFromCompGroupNotification() {
+        preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
     }
 
     companion object {

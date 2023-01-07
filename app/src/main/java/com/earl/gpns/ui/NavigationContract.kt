@@ -42,6 +42,8 @@ interface NavigationContract {
 
     fun tripNotifications()
 
+    fun popBackStackTwice()
+
     fun companionGroupSettingsFragment(groupId: String)
 
     fun exit()

@@ -141,6 +141,8 @@ interface Interactor {
 
     suspend fun markTripNotificationAsNotActive(token: String, notificationId: String)
 
+    suspend fun markTripNotificationAsNotActiveInLocalDb(notificationId: String)
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -387,6 +389,11 @@ interface Interactor {
 
         override suspend fun markTripNotificationAsNotActive(token: String, notificationId: String) {
             repository.markTripNotificationAsNotActive(token, notificationId)
+            localDatabaseRepository.markNotificationAsNotActive(notificationId)
+        }
+
+        override suspend fun markTripNotificationAsNotActiveInLocalDb(notificationId: String) {
+            localDatabaseRepository.markNotificationAsNotActive(notificationId)
         }
     }
 }

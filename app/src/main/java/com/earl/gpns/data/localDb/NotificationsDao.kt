@@ -28,4 +28,7 @@ interface NotificationsDao {
 
     @Query("select * from notifications where id =:notificationId")
     fun fetchTripNotification(notificationId: String) : NotificationsDb
+
+    @Query("update notifications set active = 0 where id = :notificationId")
+    fun markNotificationAsNotActive(notificationId: String)
 }
