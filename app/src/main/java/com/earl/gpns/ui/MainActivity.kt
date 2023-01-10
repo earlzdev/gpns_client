@@ -53,15 +53,15 @@ class MainActivity : AppCompatActivity(), NavigationContract {
     }
 
     override fun start() {
-        showFragment(StartFragment.newInstance())
+        showFragment(StartFragment.newInstance(), start)
     }
 
     override fun login() {
-        showFragment(LoginFragment.newInstance())
+        showFragment(LoginFragment.newInstance(), login)
     }
 
     override fun register() {
-        showFragment(SignUpFragment.newInstance())
+        showFragment(SignUpFragment.newInstance(), register)
     }
 
     override fun back() {
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), NavigationContract {
     }
 
     override fun mainFragment() {
-        showFragment(MainFragment.newInstance())
+        showFragment(MainFragment.newInstance(), mainFragment)
     }
 
     override fun showProgressBar() {
@@ -86,58 +86,58 @@ class MainActivity : AppCompatActivity(), NavigationContract {
     }
 
     override fun usersFragment() {
-        showFragment(FragmentUsers.newInstance())
+        showFragment(FragmentUsers.newInstance(), usersFragment)
     }
 
     override fun tripNotifications() {
-        showFragment(TripNotificationsFragment.newInstance())
+        showFragment(TripNotificationsFragment.newInstance(), tripNotifications)
     }
 
     override fun chat(chatInfo: ChatInfo) {
-        showFragment(ChatFragment.newInstance(chatInfo))
+        showFragment(ChatFragment.newInstance(chatInfo), chat)
     }
 
     override fun newSearchForm() {
-        showFragment(StartNewSearchingFormFragment.newInstance())
+        showFragment(StartNewSearchingFormFragment.newInstance(), newSearchForm)
     }
 
     override fun companionGroupSettingsFragment(groupId: String) {
-        showFragment(CompanionGroupSettingsFragment.newInstance(groupId))
+        showFragment(CompanionGroupSettingsFragment.newInstance(groupId), companionGroupSettingsFragment)
     }
 
     override fun startFirstDriverForm() {
-        showFragment(FirstDriverFormFragment.newInstance())
+        showFragment(FirstDriverFormFragment.newInstance(), startFirstDriverForm)
     }
 
     override fun startSecondDriverForm(firstPartOfNewDriverForm: FirstPartOfNewDriverForm) {
-        showFragment(SecondDriverFormFragment.newInstance(firstPartOfNewDriverForm))
+        showFragment(SecondDriverFormFragment.newInstance(firstPartOfNewDriverForm), startSecondDriverForm)
     }
 
     override fun startCompanionForm() {
-        showFragment(CompanionFormFragment.newInstance())
+        showFragment(CompanionFormFragment.newInstance(), startCompanionForm)
     }
 
     override fun driverFormDetails(details: SearchFormsDetails, viewRegime: String, notificationId: String) {
-        showFragment(DriverFormDetailsFragment.newInstance(details, viewRegime, notificationId))
+        showFragment(DriverFormDetailsFragment.newInstance(details, viewRegime, notificationId), driverFormDetails)
     }
 
     override fun companionFormDetails(details: SearchFormsDetails, viewRegime: String, notificationId: String) {
-        showFragment(CompanionFormDetailsFragment.newInstance(details, viewRegime, notificationId))
+        showFragment(CompanionFormDetailsFragment.newInstance(details, viewRegime, notificationId), companionFormDetails)
     }
 
     override fun groupMessaging(groupInfo: GroupInfo) {
-        showFragment(GroupMessagingFragment.newInstance(groupInfo))
+        showFragment(GroupMessagingFragment.newInstance(groupInfo), groupMessaging)
     }
 
-    override fun popBackStackTwice() {
-        // todo
+    override fun popBackStackToFragment(fragment: String) {
+        supportFragmentManager.popBackStack(fragment, 0)
     }
 
-    private fun showFragment(fragment: Fragment) {
+    private fun showFragment(fragment: Fragment, popBackStack: String) {
         fragments.add(fragment)
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_container, fragment)
-            .addToBackStack(null)
+            .addToBackStack(popBackStack)
             .commit()
     }
 
@@ -153,5 +153,24 @@ class MainActivity : AppCompatActivity(), NavigationContract {
 
     override fun log(text: String) {
         Log.d("tag", "log: $text")
+    }
+
+    companion object {
+
+        private const val start = "start"
+        private const val login = "login"
+        private const val register = "register"
+        private const val mainFragment = "mainFragment"
+        private const val usersFragment = "usersFragment"
+        private const val tripNotifications = "tripNotifications"
+        private const val chat = "chat"
+        private const val newSearchForm = "newSearchForm"
+        private const val companionGroupSettingsFragment = "companionGroupSettingsFragment"
+        private const val startFirstDriverForm = "startFirstDriverForm"
+        private const val startSecondDriverForm = "startSecondDriverForm"
+        private const val startCompanionForm = "startCompanionForm"
+        private const val driverFormDetails = "driverFormDetails"
+        private const val companionFormDetails = "companionFormDetails"
+        private const val groupMessaging = "groupMessaging"
     }
 }

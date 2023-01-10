@@ -89,6 +89,7 @@ class CompanionGroupSettingsFragment(
                 )
                 onDestroy()
                 preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
+                navigator.popBackStackToFragment(mainFragment)
             }
             builder.setNegativeButton(R.string.no) { dialog, which ->
             }
@@ -100,5 +101,6 @@ class CompanionGroupSettingsFragment(
 
     companion object {
         fun newInstance(groupId: String) = CompanionGroupSettingsFragment(groupId)
+        private const val mainFragment = "mainFragment"
     }
 }

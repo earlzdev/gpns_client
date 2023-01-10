@@ -116,8 +116,8 @@ class DriverFormDetailsFragment(
         val existedList = viewModel.provideExistedNotificationsListLiveData()?.map { it.provideTripNotificationUiRecyclerItem() }
 //            val existedNotification = existedList?.find {  it.receiverName == binding.userName.text.toString() || it.authorName == binding.userName.text.toString()}
         val existedNotification = existedList?.find {
-            it.receiverName == binding.userName.text.toString()
-                    || it.authorName == binding.userName.text.toString()
+            (it.receiverName == binding.userName.text.toString()
+                    || it.authorName == binding.userName.text.toString())
                     && it.type == INVITE
                     && it.active == ACTIVE
         }

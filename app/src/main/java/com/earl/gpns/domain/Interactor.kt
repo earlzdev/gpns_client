@@ -393,6 +393,7 @@ interface Interactor {
         }
 
         override suspend fun markTripNotificationAsNotActiveInLocalDb(notificationId: String) {
+            Log.d("tag", "markTripNotificationAsNotActiveInLocalDb: marked as not active")
             localDatabaseRepository.markNotificationAsNotActive(notificationId)
         }
     }
