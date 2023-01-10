@@ -101,13 +101,13 @@ class SearchViewModel @Inject constructor(
     override fun reactOnNewNotification(notification: TripNotificationDomain) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.insertNewNotificationIntoDb(notification)
-            val watchedNotificationsList = interactor.fetchAllWatchedNotificationsIds()
+            val watchedNotificationsIdsList = interactor.fetchAllWatchedNotificationsIds()
             val newNotification = notification.mapToUi(tripNotificationDomainToUiMapper).provideTripNotificationUiRecyclerItem()
             reactOnNotification(newNotification)
-            if (!watchedNotificationsList.contains(newNotification.id) && newNotification.authorName == username) {
+            if (!watchedNotificationsIdsList.contains(newNotification.id) && newNotification.authorName == username) {
                 Log.d("tag", "reactOnNewNotification: insrted")
                 interactor.insertNewWatchedNotificationId(newNotification.id)
-            } else if (!watchedNotificationsList.contains(newNotification.id)){
+            } else if (!watchedNotificationsIdsList.contains(newNotification.id)){
                 Log.d("tag", "NEW NOTIFICATIONS")
                 withContext(Dispatchers.Main) {
                     newNotificationsLiveData.value = NEW_NOTIFICATION

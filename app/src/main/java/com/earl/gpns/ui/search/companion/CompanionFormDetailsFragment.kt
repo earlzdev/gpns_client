@@ -111,17 +111,17 @@ class CompanionFormDetailsFragment(
         viewModel.fetchExistedNotificationsFromDb()
         val existedList = viewModel.provideTripNotificationsLiveData()?.map { it.provideTripNotificationUiRecyclerItem() }
 //            val existedNotification = existedList?.find {  it.receiverName == binding.userName.text.toString() || it.authorName == binding.userName.text.toString()}
-        val existedNotification = existedList?.find {
-            it.receiverName == binding.userName.text.toString()
-                    || it.authorName == binding.userName.text.toString()
+        val existedNotificationFromDb = existedList?.find {
+            (it.receiverName == binding.userName.text.toString()
+                    || it.authorName == binding.userName.text.toString())
                     && it.type == INVITE
                     && it.active == ACTIVE
         }
         Log.d("tag", "inviteDriver: existedlist -> $existedList")
-        Log.d("tag", "inviteDriver: existed -> $existedNotification")
+        Log.d("tag", "inviteDriver: existed -> $existedNotificationFromDb")
 
         if (!notificationSent) {
-            if (existedNotification == null || existedNotification.active != ACTIVE) {
+            if (existedNotificationFromDb == null || existedNotificationFromDb.active != ACTIVE) {
                 if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && preferenceManager.getBoolean(Keys.IS_DRIVER)) {
                     val notificationId = UUID.randomUUID().toString()
                     val notification = TripNotificationUi.Base(
@@ -147,9 +147,9 @@ class CompanionFormDetailsFragment(
                 } else {
                     Toast.makeText(requireContext(), "Чтобы отправить уведомление этому пользователю, нужно иметь активную анкету водителя!", Toast.LENGTH_LONG).show()
                 }
-            } else if (existedNotification.receiverName == binding.userName.text.toString() && existedNotification.active == ACTIVE) {
+            } else if (existedNotificationFromDb.receiverName == binding.userName.text.toString() && existedNotificationFromDb.active == ACTIVE) {
                 Toast.makeText(requireContext(), "Вы уже отправяли приглашение этому пользователю, дождитесь ответа", Toast.LENGTH_SHORT).show()
-            } else if (existedNotification.active == ACTIVE) {
+            } else if (existedNotificationFromDb.active == ACTIVE) {
                 Toast.makeText(requireContext(), "У вас уже есть приглашение от этого пользователя", Toast.LENGTH_SHORT).show()
             }
         } else {

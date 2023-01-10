@@ -34,6 +34,7 @@ class CompanionGroupSettingsViewModel @Inject constructor(
     fun removeCompanionFromGroup(token: String, groupId: String, username: String) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.removeCompanionFromGroup(token, groupId, username)
+
             val removedUser = companionsList.value.find { it.provideName() == username }
             if (removedUser != null) {
                 companionsList.value -= removedUser

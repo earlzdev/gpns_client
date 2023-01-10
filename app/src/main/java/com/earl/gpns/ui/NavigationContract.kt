@@ -42,7 +42,7 @@ interface NavigationContract {
 
     fun tripNotifications()
 
-    fun popBackStackTwice()
+    fun popBackStackToFragment(fragment: String)
 
     fun companionGroupSettingsFragment(groupId: String)
 
