@@ -143,6 +143,14 @@ interface Interactor {
 
     suspend fun markTripNotificationAsNotActiveInLocalDb(notificationId: String)
 
+    suspend fun insertNewUserIntoCompanionGroup(user: String)
+
+    suspend fun fetchAllUsernamesFromCompanionGroupFromLocalDb() : List<String>
+
+    suspend fun removeUserFromCompanionGroupInLocalDb(username: String)
+
+    suspend fun clearLocalDbCompanionGroupUsersList()
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -395,6 +403,21 @@ interface Interactor {
         override suspend fun markTripNotificationAsNotActiveInLocalDb(notificationId: String) {
             Log.d("tag", "markTripNotificationAsNotActiveInLocalDb: marked as not active")
             localDatabaseRepository.markNotificationAsNotActive(notificationId)
+        }
+
+        override suspend fun insertNewUserIntoCompanionGroup(user: String) {
+            localDatabaseRepository.insertNewUserIntoCompanionGroup(user)
+        }
+
+        override suspend fun fetchAllUsernamesFromCompanionGroupFromLocalDb() =
+            localDatabaseRepository.fetchAllUsernamesFromCompanionGroupFromLocalDb()
+
+        override suspend fun removeUserFromCompanionGroupInLocalDb(username: String) {
+            localDatabaseRepository.removeUserFromCompanionGroupInLocalDb(username)
+        }
+
+        override suspend fun clearLocalDbCompanionGroupUsersList() {
+            localDatabaseRepository.clearLocalDbCompanionGroupUsersList()
         }
     }
 }

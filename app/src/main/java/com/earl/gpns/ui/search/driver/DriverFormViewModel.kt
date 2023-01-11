@@ -32,6 +32,7 @@ class DriverFormViewModel @Inject constructor(
 ): ViewModel(), SpinnerInitializer {
 
     private val tripNotificationsLiveData = MutableLiveData<List<TripNotificationUi>>()
+    private val companionGroupUsersLiveData = MutableLiveData<List<String>>()
 
     override fun initSpinnerAdapter(
         textResource: Int,
@@ -69,6 +70,12 @@ class DriverFormViewModel @Inject constructor(
         }
     }
 
+    fun insertNewUserIntoLocalDbCompGroup(username: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.insertNewUserIntoCompanionGroup(username)
+        }
+    }
+
     fun fetchExistedNotificationsFromDb() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = interactor.fetchAllTripNotificationFromLocalDb().map { it.mapToUi(tripNotificationDomainToUiMapper) }
@@ -80,6 +87,17 @@ class DriverFormViewModel @Inject constructor(
 
     fun observeTripNotificationsLiveData(owner: LifecycleOwner, observer: Observer<List<TripNotificationUi>>) {
         tripNotificationsLiveData.observe(owner, observer)
+    }
+
+    fun provideCompanionUsersListLiveDataValue() = companionGroupUsersLiveData.value
+
+    fun fetchUsersListInCompanionGroup() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = interactor.fetchAllUsernamesFromCompanionGroupFromLocalDb()
+            withContext(Dispatchers.Main) {
+                companionGroupUsersLiveData.value = list
+            }
+        }
     }
 
     fun provideExistedNotificationsListLiveData() = tripNotificationsLiveData.value

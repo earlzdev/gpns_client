@@ -38,4 +38,12 @@ interface DatabaseRepository {
     suspend fun fetchTripNotification(id: String) : TripNotificationDomain
 
     suspend fun markNotificationAsNotActive(id: String)
+
+    suspend fun insertNewUserIntoCompanionGroup(user: String)
+
+    suspend fun fetchAllUsernamesFromCompanionGroupFromLocalDb() : List<String>
+
+    suspend fun removeUserFromCompanionGroupInLocalDb(username: String)
+
+    suspend fun clearLocalDbCompanionGroupUsersList()
 }

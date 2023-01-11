@@ -119,20 +119,31 @@ class SearchViewModel @Inject constructor(
 
     private fun reactOnNotification(notification: TripNotificationRecyclerItemUi) {
         when(notification.type) {
-            REMOVED_COMPANION_FROM_GROUP -> reactListener?.reactOnRemoveFromCompGroupNotification()
-            AGREED -> {
+            REMOVED_COMPANION_FROM_GROUP -> {
                 viewModelScope.launch(Dispatchers.IO) {
+                    interactor.removeUserFromCompanionGroupInLocalDb(notification.authorName)
+                }
+                reactListener?.reactOnRemoveFromCompGroupNotification()
+            }
+            AGREED -> {
+                reactListener?.savePointThatUserIsStillInCompGroup()
+                viewModelScope.launch(Dispatchers.IO) {
+                    interactor.insertNewUserIntoCompanionGroup(notification.authorName)
                     val existedList = interactor.fetchAllTripNotificationFromLocalDb()
                         .map { it.mapToUi(tripNotificationDomainToUiMapper) }
                         .map { it.provideTripNotificationUiRecyclerItem() }
-                    val existedNotification = existedList.find {
+                    val existedInviteNotificationsListFromThisUser = existedList.filter {
                         it.authorName == username
                                 && it.receiverName == notification.authorName
                                 && it.type == INVITE
                     }
-                    if (existedNotification != null) {
-                        markTripNotificationAsNotActive(existedNotification.id)
-                    }
+                    if (existedInviteNotificationsListFromThisUser.isNotEmpty())
+                        existedInviteNotificationsListFromThisUser.forEach { markTripNotificationAsNotActive(it.id) }
+                }
+            }
+            COMPANION_LEAVED_GROUP -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    interactor.removeUserFromCompanionGroupInLocalDb(notification.authorName)
                 }
             }
         }
@@ -195,5 +206,6 @@ class SearchViewModel @Inject constructor(
         private const val REMOVED_COMPANION_FROM_GROUP = "REMOVED_COMPANION_FROM_GROUP"
         private const val AGREED = "AGREED"
         private const val INVITE = "INVITE"
+        private const val COMPANION_LEAVED_GROUP = "COMPANION_LEAVED_GROUP"
     }
 }

@@ -3,7 +3,9 @@ package com.earl.gpns.ui.search.companion
 import android.content.Context
 import android.util.Log
 import android.widget.ArrayAdapter
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.earl.gpns.R
@@ -31,6 +33,7 @@ class CompanionFormViewModel @Inject constructor(
 ): ViewModel(), SpinnerInitializer {
 
     private val tripNotificationsLiveData = MutableLiveData<List<TripNotificationUi>>()
+    private val companionGroupUsersLiveData = MutableLiveData<List<String>>()
 
     override fun initSpinnerAdapter(
         textResource: Int,
@@ -80,7 +83,28 @@ class CompanionFormViewModel @Inject constructor(
         }
     }
 
+    fun insertNewUserIntoLocalDbCompGroup(username: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.insertNewUserIntoCompanionGroup(username)
+        }
+    }
+
     fun provideTripNotificationsLiveData() = tripNotificationsLiveData.value
+
+    fun provideCompanionUsersListLiveDataValue() = companionGroupUsersLiveData.value
+
+    fun fetchUsersListInCompanionGroup() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = interactor.fetchAllUsernamesFromCompanionGroupFromLocalDb()
+            withContext(Dispatchers.Main) {
+                companionGroupUsersLiveData.value = list
+            }
+        }
+    }
+
+    fun observeCompanionUsersListLiveData(owner: LifecycleOwner, observer: Observer<List<String>>) {
+        companionGroupUsersLiveData.observe(owner, observer)
+    }
 
     fun acceptCompanionToRideTogether(token: String, companionUsername: String) {
         viewModelScope.launch(Dispatchers.IO) {
