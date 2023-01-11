@@ -172,6 +172,7 @@ object AppModule {
         roomsDao: RoomsDao,
         groupsDao: GroupsDao,
         notificationsDao: NotificationsDao,
+        companionGroupUsersDao: CompanionGroupUsersDao,
         newRoomDataToDbMapper: NewRoomDataToDbMapper<RoomDb>,
         newRoomDomainToDataMapper: NewRoomDomainToDataMapper<NewRoomDtoData>,
         roomDbToDataMapper: RoomDbToDataMapper<RoomData>,
@@ -187,6 +188,7 @@ object AppModule {
             roomsDao,
             groupsDao,
             notificationsDao,
+            companionGroupUsersDao,
             newRoomDataToDbMapper,
             newRoomDomainToDataMapper,
             roomDbToDataMapper,
@@ -223,6 +225,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTripNotificationsDao(db: AppDataBase) = db.tripNotificationsDao()
+
+    @Provides
+    @Singleton
+    fun provideCompanionGroupUsersDao(db: AppDataBase) = db.companionGroupUsersDao()
 
     @Singleton
     @Provides

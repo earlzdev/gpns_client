@@ -26,6 +26,7 @@ class ProfileViewModel @Inject constructor(
             interactor.clearWatchedNotificationsDb()
             interactor.clearNotificationsDb()
             interactor.deleteDriverForm(token)
+            interactor.clearLocalDbCompanionGroupUsersList()
         }
     }
 
@@ -34,6 +35,7 @@ class ProfileViewModel @Inject constructor(
             interactor.clearWatchedNotificationsDb()
             interactor.clearNotificationsDb()
             interactor.deleteCompanionForm(token)
+            interactor.clearLocalDbCompanionGroupUsersList()
         }
     }
 }

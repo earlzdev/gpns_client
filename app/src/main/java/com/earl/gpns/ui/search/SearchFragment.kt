@@ -104,6 +104,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
         preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
     }
 
+    override fun savePointThatUserIsStillInCompGroup() {
+        preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, true)
+    }
+
     companion object {
 
         fun newInstance() = SearchFragment()

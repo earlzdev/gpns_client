@@ -20,6 +20,7 @@ class BaseDatabaseRepository @Inject constructor(
     private val roomsDao: RoomsDao,
     private val groupsDao: GroupsDao,
     private val notificationsDao: NotificationsDao,
+    private val companionGroupUsersDao: CompanionGroupUsersDao,
     private val newRoomDataToDbMapper: NewRoomDataToDbMapper<RoomDb>,
     private val newRoomDomainToDataMapper: NewRoomDomainToDataMapper<NewRoomDtoData>,
     private val roomDbToDataMapper: RoomDbToDataMapper<RoomData>,
@@ -126,6 +127,25 @@ class BaseDatabaseRepository @Inject constructor(
             .mapToDomain(notificationDataToDomainMapper)
 
     override suspend fun markNotificationAsNotActive(id: String) {
+        Log.d("tag", "markNotificationAsNotActive: $id")
         notificationsDao.markNotificationAsNotActive(id)
+    }
+
+    override suspend fun insertNewUserIntoCompanionGroup(user: String) {
+        Log.d("tag", "insertNewUserIntoCompanionGroup: $user")
+        companionGroupUsersDao.insertNewUserIntoCompanionGroup(CompanionGroupUser(0, user))
+    }
+
+    override suspend fun fetchAllUsernamesFromCompanionGroupFromLocalDb() =
+        companionGroupUsersDao.fetchAllCompanionUsers().map { it.name }
+
+    override suspend fun removeUserFromCompanionGroupInLocalDb(username: String) {
+        Log.d("tag", "removeUserFromCompanionGroupInLocalDb: ")
+        companionGroupUsersDao.removeUserFromCompanionGroupInLocalDb(username)
+    }
+
+    override suspend fun clearLocalDbCompanionGroupUsersList() {
+        Log.d("tag", "clearLocalDbCompanionGroupUsersList: ")
+        companionGroupUsersDao.clearLocalDbCompanionGroupUsersList()
     }
 }
