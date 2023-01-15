@@ -93,7 +93,7 @@ class BaseDatabaseRepository @Inject constructor(
     }
 
     override suspend fun updateMessagesReadCounter(groupId: String, counter: Int) {
-        Log.d("tag", "updateMessagesReadCounter")
+        Log.d("tag", "updateMessagesReadCounter -> $counter")
         groupsDao.updateReadMessagesCount(groupId, counter)
     }
 

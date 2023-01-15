@@ -122,13 +122,34 @@ class RoomsViewModel @Inject constructor(
     }
 
     fun updateMessagesReadCounterInGroup(groupId: String, counter: Int) {
+
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val readMessagesCounter = interactor.fetchGroupMessagesCounter(group.provideId())
+//                ?.map(groupMessagesCounterDomainToUiMapper)?.provideCounter()
+//            if (readMessagesCounter == null) {
+//                interactor.insertNewMessagesCounterInGroup(group.provideId(), 0)
+//            } else {
+//                val allMessagesCounter = group.provideGroupMessagesCounter()
+//                val unread = allMessagesCounter - readMessagesCounter
+//                group.updateMessagesCounter(unread)
+//            }
+//        }
+
         viewModelScope.launch(Dispatchers.IO) {
             val readCounter = interactor.fetchGroupMessagesCounter(groupId)
                 ?.map(groupMessagesCounterDomainToUiMapper)?.provideCounter()
-            if (readCounter != null) {
-                val newCounter = readCounter + counter
-                interactor.updateReadMessagesCounterInGroup(groupId, newCounter)
+            if (readCounter == null) {
+                insertGroupMessagesReadCounter(groupId, 0)
+            } else {
+                val allMessagesCounter = counter
+                val unread = counter - readCounter
+
             }
+//            if (readCounter != null) {
+//                val newCounter = readCounter + counter
+            Log.d("tag", "updateMessagesReadCounterInGroup: before -> $readCounter, add -> $counter ,  new -> $counter")
+                interactor.updateReadMessagesCounterInGroup(groupId, counter)
+//            }
             groupsLiveData.value?.find { it.sameId(groupId) }?.updateMessagesCounter(0)
         }
     }
@@ -146,7 +167,7 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    private fun updateActualUnreadMessagesCounterInGroup(group: GroupUi) {
+    fun updateActualUnreadMessagesCounterInGroup(group: GroupUi) {
         viewModelScope.launch(Dispatchers.IO) {
             val readMessagesCounter = interactor.fetchGroupMessagesCounter(group.provideId())
                 ?.map(groupMessagesCounterDomainToUiMapper)?.provideCounter()

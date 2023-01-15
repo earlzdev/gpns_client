@@ -240,8 +240,7 @@ interface Interactor {
             repository.markMessagesAsRead(token, roomId)
         }
 
-        override suspend fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String
-        ) {
+        override suspend fun markAuthoredMessageAsRead(token: String, roomId: String, authorName: String) {
             repository.markAuthoredMessageAsRead(token, roomId, authorName)
         }
 
@@ -283,6 +282,7 @@ interface Interactor {
 
         override suspend fun markMessagesAsReadInGroup(token: String, groupId: String) {
             repository.markMessagesAsReadInGroup(token, groupId)
+            // todo !!!
         }
 
         override suspend fun fetchGroupMessagesCounter(groupId: String) =
