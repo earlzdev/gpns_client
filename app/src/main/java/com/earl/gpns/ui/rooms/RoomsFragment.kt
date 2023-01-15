@@ -168,8 +168,10 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
         viewModel.insertNewGroup(group.mapToUi(groupDomainToUiMapper))
     }
 
-    override fun joinGroup(groupInfo: GroupInfo) {
-        viewModel.updateMessagesReadCounterInGroup(groupInfo.groupId, groupInfo.counter)
+    override fun joinGroup(group: GroupUi) {
+//        viewModel.updateMessagesReadCounterInGroup(group.provideId(), group.provideGroupMessagesCounter())
+        viewModel.updateActualUnreadMessagesCounterInGroup(group)
+        val groupInfo = group.provideGroupInfo()
         if (groupInfo.lastMessageAuthor != preferenceManager.getString(Keys.KEY_NAME)) {
             viewModel.markMessagesAsReadInGroup(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",

@@ -15,7 +15,7 @@ import com.earl.gpns.ui.models.GroupUi
 import com.earl.gpns.ui.models.LastMessageForUpdateInGroup
 
 interface OnGroupClickListener {
-    fun joinGroup(groupInfo: GroupInfo)
+    fun joinGroup(groupInfo: GroupUi)
 }
 
 class GroupsRecyclerAdapter(
@@ -32,7 +32,7 @@ class GroupsRecyclerAdapter(
         val item = getItem(position)
         holder.bind(item)
         holder.itemView.setOnClickListener {
-            clickListener.joinGroup(item.provideGroupInfo())
+            clickListener.joinGroup(item)
         }
     }
 

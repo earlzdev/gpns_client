@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.earl.gpns.core.Same
+import com.earl.gpns.ui.CurrentDateAndTimeGiver
 import com.makeramen.roundedimageview.RoundedImageView
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -71,15 +72,12 @@ interface GroupUi : Same<GroupUi> {
             readIndicator: ImageView
         ) {
             if (lastMessageTimestamp != "") {
-                val currentDate = Date()
-                val simpleDateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-                val standardFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
-                val dateText = simpleDateFormat.format(currentDate)
-                val lastAuthDate = LocalDateTime.parse(lastMessageTimestamp, standardFormatter)
-                val dayOfYearFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-                val dayOfMonthFormatter = DateTimeFormatter.ofPattern("d MMMM")
-                val timeOfDayFormatter = DateTimeFormatter.ofPattern("HH:mm")
-                val currentDateText = LocalDateTime.parse(dateText, standardFormatter)
+                val dateGiver = CurrentDateAndTimeGiver()
+                val currentDateText = dateGiver.fetchCurrentDateAndTime()
+                val lastAuthDate = LocalDateTime.parse(lastMessageTimestamp, dateGiver.standardFormatter)
+                val dayOfMonthFormatter = dateGiver.fetchDayOfMonthFormat()
+                val timeOfDayFormatter = dateGiver.fetchTimeOfDayFormat()
+                val dayOfYearFormatter = dateGiver.fetchDayOfYearFormat()
                 if (lastAuthDate.format(dayOfMonthFormatter) == currentDateText.format(dayOfMonthFormatter)) {
                     lastMsgTimestamp.text = lastAuthDate.format(timeOfDayFormatter)
                 } else if (lastAuthDate.format(dayOfYearFormatter) == currentDateText.format(dayOfYearFormatter)) {
@@ -90,7 +88,7 @@ interface GroupUi : Same<GroupUi> {
             }
             groupTitle.text = title
             lastMsg.text = lastMessage
-            lastMsgAuthor.text = "$lastMessageAuthor:"
+            lastMsgAuthor.text = lastMessageAuthor
             if (username == lastMessageAuthor && lastMsgRead == 0) {
                 readIndicator.isVisible = false
                 unreadMessagesCounter.isVisible = false
@@ -101,9 +99,21 @@ interface GroupUi : Same<GroupUi> {
                 unreadMessagesCounter.isVisible = false
                 readIndicator.isVisible = true
                 Log.d("tag", "recyclerDetails: username == lastMessageAuthor && lastMsgRead == 1")
-            } else if (messagesCount != 0){
+            } else if (username != lastMessageAuthor && messagesCount != 0 && lastMsgRead == 0){
                 unreadMessagesCounter.text = messagesCount.toString()
+                unreadIndicator.isVisible = false
+                unreadMessagesCounter.isVisible = true
+                readIndicator.isVisible = false
+                lastMsgAuthorImg.isVisible = true
+                lastMsgAuthor.isVisible = true
                 Log.d("tag", "messagesCount != 0")
+            } else if (username != lastMessageAuthor && lastMsgRead == 1) {
+                lastMsgAuthor.isVisible = true
+                lastMsgAuthorImg.isVisible = true
+                readIndicator.isVisible = false
+                unreadIndicator.isVisible = false
+                unreadMessagesCounter.isVisible = false
+                Log.d("tag", "recyclerDetails: username != lastMessageAuthor && lastMsgRead == 1")
             } else {
                 unreadMessagesCounter.isVisible = false
                 Log.d("tag", "else")
