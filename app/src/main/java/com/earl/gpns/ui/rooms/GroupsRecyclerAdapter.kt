@@ -15,7 +15,7 @@ import com.earl.gpns.ui.models.GroupUi
 import com.earl.gpns.ui.models.LastMessageForUpdateInGroup
 
 interface OnGroupClickListener {
-    fun joinGroup(groupInfo: GroupUi)
+    fun joinGroup(group: GroupUi)
 }
 
 class GroupsRecyclerAdapter(

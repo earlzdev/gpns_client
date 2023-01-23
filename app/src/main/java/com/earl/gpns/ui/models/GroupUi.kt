@@ -148,6 +148,7 @@ interface GroupUi : Same<GroupUi> {
         override fun provideGroupMessagesCounter() = messagesCount
 
         override fun markAuthoredMessagesAsRead() {
+            messagesCount = 0
             lastMsgRead = 1
         }
     }

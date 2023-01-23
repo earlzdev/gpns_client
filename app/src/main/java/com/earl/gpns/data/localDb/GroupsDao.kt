@@ -14,7 +14,7 @@ interface GroupsDao {
     @Query("select * from groupMessagesCount where groupId =:group_id")
     suspend fun selectCounterForGroup(group_id: String) : GroupMessagesCountDb?
 
-    @Query("update groupMessagesCount set counter =:newCount where groupId =:group_id")
+    @Query("update groupMessagesCount set counter =+:newCount where groupId =:group_id")
     suspend fun updateReadMessagesCount(group_id: String, newCount: Int)
 
     @Query("delete from groupMessagesCount where groupId =:group_id")

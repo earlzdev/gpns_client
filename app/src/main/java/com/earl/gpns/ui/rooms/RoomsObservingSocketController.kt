@@ -115,9 +115,10 @@ interface RoomsObservingSocketController {
         override fun updateLastMessageInGroup(newLastMessageInGroup: GroupLastMessageDomain) {
             CoroutineScope(Dispatchers.Main).launch {
                 val lastMsgUi = newLastMessageInGroup.map(groupLastMessageDomainToUiMapper)
-                if (lastMsgUi.isLastMessageReadOrNot()) {
-                    viewModel?.updateMessagesReadCounterInGroup(lastMsgUi.provideId(), 1)
+                if (lastMsgUi.isLastMessageRead()) {
+                    viewModel?.increaseMessagesReadCounterInGroup(lastMsgUi.provideId(), 1)
                 }
+
 //                val currentList = groupsRecyclerAdapter?.currentList
 //                val newList = mutableListOf<GroupUi>()
 //                val newGroup = GroupUi.Base(

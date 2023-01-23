@@ -6,7 +6,7 @@ interface GroupLastMessageUi {
 
     fun provideLastMessageForUpdateInGroup() : LastMessageForUpdateInGroup
 
-    fun isLastMessageReadOrNot() : Boolean
+    fun isLastMessageRead() : Boolean
 
     class Base(
         private val groupsId: String,
@@ -21,6 +21,6 @@ interface GroupLastMessageUi {
         override fun provideLastMessageForUpdateInGroup() =
             LastMessageForUpdateInGroup(authorName, authorImage, msgText, timestamp, read)
 
-        override fun isLastMessageReadOrNot() = read == 1
+        override fun isLastMessageRead() = read == 1
     }
 }
