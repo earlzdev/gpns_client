@@ -1,9 +1,7 @@
 package com.earl.gpns.ui.rooms
 
 import android.util.Log
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.earl.gpns.core.*
@@ -121,36 +119,20 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    fun updateMessagesReadCounterInGroup(groupId: String, counter: Int) {
-
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val readMessagesCounter = interactor.fetchGroupMessagesCounter(group.provideId())
-//                ?.map(groupMessagesCounterDomainToUiMapper)?.provideCounter()
-//            if (readMessagesCounter == null) {
-//                interactor.insertNewMessagesCounterInGroup(group.provideId(), 0)
-//            } else {
-//                val allMessagesCounter = group.provideGroupMessagesCounter()
-//                val unread = allMessagesCounter - readMessagesCounter
-//                group.updateMessagesCounter(unread)
-//            }
-//        }
-
+    fun increaseMessagesReadCounterInGroup(groupId: String, counter: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val readCounter = interactor.fetchGroupMessagesCounter(groupId)
                 ?.map(groupMessagesCounterDomainToUiMapper)?.provideCounter()
             if (readCounter == null) {
                 insertGroupMessagesReadCounter(groupId, 0)
             } else {
-                val allMessagesCounter = counter
-                val unread = counter - readCounter
-
+                val unread = counter + readCounter
+                interactor.updateReadMessagesCounterInGroup(groupId, unread)
             }
-//            if (readCounter != null) {
-//                val newCounter = readCounter + counter
-            Log.d("tag", "updateMessagesReadCounterInGroup: before -> $readCounter, add -> $counter ,  new -> $counter")
-                interactor.updateReadMessagesCounterInGroup(groupId, counter)
-//            }
-            groupsLiveData.value?.find { it.sameId(groupId) }?.updateMessagesCounter(0)
+            val group = groups.value.find { it.sameId(groupId) }
+            group?.updateMessagesCounter(0)
+            Log.d("tag", "increaseMessagesReadCounterInGroup:RoomvViewModel group -> $group")
+//            groupsLiveData.value?.find { it.sameId(groupId) }?.updateMessagesCounter(0)
         }
     }
 
@@ -167,16 +149,17 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    fun updateActualUnreadMessagesCounterInGroup(group: GroupUi) {
+    private fun updateActualUnreadMessagesCounterInGroup(group: GroupUi) {
         viewModelScope.launch(Dispatchers.IO) {
             val readMessagesCounter = interactor.fetchGroupMessagesCounter(group.provideId())
                 ?.map(groupMessagesCounterDomainToUiMapper)?.provideCounter()
             if (readMessagesCounter == null) {
                 interactor.insertNewMessagesCounterInGroup(group.provideId(), 0)
             } else {
-                val allMessagesCounter = group.provideGroupMessagesCounter()
-                val unread = allMessagesCounter - readMessagesCounter
+                val allMessagesCount = group.provideGroupMessagesCounter()
+                val unread = allMessagesCount - readMessagesCounter
                 group.updateMessagesCounter(unread)
+                Log.d("tag", "updateActualUnreadMessagesCounterInGroup: before -> $readMessagesCounter")
             }
         }
     }

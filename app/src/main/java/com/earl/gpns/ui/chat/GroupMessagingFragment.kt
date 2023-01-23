@@ -125,6 +125,7 @@ class GroupMessagingFragment(
             0
         )
         if (binding.msgEdittext.text.isNotEmpty()) {
+            viewModel.increaseReadMessagesCounterInGroup(groupInfo.groupId, 1)
             viewModel.sendMessageInGroup(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 messageEntity

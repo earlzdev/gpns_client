@@ -62,6 +62,7 @@ class GroupMessagingViewModel @Inject constructor(
 
     fun increaseReadMessagesCounterInGroup(groupId: String, counter: Int) {
         viewModelScope.launch(Dispatchers.IO) {
+//            interactor.updateReadMessagesCounterInGroup(groupId, counter)
             val readCounter = interactor.fetchGroupMessagesCounter(groupId)
                 ?.map(groupMessagesCounterDomainToUimapper)?.provideCounter()
             if (readCounter != null) {
