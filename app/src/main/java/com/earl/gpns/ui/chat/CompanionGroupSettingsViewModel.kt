@@ -39,6 +39,7 @@ class CompanionGroupSettingsViewModel @Inject constructor(
     fun removeCompanionFromGroup(token: String, groupId: String, username: String) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.removeCompanionFromGroup(token, groupId, username)
+            interactor.removeUserFromCompanionGroupInLocalDb(username)
             val existedNotificationsList = interactor.fetchAllTripNotificationFromLocalDb()
                 .map { it.mapToUi(tripNotificationDomainToUiMapper) }
                 .map { it.provideTripNotificationUiRecyclerItem() }
@@ -62,6 +63,7 @@ class CompanionGroupSettingsViewModel @Inject constructor(
     fun leaveFromCompanionGroup(token: String, groupId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.leaveFromCompanionGroup(token, groupId)
+            interactor.clearLocalDbCompanionGroupUsersList()
         }
     }
 

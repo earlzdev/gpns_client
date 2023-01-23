@@ -119,4 +119,25 @@ class DriverFormViewModel @Inject constructor(
             interactor.markTripNotificationAsNotActive(token, notificationId)
         }
     }
+
+    fun deleteDriverFormForm(token: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.clearWatchedNotificationsDb()
+            interactor.clearNotificationsDb()
+            interactor.deleteDriverForm(token)
+            interactor.clearLocalDbCompanionGroupUsersList()
+        }
+    }
+
+    fun clearTripFormInLocalDb() {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.clearDriverFormInLocalDb()
+        }
+    }
+
+    fun insertDriverTripFormIntoLocalDb(form: DriverFormUi) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.saveDriverTripFormIntoLocalDb(form.mapToDomain(driverFormUiToDomainMapper))
+        }
+    }
 }

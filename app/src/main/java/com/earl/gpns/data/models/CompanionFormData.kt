@@ -1,5 +1,6 @@
 package com.earl.gpns.data.models
 
+import com.earl.gpns.data.mappers.CompanionFormDataToDbMapper
 import com.earl.gpns.data.mappers.CompanionFormDataToDomainMapper
 import com.earl.gpns.data.mappers.CompanionFormDataToRemoteMapper
 
@@ -8,6 +9,8 @@ interface CompanionFormData {
     fun <T> mapToRemote(mapper: CompanionFormDataToRemoteMapper<T>) : T
 
     fun <T> mapToDomain(mapper: CompanionFormDataToDomainMapper<T>) : T
+
+    fun <T> mapToDb(mapper: CompanionFormDataToDbMapper<T>) : T
 
     class Base(
         private val username: String,
@@ -25,5 +28,8 @@ interface CompanionFormData {
 
         override fun <T> mapToDomain(mapper: CompanionFormDataToDomainMapper<T>) =
             mapper.map(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment, active)
+
+        override fun <T> mapToDb(mapper: CompanionFormDataToDbMapper<T>) =
+            mapper.map(username, userImage, from, to, schedule, actualTripTime, ableToPay, comment)
     }
 }

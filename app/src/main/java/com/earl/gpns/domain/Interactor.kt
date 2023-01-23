@@ -151,6 +151,18 @@ interface Interactor {
 
     suspend fun clearLocalDbCompanionGroupUsersList()
 
+    suspend fun saveCompanionTripFormIntoLocalDb(tripForm: CompanionFormDomain)
+
+    suspend fun saveDriverTripFormIntoLocalDb(tripForm: DriverFormDomain)
+
+    suspend fun fetchCompanionTripFormFromLocalDb() : CompanionFormDomain
+
+    suspend fun fetchDriverTripFormFromLocalDb() : DriverFormDomain
+
+    suspend fun clearDriverFormInLocalDb()
+
+    suspend fun clearCompanionFormInLocalDb()
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -418,6 +430,28 @@ interface Interactor {
 
         override suspend fun clearLocalDbCompanionGroupUsersList() {
             localDatabaseRepository.clearLocalDbCompanionGroupUsersList()
+        }
+
+        override suspend fun saveCompanionTripFormIntoLocalDb(tripForm: CompanionFormDomain) {
+            localDatabaseRepository.saveCompanionTripFormIntoLocalDb(tripForm)
+        }
+
+        override suspend fun saveDriverTripFormIntoLocalDb(tripForm: DriverFormDomain) {
+            localDatabaseRepository.saveDriverTripFormIntoLocalDb(tripForm)
+        }
+
+        override suspend fun fetchCompanionTripFormFromLocalDb() =
+            localDatabaseRepository.fetchCompanionTripFormFromLocalDb()
+
+        override suspend fun fetchDriverTripFormFromLocalDb() =
+            localDatabaseRepository.fetchDriverTripFormFromLocalDb()
+
+        override suspend fun clearDriverFormInLocalDb() {
+            localDatabaseRepository.clearDriverFormInLocalDb()
+        }
+
+        override suspend fun clearCompanionFormInLocalDb() {
+            localDatabaseRepository.clearCompanionFormInLocalDb()
         }
     }
 }

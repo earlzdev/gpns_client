@@ -123,6 +123,11 @@
     <string name="my_comps">Мои попутчики</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="exit">Выйти</string>
+    <string name="my_trip_form_text">Моя анкета</string>
+    <string name="communicate_with_developer">Связаться с разработчиком</string>
+    <string name="safe_politics">Политика конфиденциальности</string>
+    <string name="delete_trip_form">Удалить форму</string>
 
     // spinners
     <string-array name="spinner_drive_from">

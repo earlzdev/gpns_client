@@ -123,4 +123,25 @@ class CompanionFormViewModel @Inject constructor(
             interactor.markTripNotificationAsNotActive(token, notificationId)
         }
     }
+
+    fun deleteCompanionForm(token: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.clearWatchedNotificationsDb()
+            interactor.clearNotificationsDb()
+            interactor.deleteCompanionForm(token)
+            interactor.clearLocalDbCompanionGroupUsersList()
+        }
+    }
+
+    fun clearTripFormInLocalDb() {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.clearDriverFormInLocalDb()
+        }
+    }
+
+    fun insertNewCompanionTripFormIntoLocalDb(form: CompanionFormUi) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.saveCompanionTripFormIntoLocalDb(form.mapToDomain(companionFormUiToDomainMapper))
+        }
+    }
 }

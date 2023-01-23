@@ -228,6 +228,7 @@ class SecondDriverFormFragment(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 driverForm
             )
+            viewModel.insertDriverTripFormIntoLocalDb(driverForm)
         } else {
             Toast.makeText(requireContext(), "У Вас уже есть форма", Toast.LENGTH_SHORT).show()
         }

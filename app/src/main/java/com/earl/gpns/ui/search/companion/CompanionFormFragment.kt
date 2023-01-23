@@ -144,6 +144,7 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 form
             )
+            viewModel.insertNewCompanionTripFormIntoLocalDb(form)
             Toast.makeText(requireContext(), "Отправлено", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "У Вас уже есть форма", Toast.LENGTH_SHORT).show()

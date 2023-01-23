@@ -8,8 +8,8 @@ import java.util.*
 
 class CurrentDateAndTimeGiver {
 
-    val currentDate = Date()
-    val standardFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
+    private val currentDate = Date()
+    val standardFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
 
     fun fetchCurrentDateAndTime(): LocalDateTime {
         val simpleDateFormat: DateFormat =
