@@ -3,23 +3,20 @@ package com.earl.gpns.data
 import android.util.Log
 import com.earl.gpns.data.localDb.*
 import com.earl.gpns.data.mappers.*
-import com.earl.gpns.data.models.GroupMessagesCounterData
-import com.earl.gpns.data.models.NewRoomDtoData
-import com.earl.gpns.data.models.RoomData
-import com.earl.gpns.data.models.TripNotificationData
+import com.earl.gpns.data.models.*
 import com.earl.gpns.domain.DatabaseRepository
+import com.earl.gpns.domain.mappers.CompanionFormDomainToDataMapper
+import com.earl.gpns.domain.mappers.DriverFormDomainToDataMapper
 import com.earl.gpns.domain.mappers.NewRoomDomainToDataMapper
 import com.earl.gpns.domain.mappers.TripNotificationDomainToDataMapper
-import com.earl.gpns.domain.models.GroupMessagesCounterDomain
-import com.earl.gpns.domain.models.NewRoomDtoDomain
-import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.models.TripNotificationDomain
+import com.earl.gpns.domain.models.*
 import javax.inject.Inject
 
 class BaseDatabaseRepository @Inject constructor(
     private val roomsDao: RoomsDao,
     private val groupsDao: GroupsDao,
     private val notificationsDao: NotificationsDao,
+    private val tripFormDao: TripFormDao,
     private val companionGroupUsersDao: CompanionGroupUsersDao,
     private val newRoomDataToDbMapper: NewRoomDataToDbMapper<RoomDb>,
     private val newRoomDomainToDataMapper: NewRoomDomainToDataMapper<NewRoomDtoData>,
@@ -30,7 +27,15 @@ class BaseDatabaseRepository @Inject constructor(
     private val notificationsDbToDataMapper: NotificationDbToDataMapper<TripNotificationData>,
     private val notificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>,
     private val notificationDomainToDataMapper: TripNotificationDomainToDataMapper<TripNotificationData>,
-    private val notificationDataToDbMapper: TripNotificationDataToDbMapper<NotificationsDb>
+    private val notificationDataToDbMapper: TripNotificationDataToDbMapper<NotificationsDb>,
+    private val companionFormDomainToDataMapper: CompanionFormDomainToDataMapper<CompanionFormData>,
+    private val companionFormDataToDbMapper: CompanionFormDataToDbMapper<CompanionFormDb>,
+    private val driverFormDomainToDataMapper: DriverFormDomainToDataMapper<DriverFormData>,
+    private val driverFormDataToDbMapper: DriverFormDataToDbMapper<DriverFormDb>,
+    private val companionFormDbToDataMapper: CompanionFormDbToDataMapper<CompanionFormData>,
+    private val companionFormDataToDomainMapper: CompanionFormDataToDomainMapper<CompanionFormDomain>,
+    private val driverFormDbToDataMapper: DriverFormDbToDataMapper<DriverFormData>,
+    private val driverFormDataToDomainMapper: DriverFormDataToDomainMapper<DriverFormDomain>
 ) : DatabaseRepository {
 
     override suspend fun insertNewRoomIntoLocalDb(room: NewRoomDtoDomain) {
@@ -147,5 +152,38 @@ class BaseDatabaseRepository @Inject constructor(
     override suspend fun clearLocalDbCompanionGroupUsersList() {
         Log.d("tag", "clearLocalDbCompanionGroupUsersList: ")
         companionGroupUsersDao.clearLocalDbCompanionGroupUsersList()
+    }
+
+    override suspend fun saveCompanionTripFormIntoLocalDb(tripForm: CompanionFormDomain) {
+        tripFormDao.insertNewCompanionForm(tripForm
+            .mapToData(companionFormDomainToDataMapper)
+            .mapToDb(companionFormDataToDbMapper))
+    }
+
+    override suspend fun saveDriverTripFormIntoLocalDb(tripForm: DriverFormDomain) {
+        tripFormDao.insertNewDriverForm(
+            tripForm
+                .mapToData(driverFormDomainToDataMapper)
+                .mapToDb(driverFormDataToDbMapper)
+        )
+    }
+
+    override suspend fun fetchCompanionTripFormFromLocalDb() =
+        tripFormDao.fetchCompanionFormFromLocalDb()
+            .mapToData(companionFormDbToDataMapper)
+            .mapToDomain(companionFormDataToDomainMapper)
+
+
+    override suspend fun fetchDriverTripFormFromLocalDb() =
+        tripFormDao.fetchDriverFormFromLocalDb()
+            .mapToData(driverFormDbToDataMapper)
+            .mapToDomain(driverFormDataToDomainMapper)
+
+    override suspend fun clearDriverFormInLocalDb() {
+        tripFormDao.clearDriverFormDb()
+    }
+
+    override suspend fun clearCompanionFormInLocalDb() {
+        tripFormDao.clearCompanionFormDb()
     }
 }

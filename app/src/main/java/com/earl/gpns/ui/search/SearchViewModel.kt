@@ -122,8 +122,9 @@ class SearchViewModel @Inject constructor(
             REMOVED_COMPANION_FROM_GROUP -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     interactor.removeUserFromCompanionGroupInLocalDb(notification.authorName)
+                    interactor.clearLocalDbCompanionGroupUsersList()
                 }
-                reactListener?.reactOnRemoveFromCompGroupNotification()
+                reactListener?.reactOnRemovingFromCompGroupNotification()
             }
             AGREED -> {
                 reactListener?.savePointThatUserIsStillInCompGroup()
@@ -133,7 +134,7 @@ class SearchViewModel @Inject constructor(
                         .map { it.mapToUi(tripNotificationDomainToUiMapper) }
                         .map { it.provideTripNotificationUiRecyclerItem() }
                     val existedInviteNotificationsListFromThisUser = existedList.filter {
-                        it.authorName == username
+                                it.authorName == username
                                 && it.receiverName == notification.authorName
                                 && it.type == INVITE
                     }
@@ -144,6 +145,20 @@ class SearchViewModel @Inject constructor(
             COMPANION_LEAVED_GROUP -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     interactor.removeUserFromCompanionGroupInLocalDb(notification.authorName)
+                }
+            }
+            DISAGREED -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val existedList = interactor.fetchAllTripNotificationFromLocalDb()
+                        .map { it.mapToUi(tripNotificationDomainToUiMapper) }
+                        .map { it.provideTripNotificationUiRecyclerItem() }
+                    val existedInviteNotificationsListFromThisUser = existedList.filter {
+                                it.authorName == username
+                                && it.receiverName == notification.authorName
+                                && it.type == INVITE
+                    }
+                    if (existedInviteNotificationsListFromThisUser.isNotEmpty())
+                        existedInviteNotificationsListFromThisUser.forEach { markTripNotificationAsNotActive(it.id) }
                 }
             }
         }
@@ -207,5 +222,6 @@ class SearchViewModel @Inject constructor(
         private const val AGREED = "AGREED"
         private const val INVITE = "INVITE"
         private const val COMPANION_LEAVED_GROUP = "COMPANION_LEAVED_GROUP"
+        private const val DISAGREED = "DISAGREED"
     }
 }

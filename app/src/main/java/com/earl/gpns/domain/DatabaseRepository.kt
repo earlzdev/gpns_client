@@ -1,9 +1,6 @@
 package com.earl.gpns.domain
 
-import com.earl.gpns.domain.models.GroupMessagesCounterDomain
-import com.earl.gpns.domain.models.NewRoomDtoDomain
-import com.earl.gpns.domain.models.RoomDomain
-import com.earl.gpns.domain.models.TripNotificationDomain
+import com.earl.gpns.domain.models.*
 
 interface DatabaseRepository {
 
@@ -46,4 +43,16 @@ interface DatabaseRepository {
     suspend fun removeUserFromCompanionGroupInLocalDb(username: String)
 
     suspend fun clearLocalDbCompanionGroupUsersList()
+
+    suspend fun saveCompanionTripFormIntoLocalDb(tripForm: CompanionFormDomain)
+
+    suspend fun saveDriverTripFormIntoLocalDb(tripForm: DriverFormDomain)
+
+    suspend fun fetchCompanionTripFormFromLocalDb() : CompanionFormDomain
+
+    suspend fun fetchDriverTripFormFromLocalDb() : DriverFormDomain
+
+    suspend fun clearDriverFormInLocalDb()
+
+    suspend fun clearCompanionFormInLocalDb()
 }

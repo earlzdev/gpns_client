@@ -62,11 +62,11 @@ class CompanionGroupSettingsFragment(
             builder.setTitle("Подтвердите действие")
             builder.setMessage("Вы действительно хотите убрать этого пользователя из группы попутчиков?")
             builder.setPositiveButton(R.string.yes) { dialog, which ->
-            viewModel.removeCompanionFromGroup(
-                preferenceManager.getString(Keys.KEY_JWT) ?: "",
-                groupId,
-                username
-            )
+                viewModel.removeCompanionFromGroup(
+                    preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                    groupId,
+                    username
+                )
                 Toast.makeText(requireContext(), "Пользователь удален из группы", Toast.LENGTH_SHORT).show()
             }
             builder.setNegativeButton(R.string.no) { dialog, which ->

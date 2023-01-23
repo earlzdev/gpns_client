@@ -8,9 +8,11 @@ import androidx.room.RoomDatabase
     GroupMessagesCountDb::class,
     NotificationsDb::class,
     WatchedNotificationsDb::class,
-    CompanionGroupUser::class
-                     ],
-    version = 8)
+    CompanionGroupUser::class,
+    CompanionFormDb::class,
+    DriverFormDb::class
+],
+    version = 9)
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun roomsDao() : RoomsDao
@@ -20,4 +22,6 @@ abstract class AppDataBase : RoomDatabase() {
     abstract fun tripNotificationsDao() : NotificationsDao
 
     abstract fun companionGroupUsersDao() : CompanionGroupUsersDao
+
+    abstract fun tripFormDao() : TripFormDao
 }

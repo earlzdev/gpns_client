@@ -15,6 +15,7 @@ import com.earl.gpns.databinding.FragmentDriverFormDetailsBinding
 import com.earl.gpns.ui.SearchFormsDetails
 import com.earl.gpns.ui.models.DriverDetailsUi
 import com.earl.gpns.ui.models.TripNotificationUi
+import com.earl.gpns.ui.search.companion.CompanionFormDetailsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -27,6 +28,7 @@ class DriverFormDetailsFragment(
 
     private lateinit var viewModel: DriverFormViewModel
     private var notificationSent: Boolean = false
+    private var isInvitationAnswered = false
 
     override fun viewBinding(
         inflater: LayoutInflater,
@@ -44,7 +46,13 @@ class DriverFormDetailsFragment(
 
     private fun initClickListeners() {
         binding.backBtn.setOnClickListener {
-            navigator.back()
+//            navigator.back()
+            when(viewRegime) {
+                NOTIFICATION -> navigator.popBackStackToFragment(tripNotifications)
+                DETAILS -> navigator.popBackStackToFragment(mainFragment)
+                OWN_INVITE -> navigator.popBackStackToFragment(tripNotifications)
+                OWN_TRIP_FORM -> navigator.back()
+            }
         }
         binding.seggustDriveTogether.setOnClickListener {
             when(viewRegime) {
@@ -59,30 +67,62 @@ class DriverFormDetailsFragment(
         binding.deny.setOnClickListener {
             denyDriverToDriveTogether(binding.userName.text.toString())
         }
+        binding.deleteForm.setOnClickListener {
+            preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, false)
+            preferenceManager.putBoolean(Keys.IS_DRIVER, false)
+            preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
+            viewModel.clearTripFormInLocalDb()
+            viewModel.deleteDriverFormForm(preferenceManager.getString(Keys.KEY_JWT) ?: "")
+            navigator.back()
+        }
     }
 
     private fun acceptDriverToRideTogether(driverUsername: String) {
-        if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP)) {
-            viewModel.acceptDriverToRideTogether(
-                preferenceManager.getString(Keys.KEY_JWT) ?: "",
-                driverUsername
-            )
-            viewModel.markTripNotificationAsNotActive(
-                preferenceManager.getString(Keys.KEY_JWT) ?: "",
-                notificationId
-            )
-            preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, true)
-            viewModel.insertNewUserIntoLocalDbCompGroup(driverUsername)
+        if (isInvitationAnswered) {
+            Toast.makeText(requireContext(), "Вы уже ответили этому пользователю на приглашение", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(requireContext(), "Вы уже договорились здить с другим человеком!", Toast.LENGTH_SHORT).show()
+            val existedList = viewModel.provideExistedNotificationsListLiveData()
+            if (existedList?.find { it.provideId() == notificationId && it.isActive()} != null) {
+                if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP)) {
+                    viewModel.acceptDriverToRideTogether(
+                        preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                        driverUsername
+                    )
+                    viewModel.markTripNotificationAsNotActive(
+                        preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                        notificationId
+                    )
+                    preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, true)
+                    viewModel.insertNewUserIntoLocalDbCompGroup(driverUsername)
+                    isInvitationAnswered = true
+                } else {
+                    Toast.makeText(requireContext(), "Вы уже договорились здить с другим человеком!", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "Вы уже отвечали на это приглашение, либо оно уже неактивно", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun denyDriverToDriveTogether(driverUsername: String) {
-        viewModel.denyDriverToRideTogether(
-            preferenceManager.getString(Keys.KEY_JWT) ?: "",
-            driverUsername
-        )
+        if (isInvitationAnswered) {
+            Toast.makeText(requireContext(), "Вы уже ответили этому пользователю на приглашение", Toast.LENGTH_SHORT).show()
+        } else {
+            val existedList = viewModel.provideExistedNotificationsListLiveData()
+            if (existedList?.find { it.provideId() == notificationId && it.isActive()} != null) {
+                viewModel.markTripNotificationAsNotActive(
+                    preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                    notificationId
+                )
+                viewModel.denyDriverToRideTogether(
+                    preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                    driverUsername
+                )
+                isInvitationAnswered = true
+            } else {
+                Toast.makeText(requireContext(), "Вы уже отвечали на это приглашение, либо оно уже неактивно", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun initViews() {
@@ -98,6 +138,11 @@ class DriverFormDetailsFragment(
             }
             DETAILS -> {
 
+            }
+            OWN_TRIP_FORM -> {
+                binding.seggustDriveTogether.visibility = View.GONE
+                binding.deny.visibility = View.GONE
+                binding.deleteForm.visibility = View.VISIBLE
             }
         }
         binding.userName.text = details.username
@@ -126,10 +171,8 @@ class DriverFormDetailsFragment(
         Log.d("tag", "inviteDriver: existedlist -> $existedList")
         Log.d("tag", "inviteDriver: existed -> $existedNotification")
         if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP)) {
-
             if (!notificationSent) {
                 if (!usersListInCompanionGroup.contains(binding.userName.text.toString())) {
-                    if (!usersListInCompanionGroup.contains(binding.userName.text.toString())) {
                         if (existedNotification == null || existedNotification.active != ACTIVE) {
                             if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && !preferenceManager.getBoolean(Keys.IS_DRIVER)) {
                                 val notificationId = UUID.randomUUID().toString()
@@ -161,22 +204,14 @@ class DriverFormDetailsFragment(
                         } else if (existedNotification.active == ACTIVE) {
                             Toast.makeText(requireContext(), "У вас уже есть приглашение от этого пользователя", Toast.LENGTH_SHORT).show()
                         }
-                    }  else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Этот пользователь и так уже ездит с Вами",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-                else {
+                } else {
                     Toast.makeText(
                         requireContext(),
                         "Этот пользователь и так уже ездит с Вами",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            }else {
+            } else {
                 Toast.makeText(requireContext(), "Вы уже отправляли приглашение этому пользователю", Toast.LENGTH_SHORT).show()
             }
         } else {
@@ -194,5 +229,8 @@ class DriverFormDetailsFragment(
         private const val NOTIFICATION = "NOTIFICATION"
         private const val OWN_INVITE = "OWN_INVITE"
         private const val ACTIVE = 1
+        private const val tripNotifications = "tripNotifications"
+        private const val mainFragment = "mainFragment"
+        private const val OWN_TRIP_FORM = "OWN_TRIP_FORM"
     }
 }

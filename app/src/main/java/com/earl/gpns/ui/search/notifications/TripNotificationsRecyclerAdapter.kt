@@ -60,6 +60,12 @@ class TripNotificationsRecyclerAdapter(
                 binding.inviteText.text = "$tripRoleInviter ${item.authorName} покинул группу попутчиков"
             } else if (item.type == COMPANION_LEAVED_GROUP && item.receiverName != username) {
                 binding.inviteText.text = "Вы покинули группу попутчиков $tripRoleInviting ${item.receiverName}"
+            } else if (item.type == DISAGREED && item.authorTripRole == COMPANION_ROLE && item.receiverName == username) {
+                binding.inviteText.text = "Попутчик ${item.authorName} отказался ездить с Вами вместе"
+            } else if (item.type == DISAGREED && item.authorTripRole == DRIVER_ROLE && item.receiverName == username) {
+                binding.inviteText.text = "Водитель ${item.authorName} отказался ездить с Вами вместе"
+            } else if (item.type == DISAGREED && item.receiverName != username) {
+                binding.inviteText.text = "Вы отказались ездить вместе с ${item.receiverName}"
             } else {
                     if (item.authorName == username) {
                         binding.inviteText.text = "Вы пригласили $tripRoleInviting ${item.receiverName} ездить вместе."
@@ -82,5 +88,6 @@ class TripNotificationsRecyclerAdapter(
         private const val AGREED = "AGREED"
         private const val REMOVED_COMPANION_FROM_GROUP = "REMOVED_COMPANION_FROM_GROUP"
         private const val COMPANION_LEAVED_GROUP = "COMPANION_LEAVED_GROUP"
+        private const val DISAGREED = "DISAGREED"
     }
 }

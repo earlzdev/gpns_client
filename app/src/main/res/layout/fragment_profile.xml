@@ -2,32 +2,244 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/primary">
 
-    <Button
-        android:id="@+id/exit_btn"
+    <ImageView
+        android:id="@+id/image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="180dp"
+        android:src="@drawable/profile_background"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="fitXY"
+        />
+
+    <ImageView
+        android:id="@+id/exit_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/exit_image"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="50dp"
-        android:text="EXIT"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="40dp"
+        />
+
+    <View
+        android:id="@+id/view"
+        app:layout_constraintBottom_toBottomOf="@id/image"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
         android:background="@color/white"
         />
 
-    <Button
-        android:id="@+id/delete_trip_form"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/exit_btn"
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/user_avatar"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="50dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/white"
-        android:text="DELETE TRIP FORM"
+        app:layout_constraintTop_toTopOf="@id/view"
+        app:layout_constraintBottom_toBottomOf="@id/view"
+        android:src="@drawable/default_avatar"
+        android:scaleType="centerCrop"
+        app:riv_oval="true"
+        android:background="@drawable/user_avatar_background"
+        android:padding="2dp"
         />
+
+    <ImageView
+        android:id="@+id/new_avatar_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/add_new_avatar_btn"
+        app:layout_constraintBottom_toBottomOf="@id/user_avatar"
+        app:layout_constraintEnd_toEndOf="@id/user_avatar"
+        />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/user_avatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Василий Васильев"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="20dp"
+        />
+
+    <ImageView
+        android:id="@+id/edit_field_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/edit_field"
+        app:layout_constraintBottom_toBottomOf="@id/user_name"
+        app:layout_constraintStart_toEndOf="@id/user_name"
+        android:layout_marginStart="5dp"
+        />
+
+    <TextView
+        android:id="@+id/my_trip_form"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/my_trip_form_text"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/user_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        />
+
+    <View
+        android:id="@+id/trip_form_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/my_trip_form"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="60dp"
+        />
+
+    <TextView
+        android:id="@+id/smth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/my_trip_form_text"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/trip_form_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        />
+
+    <View
+        android:id="@+id/smth_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/smth"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="60dp"
+        />
+
+    <TextView
+        android:id="@+id/smth_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/my_trip_form_text"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/smth_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        />
+
+    <View
+        android:id="@+id/smth_second_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/smth_second"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="60dp"
+        />
+
+    <TextView
+        android:id="@+id/smth_third"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/my_trip_form_text"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/smth_second_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        />
+
+    <View
+        android:id="@+id/smth_third_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/smth_third"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="60dp"
+        />
+
+    <TextView
+        android:id="@+id/communicate_with_developer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/communicate_with_developer"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/smth_third_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        />
+
+    <View
+        android:id="@+id/communicate_with_developer_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/communicate_with_developer"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="60dp"
+        />
+
+    <TextView
+        android:id="@+id/safe_politics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/safe_politics"
+        android:maxWidth="250dp"
+        android:gravity="center"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/communicate_with_developer_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        />
+
+    <View
+        android:id="@+id/safe_politics_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/safe_politics"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="60dp"
+        />
+
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/exit_btn"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:text="@string/exit"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:fontFamily="@font/montesserat_medium"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:background="@drawable/remove_comp_from_group_button_background"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:layout_marginBottom="40dp"-->
+<!--        android:layout_marginHorizontal="40dp"-->
+<!--        />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

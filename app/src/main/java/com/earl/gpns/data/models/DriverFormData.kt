@@ -1,5 +1,6 @@
 package com.earl.gpns.data.models
 
+import com.earl.gpns.data.mappers.DriverFormDataToDbMapper
 import com.earl.gpns.data.mappers.DriverFormDataToDomainMapper
 import com.earl.gpns.data.mappers.DriverFormDataToRemoteMapper
 
@@ -8,6 +9,8 @@ interface DriverFormData {
     fun <T> mapToRemote(mapper: DriverFormDataToRemoteMapper<T>) : T
 
     fun <T> mapToDomain(mapper: DriverFormDataToDomainMapper<T>) : T
+
+    fun <T> mapToDb(mapper: DriverFormDataToDbMapper<T>) : T
 
     class Base(
         private val username: String,
@@ -34,5 +37,8 @@ interface DriverFormData {
 
         override fun <T> mapToRemote(mapper: DriverFormDataToRemoteMapper<T>) =
             mapper.map(username, userImage, driveFrom, driveTo, catchCompanionFrom, alsoCanDriveTo, schedule, ableToDriveInTurn, actualTripTime, car, carModel, carColor, passengersCount, carGovNumber, tripPrice, driverComment, active)
+
+        override fun <T> mapToDb(mapper: DriverFormDataToDbMapper<T>) =
+            mapper.map(username, userImage, driveFrom, driveTo, catchCompanionFrom, alsoCanDriveTo, schedule, ableToDriveInTurn, actualTripTime, car, carModel, carColor, passengersCount, carGovNumber, tripPrice, driverComment)
     }
 }

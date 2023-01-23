@@ -172,6 +172,7 @@ object AppModule {
         roomsDao: RoomsDao,
         groupsDao: GroupsDao,
         notificationsDao: NotificationsDao,
+        tripFormDao: TripFormDao,
         companionGroupUsersDao: CompanionGroupUsersDao,
         newRoomDataToDbMapper: NewRoomDataToDbMapper<RoomDb>,
         newRoomDomainToDataMapper: NewRoomDomainToDataMapper<NewRoomDtoData>,
@@ -182,12 +183,21 @@ object AppModule {
         notificationsDbToDataMapper: NotificationDbToDataMapper<TripNotificationData>,
         notificationDataToDomainMapper: TripNotificationDataToDomainMapper<TripNotificationDomain>,
         notificationDomainToDataMapper: TripNotificationDomainToDataMapper<TripNotificationData>,
-        notificationDataToDbMapper: TripNotificationDataToDbMapper<NotificationsDb>
+        notificationDataToDbMapper: TripNotificationDataToDbMapper<NotificationsDb>,
+        companionFormDomainToDataMapper: CompanionFormDomainToDataMapper<CompanionFormData>,
+        companionFormDataToDbMapper: CompanionFormDataToDbMapper<CompanionFormDb>,
+        driverFormDomainToDataMapper: DriverFormDomainToDataMapper<DriverFormData>,
+        driverFormDataToDbMapper: DriverFormDataToDbMapper<DriverFormDb>,
+        companionFormDbToDataMapper: CompanionFormDbToDataMapper<CompanionFormData>,
+        companionFormDataToDomainMapper: CompanionFormDataToDomainMapper<CompanionFormDomain>,
+        driverFormDbToDataMapper: DriverFormDbToDataMapper<DriverFormData>,
+        driverFormDataToDomainMapper: DriverFormDataToDomainMapper<DriverFormDomain>
     ) : DatabaseRepository {
         return BaseDatabaseRepository(
             roomsDao,
             groupsDao,
             notificationsDao,
+            tripFormDao,
             companionGroupUsersDao,
             newRoomDataToDbMapper,
             newRoomDomainToDataMapper,
@@ -198,7 +208,15 @@ object AppModule {
             notificationsDbToDataMapper,
             notificationDataToDomainMapper,
             notificationDomainToDataMapper,
-            notificationDataToDbMapper
+            notificationDataToDbMapper,
+            companionFormDomainToDataMapper,
+            companionFormDataToDbMapper,
+            driverFormDomainToDataMapper,
+            driverFormDataToDbMapper,
+            companionFormDbToDataMapper,
+            companionFormDataToDomainMapper,
+            driverFormDbToDataMapper,
+            driverFormDataToDomainMapper
         )
     }
 
@@ -229,6 +247,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideCompanionGroupUsersDao(db: AppDataBase) = db.companionGroupUsersDao()
+
+    @Provides
+    @Singleton
+    fun provideTripFormDao(db: AppDataBase) = db.tripFormDao()
 
     @Singleton
     @Provides

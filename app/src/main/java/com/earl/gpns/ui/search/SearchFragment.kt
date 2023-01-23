@@ -100,7 +100,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
         }
     }
 
-    override fun reactOnRemoveFromCompGroupNotification() {
+    override fun reactOnRemovingFromCompGroupNotification() {
         preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
     }
 

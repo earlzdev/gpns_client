@@ -17,6 +17,8 @@ interface TripNotificationUi : Same<TripNotificationUi> {
 
     fun provideAuthorName() : String
 
+    fun isActive() : Boolean
+
     class Base(
         private val id: String,
         private val authorName: String,
@@ -40,10 +42,13 @@ interface TripNotificationUi : Same<TripNotificationUi> {
         override fun provideReceiverName() = receiverName
 
         override fun provideAuthorName() = authorName
+
+        override fun isActive() = active == IS_ACTIVE
     }
 
     companion object {
         private const val INVITE = "INVITE"
+        private const val IS_ACTIVE = 1
     }
 }
 

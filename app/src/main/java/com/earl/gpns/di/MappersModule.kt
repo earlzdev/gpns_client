@@ -1,5 +1,7 @@
 package com.earl.gpns.di
 
+import com.earl.gpns.data.localDb.CompanionFormDb
+import com.earl.gpns.data.localDb.DriverFormDb
 import com.earl.gpns.data.localDb.NotificationsDb
 import com.earl.gpns.data.localDb.RoomDb
 import com.earl.gpns.data.mappers.*
@@ -481,6 +483,30 @@ object MappersModule {
     @Singleton
     fun provideTripNotificationDataToDbMapper() : TripNotificationDataToDbMapper<NotificationsDb> {
         return BaseTripNotificationDataToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormDbToDataMapper() : CompanionFormDbToDataMapper<CompanionFormData> {
+        return BaseCompanionFormDbToDataMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompanionFormDataToDbMapper() : CompanionFormDataToDbMapper<CompanionFormDb> {
+        return BaseCompanionFormDataToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormDataToDbMapper() : DriverFormDataToDbMapper<DriverFormDb> {
+        return BaseDriverFormDataToDbMapper()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDriverFormDbToDataMapper() : DriverFormDbToDataMapper<DriverFormData> {
+        return BaseDriverFormDbToDataMapper()
     }
 }
 
