@@ -128,6 +128,7 @@
     <string name="communicate_with_developer">Связаться с разработчиком</string>
     <string name="safe_politics">Политика конфиденциальности</string>
     <string name="delete_trip_form">Удалить форму</string>
+    <string name="group_message_auhtor_test">~%s</string>
 
     // spinners
     <string-array name="spinner_drive_from">

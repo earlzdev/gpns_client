@@ -18,6 +18,12 @@ class CurrentDateAndTimeGiver {
         return LocalDateTime.parse(dateText, standardFormatter)
     }
 
+    fun fetchCurrentDateAsString(): String {
+        val currentDate = Date()
+        val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(currentDate)
+    }
+
     fun fetchDayOfYearFormat(): DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
     fun fetchDayOfMonthFormat() : DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM")

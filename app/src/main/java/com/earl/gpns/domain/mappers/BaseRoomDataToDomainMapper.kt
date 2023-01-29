@@ -16,6 +16,7 @@ class BaseRoomDataToDomainMapper @Inject constructor() : RoomDataToDomainMapper<
         unreadMsgCounter: Int,
         lastMsgRead: Int,
         contactIsOnline: Int,
-        contactLastAuth: String
-    ) = RoomDomain.Base(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead, contactIsOnline, contactLastAuth)
+        contactLastAuth: String,
+        lastMsgTimestamp: String
+    ) = RoomDomain.Base(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead, contactIsOnline, contactLastAuth, lastMsgTimestamp)
 }

@@ -1,6 +1,7 @@
 package com.earl.gpns.ui.models
 
 import android.widget.TextView
+import com.earl.gpns.R
 import com.earl.gpns.core.Same
 import com.earl.gpns.ui.mappers.GroupMessageUiToDomainMapper
 import com.makeramen.roundedimageview.RoundedImageView
@@ -31,7 +32,6 @@ interface GroupMessageUi : Same<GroupMessageUi> {
 
     fun recyclerDetailsForContact(
         authorUsername: TextView,
-        authorIcon: RoundedImageView,
         messageTime: TextView,
         message: TextView
     )
@@ -77,10 +77,10 @@ interface GroupMessageUi : Same<GroupMessageUi> {
 
         override fun recyclerDetailsForContact(
             authorUsername: TextView,
-            authorIcon: RoundedImageView,
             messageTime: TextView,
             message: TextView
         ) {
+            val context = message.context
             authorUsername.text = authorName
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
             val dateTime = LocalDateTime.parse(timestamp, formatter)

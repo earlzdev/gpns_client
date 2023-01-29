@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
     CompanionFormDb::class,
     DriverFormDb::class
 ],
-    version = 9)
+    version = 10)
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun roomsDao() : RoomsDao

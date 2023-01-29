@@ -15,9 +15,10 @@ interface NewRoomDtoDomain {
         private val lastMessage: String,
         private val lastMessageAuthor: String,
         private val contactIsOnline: Int,
-        private val contactLastAuth: String
+        private val contactLastAuth: String,
+        private val lastMsgTimestamp: String
     ) : NewRoomDtoDomain {
         override fun <T> map(mapper: NewRoomDomainToDataMapper<T>) =
-            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth)
+            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth, lastMsgTimestamp)
     }
 }

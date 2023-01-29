@@ -16,6 +16,8 @@ class GroupMessagingRecyclerAdapter(
     private val authorName: String
 ) : ListAdapter<GroupMessageUi, BaseGroupMessagingViewHolder>(Diff) {
 
+
+
     override fun getItemViewType(position: Int) =
         when(getItem(position).isAuthoredMessage(authorName)) {
             true -> {
@@ -118,12 +120,21 @@ abstract class BaseGroupMessagingViewHolder(view: View) : RecyclerView.ViewHolde
         override fun bind(item: GroupMessageUi, isSameUser: Boolean, isSameDate: Boolean, lastMessageOfThisAuthor: Boolean) {
             item.recyclerDetailsForContact(
                 binding.authorName,
-                binding.userAvatar,
                 binding.timestamp,
                 binding.messageText
             )
             if (isSameDate) binding.dateHeader.visibility = View.GONE else binding.dateHeader.text = item.provideDate()
-            binding.userAvatar.isVisible = !lastMessageOfThisAuthor
+//            binding.userAvatar.isVisible = !lastMessageOfThisAuthor
+//             Omit user profile picture in case of repeated message
+            if (isSameUser && isSameDate) {
+                binding.userAvatar.visibility = View.INVISIBLE
+//                binding.messageLinearLayout.setBackgroundResource(R.drawable.message_background)
+//                binding.userImageImageView.visibility = View.INVISIBLE
+            } else {
+                binding.userAvatar.visibility = View.VISIBLE
+//                 loading image URL to imageView
+//                ...
+            }
         }
     }
 }

@@ -20,9 +20,9 @@ import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketAction
 import com.earl.gpns.ui.models.GroupInfo
 import com.earl.gpns.ui.models.GroupMessageUi
 import com.earl.gpns.ui.models.GroupTypingStatusUi
-import com.earl.gpns.ui.models.TypingMessageDtoUi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -103,7 +103,7 @@ class GroupMessagingFragment(
                             markMessagesAsReadInGroup(groupInfo.groupId)
                         }
                     }
-                     recyclerAdapter.submitList(messages)
+                    recyclerAdapter.submitList(messages)
                     binding.messagesRecycler.layoutManager?.smoothScrollToPosition(
                         binding.messagesRecycler,
                         null,

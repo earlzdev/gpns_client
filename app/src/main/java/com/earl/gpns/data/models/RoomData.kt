@@ -16,9 +16,10 @@ interface RoomData {
         private val unreadMsgCounter: Int,
         private val lastMsgRead: Int,
         private val contactIsOnline: Int,
-        private val contactLastAuth: String
+        private val contactLastAuth: String,
+        private val lastMsgTimestamp: String
     ) : RoomData {
         override fun <T> map(mapper: RoomDataToDomainMapper<T>) =
-            mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead, contactIsOnline, contactLastAuth)
+            mapper.map(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead, contactIsOnline, contactLastAuth, lastMsgTimestamp)
     }
 }

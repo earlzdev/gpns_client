@@ -51,16 +51,16 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             } else {
                 Toast.makeText(requireContext(), "У вас нет формы попутчика", Toast.LENGTH_SHORT).show()
             }
-            binding.smth.setOnClickListener {
-                if (preferenceManager.getBoolean(Keys.IS_DRIVER)) {
-                    viewModel.deleteDriverFormForm(preferenceManager.getString(Keys.KEY_JWT) ?: "")
-                } else {
-                    viewModel.deleteCompanionForm(preferenceManager.getString(Keys.KEY_JWT) ?: "")
-                }
-                preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, false)
-                preferenceManager.putBoolean(Keys.IS_DRIVER, false)
-                preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
+        }
+        binding.smth.setOnClickListener {
+            if (preferenceManager.getBoolean(Keys.IS_DRIVER)) {
+                viewModel.deleteDriverFormForm(preferenceManager.getString(Keys.KEY_JWT) ?: "")
+            } else {
+                viewModel.deleteCompanionForm(preferenceManager.getString(Keys.KEY_JWT) ?: "")
             }
+            preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, false)
+            preferenceManager.putBoolean(Keys.IS_DRIVER, false)
+            preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
         }
     }
 

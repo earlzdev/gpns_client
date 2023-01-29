@@ -16,7 +16,8 @@ class BaseRoomDomainToUiMapper @Inject constructor() : RoomDomainToUiMapper<Room
         unreadMsgCounter: Int,
         lastMsgRead: Int,
         contactIsOnline: Int,
-        contactLastAuth : String
+        contactLastAuth : String,
+        lastMsgTimestamp: String
     ) = RoomUi.Base(
         roomId,
         image,
@@ -27,6 +28,7 @@ class BaseRoomDomainToUiMapper @Inject constructor() : RoomDomainToUiMapper<Room
         unreadMsgCounter,
         lastMsgRead == 1,
         contactIsOnline,
-        contactLastAuth
+        contactLastAuth,
+        lastMsgTimestamp
     )
 }
