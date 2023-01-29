@@ -10,6 +10,7 @@ interface RoomDomainToNewRoomDomainMapper<T> {
         lastMessageAuthor: String,
         deletable: Boolean,
         contactIsOnline: Int,
-        contactLastAuth: String
+        contactLastAuth: String,
+        lastMsgTimestamp: String
     ) : T
 }

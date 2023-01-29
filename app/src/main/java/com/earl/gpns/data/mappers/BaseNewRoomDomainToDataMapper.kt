@@ -15,6 +15,7 @@ class BaseNewRoomDomainToDataMapper @Inject constructor(): NewRoomDomainToDataMa
         lastMessage: String,
         lastMessageAuthor: String,
         contactIsOnline: Int,
-        contactLastAuth: String
-    ) = NewRoomDtoData.Base(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth)
+        contactLastAuth: String,
+        lastMsgTimestamp: String
+    ) = NewRoomDtoData.Base(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth, lastMsgTimestamp)
 }

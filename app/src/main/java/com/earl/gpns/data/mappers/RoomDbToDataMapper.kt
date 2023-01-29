@@ -12,6 +12,7 @@ interface RoomDbToDataMapper<T> {
         unreadMsgCounter: Int,
         lastMsgRead: Int,
         contactIsOnline: Int,
-        contactLastAuth : String
+        contactLastAuth : String,
+        lastMsgTimestamp: String
     ) : T
 }

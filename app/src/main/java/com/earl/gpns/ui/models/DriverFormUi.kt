@@ -65,7 +65,7 @@ interface DriverFormUi {
             carColor,
             passengersCount.toInt(),
             carGovNumber,
-            tripPrice.toInt(),
+            if (tripPrice == "") 0 else tripPrice.toInt(),
             driverComment
         )
     }

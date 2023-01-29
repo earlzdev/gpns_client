@@ -19,6 +19,7 @@ import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentChatBinding
 import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
+import com.earl.gpns.ui.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.MessageUi
 import com.earl.gpns.ui.models.NewRoomDtoUi
@@ -84,6 +85,7 @@ class ChatFragment(
     }
 
     private fun addRoom() {
+        Log.d("tag", "addRoom: added")
         val request = NewRoomDtoUi.Base(
             newRoomId,
             chatInfo.chatTitle,
@@ -93,25 +95,28 @@ class ChatFragment(
             binding.msgEdittext.text.toString(),
             preferenceManager.getString(Keys.KEY_NAME) ?: "",
             chatInfo.userOnline,
-            chatInfo.userLastAuth
+            chatInfo.userLastAuth,
+            CurrentDateAndTimeGiver().fetchCurrentDateAndTime().toString()
         )
         viewModel.addRoom(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
             request
         )
         viewModel.addNewRoomToLocalDatabase(request)
-        val currentDate = Date()
-        val timeFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-        val timeText: String = timeFormat.format(currentDate)
-        val dateText = dateFormat.format(currentDate)
+//        val currentDate = Date()
+//        val timeFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+//        val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+//        val timeText: String = timeFormat.format(currentDate)
+//        val dateText = dateFormat.format(currentDate)
+        val time = CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(CurrentDateAndTimeGiver().fetchTimeOfDayFormat())
+        val date = CurrentDateAndTimeGiver().fetchCurrentDateAsString()
         val message = MessageUi.Base(
             UUID.randomUUID().toString(),
             newRoomId,
             preferenceManager.getString(Keys.KEY_USER_ID) ?: "",
-            timeText,
+            time,
             binding.msgEdittext.text.toString(),
-            dateText,
+            date,
             MSG_UNREAD_KEY
         )
         viewModel.sendMessage(message, preferenceManager.getString(Keys.KEY_JWT) ?: "")
@@ -161,6 +166,7 @@ class ChatFragment(
             addRoom()
             newRoomFlag = false
         } else {
+            Log.d("tag", "sendMessage: ")
             val currentDate = Date()
             val timeFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
             val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()) // todo don't need anymore

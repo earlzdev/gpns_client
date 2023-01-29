@@ -15,6 +15,7 @@ class BaseRoomResponseToDataMapper @Inject constructor() : RoomResponseToDataMap
         unreadMsgCounter: Int,
         lastMsgRead: Int,
         contactIsOnline: Int,
-        contactLastAuth : String
-    ) = RoomData.Base(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead, contactIsOnline, contactLastAuth)
+        contactLastAuth : String,
+        lastMsgTimestamp: String
+    ) = RoomData.Base(roomId, image, title, lastMessage, lastMessageAuthor, deletable, unreadMsgCounter, lastMsgRead, contactIsOnline, contactLastAuth, lastMsgTimestamp)
 }

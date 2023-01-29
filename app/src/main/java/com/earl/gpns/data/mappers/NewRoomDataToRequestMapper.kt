@@ -11,6 +11,7 @@ interface NewRoomDataToRequestMapper <T> {
         lastMessage: String,
         lastMessageAuthor: String,
         contactIsOnline: Int,
-        contactLastAuth: String
+        contactLastAuth: String,
+        lastMsgTimestamp: String
     ) : T
 }

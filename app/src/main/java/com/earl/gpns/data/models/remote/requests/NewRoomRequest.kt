@@ -13,6 +13,7 @@ data class NewRoomRequest(
     @SerializedName("lastMessage") val lastMessage: String,
     @SerializedName("lastMessageAuthor") val lastMessageAuthor: String,
     @SerializedName("contactIsOnline") val contactIsOnline: Int,
-    @SerializedName("contactLastAuth") val contactLastAuth: String
+    @SerializedName("contactLastAuth") val contactLastAuth: String,
+    @SerializedName("lastMsgTimestamp") val lastMsgTimestamp: String
 )
 

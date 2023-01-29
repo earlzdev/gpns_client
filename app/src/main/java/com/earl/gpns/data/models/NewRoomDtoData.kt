@@ -19,12 +19,13 @@ interface NewRoomDtoData {
         private val lastMessage: String,
         private val lastMessageAuthor: String,
         private val contactIsOnline: Int,
-        private val contactLastAuth: String
+        private val contactLastAuth: String,
+        private val lastMsgTimestamp: String
     ) : NewRoomDtoData {
         override fun <T> mapToRequest(mapper: NewRoomDataToRequestMapper<T>) =
-            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth)
+            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth, lastMsgTimestamp)
 
         override fun <T> mapToDb(mapper: NewRoomDataToDbMapper<T>) =
-            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth)
+            mapper.map(roomId, name, image, author, contact, lastMessage, lastMessageAuthor, contactIsOnline, contactLastAuth, lastMsgTimestamp)
     }
 }

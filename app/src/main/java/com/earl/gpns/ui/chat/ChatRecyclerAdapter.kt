@@ -80,15 +80,6 @@ abstract class BaseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
             binding.msgUnreadIndicator.isVisible = !item.isMessageRead()
             binding.msgReadIndicator.isVisible = item.isMessageRead()
-
-//        // Omit user profile picture in case of repeated message
-//        if (isSameUser && isSameDate) {
-//            binding.messageLinearLayout.setBackgroundResource(R.drawable.message_background)
-//            binding.userImageImageView.visibility = View.INVISIBLE
-//        } else {
-//            // loading image URL to imageView
-//            ...
-//        }
         }
     }
 

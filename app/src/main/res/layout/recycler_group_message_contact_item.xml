@@ -24,13 +24,14 @@
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/user_avatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintBottom_toBottomOf="@id/message_layout"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:src="@drawable/default_avatar"
-        android:scaleType="centerCrop"
         app:riv_oval="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/message_layout"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,24 +39,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
         android:background="@drawable/message_contact_background"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="50dp"
+        app:layout_constraintStart_toEndOf="@id/user_avatar"
         app:layout_constraintTop_toBottomOf="@id/date_header"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingVertical="2dp"
-        android:paddingHorizontal="15dp">
+        android:paddingVertical="2dp">
 
         <TextView
             android:id="@+id/author_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Иван Иванов"
-            android:textSize="10sp"
+            android:text="@string/group_message_auhtor_test"
+            android:textSize="14sp"
             android:textColor="@color/blue"
             app:layout_constraintBottom_toTopOf="@id/message_text"
-            app:layout_constraintStart_toStartOf="@id/message_text"
-            android:paddingHorizontal="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingHorizontal="10dp"
             />
 
         <TextView
@@ -71,6 +71,7 @@
             app:layout_constraintTop_toBottomOf="@id/author_name"
             app:layout_constraintStart_toStartOf="parent"
             android:paddingHorizontal="8dp"
+            android:layout_marginStart="10dp"
             />
 
         <TextView
@@ -83,6 +84,7 @@
             app:layout_constraintStart_toEndOf="@id/message_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="15dp"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
