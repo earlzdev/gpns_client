@@ -202,6 +202,7 @@ class SecondDriverFormFragment(
             } else {
                 binding.anotherCarColor.text.toString()
             }
+            val tripPrice = binding.editTextTripPrice.text.toString()
             val driverForm = DriverFormUi.Base(
                 preferenceManager.getString(Keys.KEY_NAME) ?: "",
                 preferenceManager.getString(Keys.KEY_IMAGE) ?: "",
@@ -217,7 +218,7 @@ class SecondDriverFormFragment(
                 carColor,
                 binding.spinnerDriverCarCountOfPassengers.selectedItem.toString(),
                 binding.editTextGosNumberOfCar.text.toString() ?: "",
-                binding.editTextTripPrice.text.toString() ?: "",
+                if (tripPrice.isNullOrEmpty()) "По договоренности" else tripPrice,
                 binding.editTextDriverComment.text.toString() ?: "",
                 FORM_IS_ACTIVE
             )
@@ -229,6 +230,7 @@ class SecondDriverFormFragment(
                 driverForm
             )
             viewModel.insertDriverTripFormIntoLocalDb(driverForm)
+            Toast.makeText(requireContext(), "Форма отправлена", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "У Вас уже есть форма", Toast.LENGTH_SHORT).show()
         }

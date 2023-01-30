@@ -4,13 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/chat_background_image">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/chat_background"
-        />
+    android:background="@drawable/messangers_background">
 
     <ImageView
         android:id="@+id/back_btn"
@@ -19,7 +13,7 @@
         android:src="@drawable/arrow_back_white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="50dp"
         android:layout_marginStart="30dp"
         app:layout_constraintEnd_toStartOf="@id/group_title"
         />

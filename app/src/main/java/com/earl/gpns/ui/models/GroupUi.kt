@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
+import com.earl.gpns.R
 import com.earl.gpns.core.Same
 import com.earl.gpns.ui.CurrentDateAndTimeGiver
 import com.makeramen.roundedimageview.RoundedImageView
@@ -71,24 +72,11 @@ interface GroupUi : Same<GroupUi> {
             unreadIndicator: ImageView,
             readIndicator: ImageView
         ) {
-            if (lastMessageTimestamp != "") {
-                val dateGiver = CurrentDateAndTimeGiver()
-                val currentDateText = dateGiver.fetchCurrentDateAndTime()
-                val lastAuthDate = LocalDateTime.parse(lastMessageTimestamp, dateGiver.standardFormatter)
-                val dayOfMonthFormatter = dateGiver.fetchDayOfMonthFormat()
-                val timeOfDayFormatter = dateGiver.fetchTimeOfDayFormat()
-                val dayOfYearFormatter = dateGiver.fetchDayOfYearFormat()
-                if (lastAuthDate.format(dayOfMonthFormatter) == currentDateText.format(dayOfMonthFormatter)) {
-                    lastMsgTimestamp.text = lastAuthDate.format(timeOfDayFormatter)
-                } else if (lastAuthDate.format(dayOfYearFormatter) == currentDateText.format(dayOfYearFormatter)) {
-                    lastMsgTimestamp.text = lastAuthDate.format(dayOfMonthFormatter)
-                } else {
-                    lastMsgTimestamp.text = lastAuthDate.format(dayOfYearFormatter)
-                }
-            }
+            val context = groupTitle.context
+            lastMsgTimestamp.text = initDateTime(lastMessageTimestamp)
             groupTitle.text = title
             lastMsg.text = lastMessage
-            lastMsgAuthor.text = lastMessageAuthor
+            lastMsgAuthor.text = context.resources.getString(R.string.message_author_in_group, lastMessageAuthor)
             if (username == lastMessageAuthor && lastMsgRead == 0) {
                 readIndicator.isVisible = false
                 unreadMessagesCounter.isVisible = false
@@ -150,6 +138,26 @@ interface GroupUi : Same<GroupUi> {
         override fun markAuthoredMessagesAsRead() {
             messagesCount = 0
             lastMsgRead = 1
+        }
+
+        private fun initDateTime(timestamp: String) : String {
+            var time = ""
+            if (lastMessageTimestamp != "") {
+                val dateGiver = CurrentDateAndTimeGiver()
+                val currentDateText = dateGiver.fetchCurrentDateAndTime()
+                val lastAuthDate = LocalDateTime.parse(timestamp, dateGiver.standardFormatter)
+                val dayOfMonthFormatter = dateGiver.fetchDayOfMonthFormat()
+                val timeOfDayFormatter = dateGiver.fetchTimeOfDayFormat()
+                val dayOfYearFormatter = dateGiver.fetchDayOfYearFormat()
+                if (lastAuthDate.format(dayOfMonthFormatter) == currentDateText.format(dayOfMonthFormatter)) {
+                    time = lastAuthDate.format(timeOfDayFormatter)
+                } else if (lastAuthDate.format(dayOfYearFormatter) == currentDateText.format(dayOfYearFormatter)) {
+                    time = lastAuthDate.format(dayOfMonthFormatter)
+                } else {
+                    time = lastAuthDate.format(dayOfYearFormatter)
+                }
+            }
+            return time
         }
     }
 }

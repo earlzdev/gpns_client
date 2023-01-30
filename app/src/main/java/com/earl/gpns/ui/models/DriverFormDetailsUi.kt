@@ -46,7 +46,7 @@ interface DriverFormDetailsUi : TripFormDetails {
             carColor,
             passengersCount,
             carGovNumber,
-            tripPrice,
+            if (tripPrice == 0) "По договоренности" else tripPrice.toString() + "руб.",
             driverComment
         )
     }

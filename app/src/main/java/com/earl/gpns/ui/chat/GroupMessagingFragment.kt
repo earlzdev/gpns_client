@@ -13,10 +13,12 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentGroupMessagingBinding
 import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketActionsService
+import com.earl.gpns.ui.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.models.GroupInfo
 import com.earl.gpns.ui.models.GroupMessageUi
 import com.earl.gpns.ui.models.GroupTypingStatusUi
@@ -120,11 +122,11 @@ class GroupMessagingFragment(
             UUID.randomUUID().toString(),
             preferenceManager.getString(Keys.KEY_NAME) ?: "",
             preferenceManager.getString(Keys.KEY_IMAGE) ?: "",
-            "",
-            binding.msgEdittext.text.toString(),
-            0
+            CurrentDateAndTimeGiver().fetchCurrentDateAsString(),
+            binding.msgEdittext.text.toString().trim(),
+            UNREAD
         )
-        if (binding.msgEdittext.text.isNotEmpty()) {
+        if (binding.msgEdittext.text.trim().isNotEmpty()) {
             viewModel.increaseReadMessagesCounterInGroup(groupInfo.groupId, 1)
             viewModel.sendMessageInGroup(
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
@@ -142,7 +144,7 @@ class GroupMessagingFragment(
             if (typingStatus == 1) {
                 if (username != preferenceManager.getString(Keys.KEY_NAME)) {
                     binding.typingStatus.isVisible = true
-                    binding.typingStatus.text = "$username печатает"
+                    binding.typingStatus.text = context?.resources?.getString(R.string.user_is_typing, username)
                 }
             } else {
                 binding.typingStatus.isVisible = false
@@ -216,5 +218,6 @@ class GroupMessagingFragment(
         fun newInstance(groupInfo: GroupInfo) = GroupMessagingFragment(groupInfo)
         private const val STARTED_TYPING = 1
         private const val STOPPED_TYPING = 0
+        private const val UNREAD = 0
     }
 }

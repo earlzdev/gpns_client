@@ -74,6 +74,7 @@ class CompanionFormDetailsFragment(
             viewModel.clearTripFormInLocalDb()
             viewModel.deleteCompanionForm(preferenceManager.getString(Keys.KEY_JWT) ?: "")
             navigator.back()
+            Toast.makeText(requireContext(), "Ваша форма удалена", Toast.LENGTH_SHORT).show()
         }
     }
 

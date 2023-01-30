@@ -17,6 +17,6 @@ data class DriverDetailsUi(
     val carColor: String,
     val passengersCount: Int,
     val carGovNumber: String,
-    val tripPrice: Int,
+    val tripPrice: String,
     val driverComment: String
 ): SearchFormsDetails
