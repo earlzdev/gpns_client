@@ -52,7 +52,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 Toast.makeText(requireContext(), "У вас нет формы попутчика", Toast.LENGTH_SHORT).show()
             }
         }
-        binding.smth.setOnClickListener {
+        binding.communicateWithDeveloper.setOnClickListener {
             if (preferenceManager.getBoolean(Keys.IS_DRIVER)) {
                 viewModel.deleteDriverFormForm(preferenceManager.getString(Keys.KEY_JWT) ?: "")
             } else {

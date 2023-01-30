@@ -166,25 +166,31 @@ class ChatFragment(
             addRoom()
             newRoomFlag = false
         } else {
-            Log.d("tag", "sendMessage: ")
-            val currentDate = Date()
-            val timeFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-            val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()) // todo don't need anymore
-            val timeText: String = timeFormat.format(currentDate)
-            val dateText = dateFormat.format(currentDate)
-            val message = MessageUi.Base(
-                UUID.randomUUID().toString(),
-                newRoomId,
-                preferenceManager.getString(Keys.KEY_USER_ID) ?: "",
-                timeText,
-                binding.msgEdittext.text.toString(),
-                dateText,
-                MSG_UNREAD_KEY
-            )
-            viewModel.sendMessage(
-                message,
-                preferenceManager.getString(Keys.KEY_JWT) ?: ""
-            )
+            if (binding.msgEdittext.text.trim().isNotEmpty()) {
+//                val currentDate = Date()
+//                val timeFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+//                val dateFormat: DateFormat = SimpleDateFormat(
+//                    "dd-MM-yyyy HH:mm:ss",
+//                    Locale.getDefault()
+//                ) // todo don't need anymore
+//                val timeText: String = timeFormat.format(currentDate)
+//                val dateText = dateFormat.format(currentDate)
+                val time =  CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(CurrentDateAndTimeGiver().fetchTimeOfDayFormat())
+                val date = CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(CurrentDateAndTimeGiver().standardFormatter)
+                val message = MessageUi.Base(
+                    UUID.randomUUID().toString(),
+                    newRoomId,
+                    preferenceManager.getString(Keys.KEY_USER_ID) ?: "",
+                    time,
+                    binding.msgEdittext.text.toString().trim(),
+                    date,
+                    MSG_UNREAD_KEY
+                )
+                viewModel.sendMessage(
+                    message,
+                    preferenceManager.getString(Keys.KEY_JWT) ?: ""
+                )
+            }
         }
     }
 

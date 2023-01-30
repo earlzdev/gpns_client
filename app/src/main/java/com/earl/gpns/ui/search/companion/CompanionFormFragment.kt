@@ -134,7 +134,7 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
                 to,
                 binding.spinnerSchedule.selectedItem.toString(),
                 actualTripTime,
-                binding.compPriceEd.text.toString() ?: "",
+                if (binding.compPriceEd.text.isNullOrEmpty()) "По договоренности" else "По договоренности",
                 binding.editTextDriverComment.text.toString() ?: "",
                 FORM_IS_ACTIVE
             )

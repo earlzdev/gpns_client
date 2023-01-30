@@ -15,6 +15,7 @@ import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.databinding.FragmentDriverFormFirstBinding
 import com.earl.gpns.ui.models.FirstPartOfNewDriverForm
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
@@ -173,11 +174,13 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
             } else {
                 binding.anotherActualTripTime.text.toString()
             }
+            val catchCompFrom = binding.multispinnerCanCatchCompFrom.selectedItems.map { it.name }.toList().joinToString(", ")
+            val alsoDriveTo = binding.spinnerCanAlsoDriveTo.selectedItems.map { it.name }.toList().joinToString(", ")
             val firstPartOfDriverForm = FirstPartOfNewDriverForm(
                 from,
                 binding.spinnerDriveTo.selectedItem.toString(),
-                binding.multispinnerCanCatchCompFrom.selectedItems.map { it.name }.toList().toString(),
-                binding.spinnerCanAlsoDriveTo.selectedItems.map { it.name }.toList().toString(),
+                if (catchCompFrom.trim().isNullOrEmpty()) "По договоренности" else catchCompFrom,
+                if (alsoDriveTo.trim().isNullOrEmpty()) "По договоренности" else alsoDriveTo,
                 binding.spinnerSchedule.selectedItem.toString(),
                 if (binding.chechboxDriveInTurn.isChecked) 1 else 0,
                 actualTripTime

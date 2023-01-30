@@ -38,7 +38,7 @@ data class DriverFormRemote(
         carColor,
         passengersCount.toString(),
         carGovNumber,
-        tripPrice.toString(),
+        if (tripPrice == 0) "По договоренности" else tripPrice.toString(),
         driverComment,
         active
     )

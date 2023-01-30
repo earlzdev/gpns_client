@@ -16,13 +16,13 @@
 
     <ImageView
         android:id="@+id/exit_btn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:src="@drawable/exit_image"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/image"
+        android:layout_marginBottom="20dp"
         />
 
     <View
@@ -109,7 +109,7 @@
         android:id="@+id/smth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/my_trip_form_text"
+        android:text="О приложении"
         android:fontFamily="@font/montesserat_medium"
         android:textSize="16sp"
         android:textColor="@color/white"
@@ -133,7 +133,7 @@
         android:id="@+id/smth_second"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/my_trip_form_text"
+        android:text="Рассказать другу"
         android:fontFamily="@font/montesserat_medium"
         android:textSize="16sp"
         android:textColor="@color/white"
@@ -157,7 +157,7 @@
         android:id="@+id/smth_third"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/my_trip_form_text"
+        android:text="Оценить"
         android:fontFamily="@font/montesserat_medium"
         android:textSize="16sp"
         android:textColor="@color/white"
@@ -238,7 +238,7 @@
 <!--        android:textAllCaps="false"-->
 <!--        android:background="@drawable/remove_comp_from_group_button_background"-->
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        android:layout_marginBottom="40dp"-->
+<!--        android:layout_marginBottom="60dp"-->
 <!--        android:layout_marginHorizontal="40dp"-->
 <!--        />-->
 

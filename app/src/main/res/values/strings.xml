@@ -129,6 +129,8 @@
     <string name="safe_politics">Политика конфиденциальности</string>
     <string name="delete_trip_form">Удалить форму</string>
     <string name="group_message_auhtor_test">~%s</string>
+    <string name="message_author_in_group">%s:</string>
+    <string name="user_is_typing">%s печатает...</string>
 
     // spinners
     <string-array name="spinner_drive_from">

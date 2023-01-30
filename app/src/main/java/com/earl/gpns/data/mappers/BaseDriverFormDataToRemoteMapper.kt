@@ -38,7 +38,7 @@ class BaseDriverFormDataToRemoteMapper @Inject constructor() : DriverFormDataToR
         carColor,
         if (passengersCount == "") 0 else passengersCount.toInt(),
         carGovNumber,
-        if (tripPrice == "") 0 else tripPrice.toInt(),
+        if (tripPrice == "По договоренности") 0 else tripPrice.toInt(),
         driverComment,
         active
     )
