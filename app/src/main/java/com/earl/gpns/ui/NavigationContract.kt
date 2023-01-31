@@ -46,5 +46,7 @@ interface NavigationContract {
 
     fun companionGroupSettingsFragment(groupId: String)
 
+    fun privacyPolicyFragment()
+
     fun exit()
 }

@@ -9,7 +9,6 @@
         android:layout_height="80dp"
         android:layout_gravity="center"
         style="StyleIndeterminateProgressCompat"
-        android:background="@color/custom_transparent"
         android:progressBackgroundTint="@color/custom_transparent"
         android:indeterminate="true"
         android:indeterminateDrawable="@drawable/my_progress_indeterminate"

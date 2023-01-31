@@ -1,14 +1,19 @@
 package com.earl.gpns.ui.profile
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.earl.gpns.R
 import com.earl.gpns.core.BaseFragment
 import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentProfileBinding
+import com.earl.gpns.ui.AboutAppFragment
 import com.earl.gpns.ui.SearchFormsDetails
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -62,6 +67,19 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             preferenceManager.putBoolean(Keys.IS_DRIVER, false)
             preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
         }
+        binding.safePolitics.setOnClickListener { navigator.privacyPolicyFragment() }
+        binding.aboutApp.setOnClickListener {
+            AboutAppFragment.newInstance().show(parentFragmentManager.beginTransaction(), AboutAppFragment.TAG)
+        }
+        binding.shareBtn.setOnClickListener {
+            share()
+        }
+        binding.rate.setOnClickListener {
+            rate()
+        }
+        binding.communicateWithDeveloper.setOnClickListener {
+            communicateWithDev()
+        }
     }
 
     private fun logOut() {
@@ -71,6 +89,41 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         viewModel.logOut()
         navigator.hideProgressBar()
         navigator.start()
+    }
+
+    private fun share() {
+        val email = Intent(Intent.ACTION_SEND)
+        email.putExtra(Intent.EXTRA_SUBJECT, "Приложение для поиска попутчиков")
+        email.putExtra(
+            Intent.EXTRA_TEXT, "Рекомендую это приложение для поиска попутчиков, скачать можно отсюда:" +
+                "\n ${"https://play.google.com/store/apps/details?id=${requireActivity().packageName}"}")
+        email.type = "message/rfc822"
+        startActivity(Intent.createChooser(email, "Выберите e-mail клиент: "))
+    }
+
+    private fun rate() {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${requireActivity().packageName}")))
+        } catch (e: ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${requireActivity().packageName}")))
+        }
+    }
+
+    private fun communicateWithDev() {
+        val intent = Intent(
+            Intent.ACTION_SENDTO,
+            Uri.fromParts("mailto", "esinilyadev@gmail.com", null)
+        )
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Топливный калькулятор")
+        try {
+            startActivity(Intent.createChooser(intent, "Выберите мессенджер..."))
+        } catch (ex: ActivityNotFoundException) {
+            Toast.makeText(
+                requireActivity(),
+                R.string.no_emails_client,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     companion object {

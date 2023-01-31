@@ -133,6 +133,10 @@ class MainActivity : AppCompatActivity(), NavigationContract {
         supportFragmentManager.popBackStack(fragment, 0)
     }
 
+    override fun privacyPolicyFragment() {
+        showFragment(FragmentPolicy.newInstance(), policy)
+    }
+
     private fun showFragment(fragment: Fragment, popBackStack: String) {
         fragments.add(fragment)
         supportFragmentManager.beginTransaction()
@@ -172,5 +176,6 @@ class MainActivity : AppCompatActivity(), NavigationContract {
         private const val driverFormDetails = "driverFormDetails"
         private const val companionFormDetails = "companionFormDetails"
         private const val groupMessaging = "groupMessaging"
+        private const val policy = "policy"
     }
 }
