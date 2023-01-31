@@ -71,16 +71,6 @@
         android:layout_marginTop="20dp"
         />
 
-    <ImageView
-        android:id="@+id/edit_field_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/edit_field"
-        app:layout_constraintBottom_toBottomOf="@id/user_name"
-        app:layout_constraintStart_toEndOf="@id/user_name"
-        android:layout_marginStart="5dp"
-        />
-
     <TextView
         android:id="@+id/my_trip_form"
         android:layout_width="wrap_content"
@@ -106,7 +96,7 @@
         />
 
     <TextView
-        android:id="@+id/smth"
+        android:id="@+id/about_app"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="О приложении"
@@ -120,59 +110,59 @@
         />
 
     <View
-        android:id="@+id/smth_view"
+        android:id="@+id/about_app_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/smth"
+        app:layout_constraintTop_toBottomOf="@id/about_app"
         android:layout_marginTop="10dp"
         android:layout_marginHorizontal="60dp"
         />
 
     <TextView
-        android:id="@+id/smth_second"
+        android:id="@+id/share_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Рассказать другу"
         android:fontFamily="@font/montesserat_medium"
         android:textSize="16sp"
         android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/smth_view"
+        app:layout_constraintTop_toBottomOf="@id/about_app_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="30dp"
         />
 
     <View
-        android:id="@+id/smth_second_view"
+        android:id="@+id/share_btn_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/smth_second"
+        app:layout_constraintTop_toBottomOf="@id/share_btn"
         android:layout_marginTop="10dp"
         android:layout_marginHorizontal="60dp"
         />
 
     <TextView
-        android:id="@+id/smth_third"
+        android:id="@+id/rate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Оценить"
         android:fontFamily="@font/montesserat_medium"
         android:textSize="16sp"
         android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/smth_second_view"
+        app:layout_constraintTop_toBottomOf="@id/share_btn_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="30dp"
         />
 
     <View
-        android:id="@+id/smth_third_view"
+        android:id="@+id/rate_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/smth_third"
+        app:layout_constraintTop_toBottomOf="@id/rate"
         android:layout_marginTop="10dp"
         android:layout_marginHorizontal="60dp"
         />
@@ -185,7 +175,7 @@
         android:fontFamily="@font/montesserat_medium"
         android:textSize="16sp"
         android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/smth_third_view"
+        app:layout_constraintTop_toBottomOf="@id/rate_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="30dp"
