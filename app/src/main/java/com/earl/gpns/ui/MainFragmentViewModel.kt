@@ -1,7 +1,7 @@
 package com.earl.gpns.ui
 
 import androidx.lifecycle.*
-import com.earl.gpns.core.AuthResultListener
+import com.earl.gpns.domain.AuthResultListener
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.UserDomainToUiMapper
 import com.earl.gpns.ui.models.UserUi

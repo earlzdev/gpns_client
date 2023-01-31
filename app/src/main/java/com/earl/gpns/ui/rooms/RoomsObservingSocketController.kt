@@ -1,8 +1,8 @@
 package com.earl.gpns.ui.rooms
 
 import android.util.Log
-import com.earl.gpns.core.Keys
-import com.earl.gpns.core.SharedPreferenceManager
+import com.earl.gpns.ui.core.Keys
+import com.earl.gpns.ui.core.SharedPreferenceManager
 import com.earl.gpns.domain.mappers.GroupDomainToUiMapper
 import com.earl.gpns.domain.mappers.GroupLastMessageDomainToUiMapper
 import com.earl.gpns.domain.mappers.NewLastMessageInRoomDomainToUiMapper

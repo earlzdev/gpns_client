@@ -11,8 +11,8 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentDriverFormSecondBinding
 import com.earl.gpns.ui.models.DriverFormUi
 import com.earl.gpns.ui.models.FirstPartOfNewDriverForm

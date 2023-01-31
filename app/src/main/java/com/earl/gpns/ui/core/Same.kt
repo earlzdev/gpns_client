@@ -1,4 +1,4 @@
-package com.earl.gpns.core
+package com.earl.gpns.ui.core
 
 interface Same <T> {
 

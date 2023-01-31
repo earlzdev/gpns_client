@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.earl.gpns.R
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
 import com.earl.gpns.databinding.FragmentChatBinding
 import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
 import com.earl.gpns.ui.CurrentDateAndTimeGiver
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.MessageUi
 import com.earl.gpns.ui.models.NewRoomDtoUi
@@ -36,11 +35,11 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @AndroidEntryPoint
-class ChatFragment(
+class RoomMessangerFragment(
     private val chatInfo: ChatInfo,
 ) : BaseFragment<FragmentChatBinding>(), RoomsMessagingSocketActionsService {
 
-    private lateinit var viewModel: ChatViewModel
+    private lateinit var viewModel: RoomMessangerViewModel
     private var newRoomId = ""
     private var newRoomFlag = false
     private lateinit var recyclerAdapter: ChatRecyclerAdapter
@@ -51,7 +50,7 @@ class ChatFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[ChatViewModel::class.java]
+        viewModel = ViewModelProvider(this)[RoomMessangerViewModel::class.java]
         initRoomId()
         initChatInfo()
         initMessagingService()
@@ -85,7 +84,6 @@ class ChatFragment(
     }
 
     private fun addRoom() {
-        Log.d("tag", "addRoom: added")
         val request = NewRoomDtoUi.Base(
             newRoomId,
             chatInfo.chatTitle,
@@ -103,11 +101,6 @@ class ChatFragment(
             request
         )
         viewModel.addNewRoomToLocalDatabase(request)
-//        val currentDate = Date()
-//        val timeFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-//        val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-//        val timeText: String = timeFormat.format(currentDate)
-//        val dateText = dateFormat.format(currentDate)
         val time = CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(CurrentDateAndTimeGiver().fetchTimeOfDayFormat())
         val date = CurrentDateAndTimeGiver().fetchCurrentDateAsString()
         val message = MessageUi.Base(
@@ -131,7 +124,8 @@ class ChatFragment(
         lifecycleScope.launchWhenStarted {
             viewModel._messages
                 .onEach { messages ->
-                    if (messages.isNotEmpty() && !messages.last().isAuthoredMessage(preferenceManager.getString(Keys.KEY_USER_ID) ?: "")) {
+                    if (messages.isNotEmpty() && !messages.last().isAuthoredMessage(preferenceManager.getString(
+                            Keys.KEY_USER_ID) ?: "")) {
                         val unreadMessagesList = messages.filter { !it.isMessageRead() }
                         if (unreadMessagesList.isNotEmpty()) {
                             markMessagesAsRead(newRoomId)
@@ -167,14 +161,6 @@ class ChatFragment(
             newRoomFlag = false
         } else {
             if (binding.msgEdittext.text.trim().isNotEmpty()) {
-//                val currentDate = Date()
-//                val timeFormat: DateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-//                val dateFormat: DateFormat = SimpleDateFormat(
-//                    "dd-MM-yyyy HH:mm:ss",
-//                    Locale.getDefault()
-//                ) // todo don't need anymore
-//                val timeText: String = timeFormat.format(currentDate)
-//                val dateText = dateFormat.format(currentDate)
                 val time =  CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(CurrentDateAndTimeGiver().fetchTimeOfDayFormat())
                 val date = CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(CurrentDateAndTimeGiver().standardFormatter)
                 val message = MessageUi.Base(
@@ -202,26 +188,8 @@ class ChatFragment(
             binding.contactLastAuth.isVisible = false
         } else {
             binding.onlineIndicator.isVisible = false
-            val currentDate = Date()
-            val standardFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
-            val simpleDateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-            val dateText = simpleDateFormat.format(currentDate)
-            val currentDateText = LocalDateTime.parse(dateText, standardFormatter)
-            val dayOfYearFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-            val dayOfMonthFormatter = DateTimeFormatter.ofPattern("d MMMM")
-            val timeOfDayFormatter = DateTimeFormatter.ofPattern("HH:mm")
-            val lastAuthDate = LocalDateTime.parse(chatInfo.userLastAuth, standardFormatter)
-            if (lastAuthDate.format(dayOfMonthFormatter) == currentDateText.format(dayOfMonthFormatter)) {
-                Log.d("tag", "recyclerDetails: days are equals")
-                binding.contactLastAuth.text = "Был(а) в сети в ${lastAuthDate.format(timeOfDayFormatter)}"
-            } else if (lastAuthDate.format(dayOfYearFormatter) == currentDateText.format(dayOfYearFormatter)) {
-                Log.d("tag", "recyclerDetails: years are equals")
-                binding.contactLastAuth.text = "Был(а) в сети ${lastAuthDate.format(dayOfMonthFormatter)}"
-            } else {
-                binding.contactLastAuth.text = "Был(а) в сети ${lastAuthDate.format(dayOfYearFormatter)}"
-            }
+            binding.contactLastAuth.text = context?.resources?.getString(R.string.was_online_on, CurrentDateAndTimeGiver().initDateTime(chatInfo.userLastAuth))
             binding.contactLastAuth.isVisible = true
-            Log.d("tag", "initChatInfo: last auth : ${chatInfo.userLastAuth}")
         }
     }
 
@@ -232,10 +200,7 @@ class ChatFragment(
                 binding.contactLastAuth.isVisible = false
             } else {
                 binding.onlineIndicator.isVisible = false
-                val standardFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
-                val lastAuthDate = LocalDateTime.parse(lastAuth, standardFormatter)
-                val timeOfDayFormatter = DateTimeFormatter.ofPattern("HH:mm")
-                binding.contactLastAuth.text = "Был(а) в сети в ${lastAuthDate.format(timeOfDayFormatter)}"
+                binding.contactLastAuth.text = context?.resources?.getString(R.string.was_online_on, CurrentDateAndTimeGiver().initDateTime(lastAuth))
                 binding.contactLastAuth.isVisible = true
             }
         }
@@ -245,7 +210,7 @@ class ChatFragment(
         lifecycleScope.launch(Dispatchers.Main) {
             if (value == 1) {
                 binding.contactLastAuth.isVisible = false
-                binding.isTyping.text = "Печатает..."
+                binding.isTyping.text = context?.resources?.getString(R.string.typing)
                 binding.isTyping.isVisible = true
             } else {
                 binding.isTyping.isVisible = false
@@ -254,9 +219,7 @@ class ChatFragment(
     }
 
     private fun typingMessageListener() {
-        binding.msgEdittext.afterTextChangedDelayed {
-            navigator.log("TYPING STOPPED $it")
-        }
+        binding.msgEdittext.afterTextChangedDelayed {}
     }
 
     private fun EditText.afterTextChangedDelayed(afterTextChanged: (String) -> Unit) {
@@ -312,7 +275,7 @@ class ChatFragment(
 
     companion object {
 
-        fun newInstance(chatInfo: ChatInfo) = ChatFragment(chatInfo)
+        fun newInstance(chatInfo: ChatInfo) = RoomMessangerFragment(chatInfo)
         private const val MSG_UNREAD_KEY = 0
     }
 }

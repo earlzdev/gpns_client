@@ -1,6 +1,6 @@
 package com.earl.gpns.ui.models
 
-import com.earl.gpns.core.Same
+import com.earl.gpns.ui.core.Same
 
 data class TripNotificationRecyclerItemUi(
     val id: String,

@@ -1,7 +1,5 @@
 package com.earl.gpns.ui.chat
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.earl.gpns.domain.Interactor
@@ -16,7 +14,6 @@ import com.earl.gpns.ui.mappers.TypingMessageDtoUiToDomainMapper
 import com.earl.gpns.ui.models.MessageUi
 import com.earl.gpns.ui.models.NewRoomDtoUi
 import com.earl.gpns.ui.models.TypingMessageDtoUi
-import com.earl.gpns.ui.models.UserUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +25,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(
+class RoomMessangerViewModel @Inject constructor(
     private val interactor: Interactor,
     private val newRoomUiToDomainMapper: NewRoomUiToDomainMapper<NewRoomDtoDomain>,
     private val messageDomainToUiMapper: MessageDomainToUiMapper<MessageUi>,
@@ -38,7 +35,6 @@ class ChatViewModel @Inject constructor(
 
     private val messages: MutableStateFlow<List<MessageUi>> = MutableStateFlow(emptyList())
     val _messages = messages.asStateFlow()
-    private val contactDetailsLiveData = MutableLiveData<UserUi>()
 
     fun addRoom(token: String, newRoomUi: NewRoomDtoUi) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -48,7 +44,6 @@ class ChatViewModel @Inject constructor(
 
     fun addNewRoomToLocalDatabase(room: NewRoomDtoUi) {
         viewModelScope.launch {
-            Log.d("tag", "addNewRoomToLocalDatabase: ChatViewModel")
             interactor.insertRoomIntoLocalDb(room.map(newRoomUiToDomainMapper))
         }
     }

@@ -29,4 +29,21 @@ class CurrentDateAndTimeGiver {
     fun fetchDayOfMonthFormat() : DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM")
 
     fun fetchTimeOfDayFormat() : DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+    fun initDateTime(timestamp: String) : String {
+        var time = ""
+        val currentDateText = fetchCurrentDateAndTime()
+        val lastAuthDate = LocalDateTime.parse(timestamp, standardFormatter)
+        val dayOfMonthFormatter = fetchDayOfMonthFormat()
+        val timeOfDayFormatter = fetchTimeOfDayFormat()
+        val dayOfYearFormatter = fetchDayOfYearFormat()
+        time = if (lastAuthDate.format(dayOfMonthFormatter) == currentDateText.format(dayOfMonthFormatter)) {
+            lastAuthDate.format(timeOfDayFormatter)
+        } else if (lastAuthDate.format(dayOfYearFormatter) == currentDateText.format(dayOfYearFormatter)) {
+            lastAuthDate.format(dayOfMonthFormatter)
+        } else {
+            lastAuthDate.format(dayOfYearFormatter)
+        }
+        return time
+    }
 }

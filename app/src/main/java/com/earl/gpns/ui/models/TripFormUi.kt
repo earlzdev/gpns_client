@@ -4,7 +4,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.earl.gpns.R
-import com.earl.gpns.core.Same
+import com.earl.gpns.ui.core.Same
 import com.earl.gpns.domain.TripFormDetails
 import com.earl.gpns.ui.SearchFormsDetails
 import com.makeramen.roundedimageview.RoundedImageView

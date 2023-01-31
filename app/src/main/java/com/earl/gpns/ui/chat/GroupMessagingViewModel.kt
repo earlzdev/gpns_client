@@ -45,7 +45,6 @@ class GroupMessagingViewModel @Inject constructor(
             interactor.observeGroupMessaging(socketActionsService)
                 .onEach { message ->
                     if (message != null) {
-                        Log.d("tag", "initGroupMessagingSocket: new message")
                         val newMessage = message.mapToUi(groupMessageDomainToUiMapper)
                         socketActionsService.updateLastMessageAuthorImageInGroup()
                         messages.value += newMessage
@@ -62,12 +61,10 @@ class GroupMessagingViewModel @Inject constructor(
 
     fun increaseReadMessagesCounterInGroup(groupId: String, counter: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-//            interactor.updateReadMessagesCounterInGroup(groupId, counter)
             val readCounter = interactor.fetchGroupMessagesCounter(groupId)
                 ?.map(groupMessagesCounterDomainToUimapper)?.provideCounter()
             if (readCounter != null) {
                 val newCounter = readCounter + counter
-                Log.d("tag", "insertGroupMessagesReadCounter: counter -> $newCounter")
                 interactor.updateReadMessagesCounterInGroup(groupId, newCounter)
             }
         }
@@ -76,7 +73,6 @@ class GroupMessagingViewModel @Inject constructor(
     private fun fetchAllMessagesInGroup(token: String, groupId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val list = interactor.fetchAllMessagesInGroup(token, groupId)
-            Log.d("tag", "fetchAllMessagesInGroup: list -> $list")
             withContext(Dispatchers.Main) {
                 messages.value += list.map { it.mapToUi(groupMessageDomainToUiMapper) }
             }

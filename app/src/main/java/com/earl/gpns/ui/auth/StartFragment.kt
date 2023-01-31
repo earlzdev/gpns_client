@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.earl.gpns.core.BaseFragment
+import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.databinding.FragmentStartBinding
 
 class StartFragment : BaseFragment<FragmentStartBinding>() {

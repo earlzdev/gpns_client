@@ -1,13 +1,14 @@
 package com.earl.gpns.data
 
-import android.util.Log
-import com.earl.gpns.core.SocketOperationResultListener
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
-import com.earl.gpns.data.models.remote.*
+import com.earl.gpns.data.models.remote.GroupMessageRemote
+import com.earl.gpns.data.models.remote.MessageRemote
+import com.earl.gpns.data.models.remote.ObservingSocketModel
+import com.earl.gpns.data.models.remote.TripFormRemote
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
-import com.earl.gpns.data.models.remote.responses.RoomIdResponse
 import com.earl.gpns.data.models.remote.responses.RoomResponse
+import com.earl.gpns.domain.SocketOperationResultListener
 import com.earl.gpns.domain.SocketsRepository
 import com.earl.gpns.domain.mappers.GroupMessageDomainToDataMapper
 import com.earl.gpns.domain.mappers.MessageDomainToDataMapper
@@ -67,7 +68,6 @@ class BaseSocketRepository @Inject constructor(
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.d("tag", "initRoomsSocket: $e")
             SocketOperationResultListener.Error(e.localizedMessage ?: "unknown error $e")
         }
     }
@@ -81,7 +81,6 @@ class BaseSocketRepository @Inject constructor(
             searchSocket?.isActive == true
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.d("tag", "initSearchingSocket: $e")
             false
         }
     }
@@ -220,10 +219,8 @@ class BaseSocketRepository @Inject constructor(
                 ?.filter { it is Frame.Text }
                 ?.map {
                     val json = (it as? Frame.Text)?.readText() ?: "bad msg transcription"
-                    Log.d("tag", "observeMessages: json -> ${json}")
                     val socketModel = Json.decodeFromString<ObservingSocketModel>(json)
                     socketActionsParser.setMessagingSocketActionsService(service)
-                    Log.d("tag", "observeMessages: action -> ${socketModel.action} value -> ${socketModel.value}")
                     when(socketModel.action) {
                         NEW_MESSAGE -> {
                             val messageRemote =  Json.decodeFromString<MessageRemote>(socketModel.value)

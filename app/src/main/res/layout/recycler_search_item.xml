@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/search_recycler_item_background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="4dp"
-    android:background="@drawable/search_item_form_background">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/search_recycler_item_background">
+    android:layout_marginVertical="4dp">
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/user_avatar"
@@ -171,7 +167,5 @@
         android:layout_marginBottom="15dp"
         android:layout_marginEnd="10dp"
         />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

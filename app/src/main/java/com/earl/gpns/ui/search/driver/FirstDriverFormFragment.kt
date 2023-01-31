@@ -11,11 +11,10 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.androidbuts.multispinnerfilter.KeyPairBoolData
 import com.earl.gpns.R
-import com.earl.gpns.core.BaseFragment
+import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.databinding.FragmentDriverFormFirstBinding
 import com.earl.gpns.ui.models.FirstPartOfNewDriverForm
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.abs
 
 @AndroidEntryPoint
 class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {

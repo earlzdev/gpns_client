@@ -2,7 +2,7 @@ package com.earl.gpns.ui.models
 
 import android.widget.TextView
 import com.earl.gpns.R
-import com.earl.gpns.core.Same
+import com.earl.gpns.ui.core.Same
 import com.earl.gpns.ui.mappers.GroupMessageUiToDomainMapper
 import com.makeramen.roundedimageview.RoundedImageView
 import org.w3c.dom.Text

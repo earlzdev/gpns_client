@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.earl.gpns.core.*
 import com.earl.gpns.domain.*
 import com.earl.gpns.domain.mappers.GroupDomainToUiMapper
 import com.earl.gpns.domain.mappers.GroupMessagesCounterDomainToUimapper
@@ -12,6 +11,7 @@ import com.earl.gpns.domain.mappers.MessageDomainToUiMapper
 import com.earl.gpns.domain.mappers.RoomDomainToUiMapper
 import com.earl.gpns.domain.models.NewRoomDtoDomain
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
+import com.earl.gpns.domain.SocketOperationResultListener
 import com.earl.gpns.ui.mappers.RoomDomainToNewRoomDomainMapper
 import com.earl.gpns.ui.models.*
 import dagger.hilt.android.lifecycle.HiltViewModel

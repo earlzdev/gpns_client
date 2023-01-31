@@ -1,7 +1,7 @@
 package com.earl.gpns.ui.models
 
 import android.widget.TextView
-import com.earl.gpns.core.Same
+import com.earl.gpns.ui.core.Same
 import com.earl.gpns.ui.mappers.MessageUiToDomainMapper
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
