@@ -1,7 +1,6 @@
 package com.earl.gpns.ui.rooms
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +9,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.earl.gpns.R
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentRoomsBinding
 import com.earl.gpns.domain.mappers.GroupDomainToUiMapper
 import com.earl.gpns.domain.mappers.GroupLastMessageDomainToUiMapper
@@ -22,7 +21,6 @@ import com.earl.gpns.domain.models.NewLastMessageInRoomDomain
 import com.earl.gpns.domain.webSocketActions.services.RoomsObservingSocketService
 import com.earl.gpns.ui.models.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject

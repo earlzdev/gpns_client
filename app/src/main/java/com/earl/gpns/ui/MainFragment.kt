@@ -2,22 +2,19 @@ package com.earl.gpns.ui
 
 import android.content.Context
 import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
-import com.earl.gpns.core.AuthResultListener
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
+import com.earl.gpns.domain.AuthResultListener
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentMainBinding
+import com.earl.gpns.ui.core.BaseFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint

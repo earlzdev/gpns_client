@@ -1,12 +1,11 @@
 package com.earl.gpns.data
 
 import android.util.Log
-import com.earl.gpns.core.SocketOperationResultListener
+import com.earl.gpns.domain.SocketOperationResultListener
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
 import com.earl.gpns.data.models.remote.*
 import com.earl.gpns.data.models.remote.requests.NewRoomRequest
-import com.earl.gpns.data.models.remote.responses.RoomIdResponse
 import com.earl.gpns.data.models.remote.responses.RoomResponse
 import com.earl.gpns.domain.SocketsRepository
 import com.earl.gpns.domain.mappers.GroupMessageDomainToDataMapper

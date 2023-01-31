@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.earl.gpns.core.AuthResultListener
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
+import com.earl.gpns.domain.AuthResultListener
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
 import com.earl.gpns.databinding.FragmentRegistrationBinding
 import dagger.hilt.android.AndroidEntryPoint

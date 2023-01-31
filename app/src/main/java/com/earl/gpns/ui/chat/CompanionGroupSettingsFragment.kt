@@ -9,8 +9,8 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.earl.gpns.R
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentCompanionGroupSettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -57,7 +57,8 @@ class CompanionGroupSettingsFragment(
     }
 
     override fun removeCompanionFromGroup(username: String) {
-        if (preferenceManager.getBoolean(Keys.IS_DRIVER) && groupId == preferenceManager.getString(Keys.KEY_USER_ID)) {
+        if (preferenceManager.getBoolean(Keys.IS_DRIVER) && groupId == preferenceManager.getString(
+                Keys.KEY_USER_ID)) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Подтвердите действие")
             builder.setMessage("Вы действительно хотите убрать этого пользователя из группы попутчиков?")
@@ -78,7 +79,8 @@ class CompanionGroupSettingsFragment(
     }
 
     private fun leaveCompanionGroup() {
-        if (!preferenceManager.getBoolean(Keys.IS_DRIVER) && groupId != preferenceManager.getString(Keys.KEY_USER_ID)) {
+        if (!preferenceManager.getBoolean(Keys.IS_DRIVER) && groupId != preferenceManager.getString(
+                Keys.KEY_USER_ID)) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Подтвердите действие")
             builder.setMessage("Вы действительно хотите покинуть эту группу попутчиков?")

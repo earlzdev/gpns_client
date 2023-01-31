@@ -9,8 +9,8 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentDriverFormDetailsBinding
 import com.earl.gpns.ui.SearchFormsDetails
 import com.earl.gpns.ui.models.DriverDetailsUi
@@ -174,7 +174,8 @@ class DriverFormDetailsFragment(
             if (!notificationSent) {
                 if (!usersListInCompanionGroup.contains(binding.userName.text.toString())) {
                     if (existedNotification == null || existedNotification.active != ACTIVE) {
-                        if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && !preferenceManager.getBoolean(Keys.IS_DRIVER)) {
+                        if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && !preferenceManager.getBoolean(
+                                Keys.IS_DRIVER)) {
                             val notificationId = UUID.randomUUID().toString()
                             val notification = TripNotificationUi.Base(
                                 notificationId,

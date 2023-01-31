@@ -1,6 +1,5 @@
 package com.earl.gpns.domain
 
-import com.earl.gpns.core.*
 import com.earl.gpns.domain.models.GroupMessageDomain
 import com.earl.gpns.domain.models.MessageDomain
 import com.earl.gpns.domain.models.RoomDomain

@@ -1,29 +1,22 @@
 package com.earl.gpns.ui.search
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentSearchBinding
 import com.earl.gpns.domain.mappers.TripNotificationDomainToUiMapper
-import com.earl.gpns.domain.models.TripNotificationDomain
-import com.earl.gpns.domain.webSocketActions.RemoveDeletedSearchingFormFromList
-import com.earl.gpns.domain.webSocketActions.services.SearchingSocketService
 import com.earl.gpns.ui.SearchFormsDetails
 import com.earl.gpns.ui.models.TripNotificationUi
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint

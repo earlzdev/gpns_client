@@ -1,6 +1,6 @@
 package com.earl.gpns.ui.chat
 
-import com.earl.gpns.core.SharedPreferenceManager
+import com.earl.gpns.ui.core.SharedPreferenceManager
 
 interface ChatSocketController {
 

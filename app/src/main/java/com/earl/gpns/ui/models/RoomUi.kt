@@ -1,7 +1,7 @@
 package com.earl.gpns.ui.models
 
 import android.widget.TextView
-import com.earl.gpns.core.Same
+import com.earl.gpns.ui.core.Same
 import com.earl.gpns.ui.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.rooms.RoomsObservingSocketController
 import com.makeramen.roundedimageview.RoundedImageView

@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
-import com.earl.gpns.core.Keys
-import com.earl.gpns.core.SharedPreferenceManager
+import com.earl.gpns.ui.core.Keys
+import com.earl.gpns.ui.core.SharedPreferenceManager
 import com.earl.gpns.ui.auth.LoginFragment
 import com.earl.gpns.ui.auth.SignUpFragment
 import com.earl.gpns.ui.auth.StartFragment

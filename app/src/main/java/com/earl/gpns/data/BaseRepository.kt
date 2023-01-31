@@ -1,7 +1,7 @@
 package com.earl.gpns.data
 
 import android.util.Log
-import com.earl.gpns.core.AuthResultListener
+import com.earl.gpns.domain.AuthResultListener
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
 import com.earl.gpns.data.models.remote.*

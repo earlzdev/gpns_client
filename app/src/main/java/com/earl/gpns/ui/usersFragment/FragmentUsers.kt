@@ -6,15 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentUsersBinding
 import com.earl.gpns.ui.models.ChatInfo
-import com.earl.gpns.ui.models.RoomUi
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class FragmentUsers : BaseFragment<FragmentUsersBinding>(), UserClickListener {

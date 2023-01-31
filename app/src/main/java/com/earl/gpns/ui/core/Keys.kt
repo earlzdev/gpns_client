@@ -1,4 +1,4 @@
-package com.earl.gpns.core
+package com.earl.gpns.ui.core
 
 object Keys {
     const val KEY_COLLECTION_USERS = "USERS"

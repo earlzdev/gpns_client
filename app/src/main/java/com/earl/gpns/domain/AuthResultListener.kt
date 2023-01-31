@@ -1,4 +1,4 @@
-package com.earl.gpns.core
+package com.earl.gpns.domain
 
 import retrofit2.HttpException
 

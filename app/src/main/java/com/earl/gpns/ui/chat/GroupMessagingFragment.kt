@@ -14,8 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.earl.gpns.R
-import com.earl.gpns.core.BaseFragment
-import com.earl.gpns.core.Keys
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentGroupMessagingBinding
 import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketActionsService
 import com.earl.gpns.ui.CurrentDateAndTimeGiver
@@ -24,7 +24,6 @@ import com.earl.gpns.ui.models.GroupMessageUi
 import com.earl.gpns.ui.models.GroupTypingStatusUi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -99,7 +98,8 @@ class GroupMessagingFragment(
         lifecycleScope.launchWhenStarted {
             viewModel._messages
                 .onEach { messages ->
-                    if (messages.isNotEmpty() && !messages.last().isAuthoredMessage(preferenceManager.getString(Keys.KEY_NAME) ?: "")) {
+                    if (messages.isNotEmpty() && !messages.last().isAuthoredMessage(preferenceManager.getString(
+                            Keys.KEY_NAME) ?: "")) {
                         val unreadMessagesList = messages.filter { !it.isMessageRead() }
                         if (unreadMessagesList.isNotEmpty()) {
                             markMessagesAsReadInGroup(groupInfo.groupId)
