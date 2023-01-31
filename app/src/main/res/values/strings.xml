@@ -216,6 +216,13 @@
     <string name="about_app">О приложении</string>
     <string name="no_emails_client">There are no email clients installed.</string>
     <string name="about">Это приложение поможет найти попутчиков для совместной дороги на работу. Также в приложении есть встроенный мессенджер, где можно общаться на любые темы.</string>
+    <string name="was_online_on">Был(а) в сети в %s</string>
+    <string name="typing">Печатает...</string>
+    <string name="agree_the_action">Подтвердите действие</string>
+    <string name="r_u_really_want_to_leave_comp_from_group">Вы действительно хотите убрать этого пользователя из группы попутчиков?</string>
+    <string name="comp_was_deleted_from_group">Пользователь удален из группы</string>
+    <string name="u_cant_delete_this_user">Вы не можете удалить этого попутчика, так как вы не водитель</string>
+    <string name="u_cant_leave_ur_group">Вы не можете покинуть свою группу попутчиков!</string>
 
 
     // spinners

@@ -1,6 +1,5 @@
 package com.earl.gpns.ui.chat
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +14,6 @@ import com.earl.gpns.ui.models.GroupMessageUi
 class GroupMessagingRecyclerAdapter(
     private val authorName: String
 ) : ListAdapter<GroupMessageUi, BaseGroupMessagingViewHolder>(Diff) {
-
-
 
     override fun getItemViewType(position: Int) =
         when(getItem(position).isAuthoredMessage(authorName)) {
@@ -49,36 +46,21 @@ class GroupMessagingRecyclerAdapter(
             if (position > 0) message.provideAuthorName() == getItem(position - 1).provideAuthorName() else false
         val isSameDate: Boolean =
             if (position > 0) message.provideDate() == getItem(position - 1).provideDate() else false
-        val lastMessageOfThisAuthor =
-            if (position != lastPosition) message.provideAuthorName() == getItem(position + 1).provideAuthorName() else false
         var result = false
-        if (position != lastPosition) {
-            result = message.provideAuthorName() == getItem(position + 1).provideAuthorName()
+        result = if (position != lastPosition) {
+            message.provideAuthorName() == getItem(position + 1).provideAuthorName()
         } else if (position == lastPosition) {
-            result = false
-        } else {
-            result = false
-        }
+            false
+        } else false
         holder.bind(getItem(position), isSameUser, isSameDate, result)
     }
 
-    fun hideLastAuthorImage(position: Int) {
-        notifyItemChanged(position)
-    }
-
     fun updateLastMessageAuthorImage() {
-//        val position = currentList.lastIndex
-//        Log.d("tag", "updateLastMessageAuthorImage: last idnex -> ${getItem(position).testProvdetext()}")
-//        val item = getItem(position)
-//        item.hideAvatar()
-//        notifyItemChanged(position)
-//        notifyDataSetChanged()
-    }
-
-    fun update(item: GroupMessageUi) {
-        val position = currentList.indexOf(item)
-        Log.d("tag", "update: item -> ${item.testProvdetext()}")
+        val position = currentList.lastIndex
+        val item = getItem(position)
+        item.hideAvatar()
         notifyItemChanged(position)
+        notifyDataSetChanged()
     }
 
     fun markMessagesAsRead() {
@@ -124,16 +106,10 @@ abstract class BaseGroupMessagingViewHolder(view: View) : RecyclerView.ViewHolde
                 binding.messageText
             )
             if (isSameDate) binding.dateHeader.visibility = View.GONE else binding.dateHeader.text = item.provideDate()
-//            binding.userAvatar.isVisible = !lastMessageOfThisAuthor
-//             Omit user profile picture in case of repeated message
             if (isSameUser && isSameDate) {
                 binding.userAvatar.visibility = View.INVISIBLE
-//                binding.messageLinearLayout.setBackgroundResource(R.drawable.message_background)
-//                binding.userImageImageView.visibility = View.INVISIBLE
             } else {
                 binding.userAvatar.visibility = View.VISIBLE
-//                 loading image URL to imageView
-//                ...
             }
         }
     }

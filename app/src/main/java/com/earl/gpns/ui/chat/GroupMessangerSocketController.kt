@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-interface GroupSocketController {
+interface GroupMessangerSocketController {
 
     fun initRecyclerAdapter(adapter: GroupMessagingRecyclerAdapter)
 
@@ -14,7 +14,7 @@ interface GroupSocketController {
 
     class Base(
 
-    ) : GroupSocketController {
+    ) : GroupMessangerSocketController {
 
         private var recyclerAdapter: GroupMessagingRecyclerAdapter? = null
 

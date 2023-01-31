@@ -36,7 +36,7 @@ class GroupMessagingFragment(
 
     private lateinit var viewModel: GroupMessagingViewModel
     private lateinit var recyclerAdapter: GroupMessagingRecyclerAdapter
-    private lateinit var groupSocketController: GroupSocketController
+    private lateinit var groupMessangerSocketController: GroupMessangerSocketController
     private var typingStarted = false
 
     override fun viewBinding(
@@ -77,8 +77,8 @@ class GroupMessagingFragment(
     }
 
     private fun initGroupSocketController() {
-        groupSocketController = GroupSocketController.Base()
-        groupSocketController.initRecyclerAdapter(recyclerAdapter)
+        groupMessangerSocketController = GroupMessangerSocketController.Base()
+        groupMessangerSocketController.initRecyclerAdapter(recyclerAdapter)
     }
 
     private fun initGroupMessagingSocket() {
@@ -136,7 +136,7 @@ class GroupMessagingFragment(
     }
 
     override fun updateLastMessageAuthorImageInGroup() {
-        groupSocketController.updateLastMessageAuthorImageInGroup()
+        groupMessangerSocketController.updateLastMessageAuthorImageInGroup()
     }
 
     override fun updateTypingMessageStatusInGroup(username: String, typingStatus: Int) {
@@ -153,13 +153,11 @@ class GroupMessagingFragment(
     }
 
     override fun markMessagesAsReadInGroup(groupId: String) {
-        groupSocketController.markMessagesAsReadInGroup()
+        groupMessangerSocketController.markMessagesAsReadInGroup()
     }
 
     private fun typingMessageListener() {
-        binding.msgEdittext.afterTextChangedDelayed {
-            navigator.log("TYPING STOPPED $it")
-        }
+        binding.msgEdittext.afterTextChangedDelayed {}
     }
 
     private fun EditText.afterTextChangedDelayed(afterTextChanged: (String) -> Unit) {

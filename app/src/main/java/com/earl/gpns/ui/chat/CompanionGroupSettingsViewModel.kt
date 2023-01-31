@@ -1,6 +1,5 @@
 package com.earl.gpns.ui.chat
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.earl.gpns.domain.Interactor
@@ -8,7 +7,6 @@ import com.earl.gpns.domain.mappers.TripNotificationDomainToUiMapper
 import com.earl.gpns.domain.mappers.UserDomainToUiMapper
 import com.earl.gpns.ui.models.TripNotificationUi
 import com.earl.gpns.ui.models.UserUi
-import com.earl.gpns.ui.search.companion.CompanionFormDetailsFragment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,7 +49,6 @@ class CompanionGroupSettingsViewModel @Inject constructor(
             }
             if (existedNotificationFromDb != null) {
                 interactor.markTripNotificationAsNotActiveInLocalDb(existedNotificationFromDb.id)
-                Log.d("tag", "removeCompanionFromGroup: Notification of invite marked as not active")
             }
             val removedUser = companionsList.value.find { it.provideName() == username }
             if (removedUser != null) {

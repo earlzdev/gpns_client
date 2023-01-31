@@ -1,13 +1,12 @@
 package com.earl.gpns.data
 
-import android.util.Log
-import com.earl.gpns.domain.AuthResultListener
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
 import com.earl.gpns.data.models.remote.*
 import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.data.retrofit.Service
+import com.earl.gpns.domain.AuthResultListener
 import com.earl.gpns.domain.Repository
 import com.earl.gpns.domain.mappers.*
 import com.earl.gpns.domain.models.*
@@ -75,7 +74,6 @@ class BaseRepository @Inject constructor(
     override suspend fun login(loginRequest: LoginRequest, callback: AuthResultListener) {
         try {
             val token = service.login(loginRequest)
-            Log.d("tag", "login: token -> ${token.token}")
             callback.authorized(token.token)
         } catch (e: HttpException) {
             e.printStackTrace()
@@ -245,7 +243,6 @@ class BaseRepository @Inject constructor(
     }
 
     override suspend fun sendNewDriverForm(token: String, driverForm: DriverFormDomain) {
-        Log.d("tag", "sendNewDriverForm: sent")
         val form = driverForm
             .mapToData(driverFormDomainToDataMapper)
             .mapToRemote(driverFormDataToRemoteMapper)
@@ -255,7 +252,6 @@ class BaseRepository @Inject constructor(
                 form
             )
         } catch (e: Exception) {
-            Log.d("tag", "sendNewDriverForm: $e")
             e.printStackTrace()
         }
     }
@@ -276,7 +272,6 @@ class BaseRepository @Inject constructor(
     override suspend fun fetchAllTripForms(token: String) : List<TripFormDomain> {
         return try {
             val list = service.fetchAllCompForms("Bearer $token")
-            Log.d("tag", "fetchAllTripForms: remote $list")
             val dataList = mutableListOf<TripFormData>()
             for (i in list.indices) {
                 dataList.add(TripFormData.Base(
@@ -294,15 +289,12 @@ class BaseRepository @Inject constructor(
                     list[i].active
                 ))
             }
-//            Log.d("tag", "fetchAllTripForms: data -> $dataList")
             val domainList = mutableListOf<TripFormDomain>()
             for (i in dataList.indices) {
                 domainList.add(dataList[i].map(tripFormDataToDomainMapper))
             }
-//            Log.d("tag", "fetchAllTripForms: ready -> $domainList")
             domainList
         } catch (e: Exception) {
-            Log.d("tag", "fetchAllTripForms: $e")
             e.printStackTrace()
             emptyList()
         }
@@ -322,9 +314,7 @@ class BaseRepository @Inject constructor(
     }
 
     override suspend fun inviteCompanion(token: String, notification: TripNotificationDomain) {
-        Log.d("tag", "inviteCompanion: repository")
         try {
-            Log.d("tag", "inviteCompanion: repository")
             service.inviteCompanion(
                 "Bearer $token",
                 notification
@@ -332,7 +322,6 @@ class BaseRepository @Inject constructor(
                     .mapToRemote(tripNotificationDataToRemoteMapper)
             )
         } catch (e: Exception) {
-            Log.d("tag", "inviteCompanion: $e")
             e.printStackTrace()
         }
     }

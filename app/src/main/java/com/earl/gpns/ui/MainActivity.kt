@@ -14,7 +14,7 @@ import com.earl.gpns.ui.core.SharedPreferenceManager
 import com.earl.gpns.ui.auth.LoginFragment
 import com.earl.gpns.ui.auth.SignUpFragment
 import com.earl.gpns.ui.auth.StartFragment
-import com.earl.gpns.ui.chat.ChatFragment
+import com.earl.gpns.ui.chat.RoomMessangerFragment
 import com.earl.gpns.ui.chat.CompanionGroupSettingsFragment
 import com.earl.gpns.ui.chat.GroupMessagingFragment
 import com.earl.gpns.ui.models.ChatInfo
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(), NavigationContract {
     }
 
     override fun chat(chatInfo: ChatInfo) {
-        showFragment(ChatFragment.newInstance(chatInfo), chat)
+        showFragment(RoomMessangerFragment.newInstance(chatInfo), chat)
     }
 
     override fun newSearchForm() {

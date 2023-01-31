@@ -51,12 +51,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(), AuthResultListener {
     }
 
     override fun unauthorized(e: HttpException) {
-        navigator.log(" LoginFragment unauthorized $e")
         navigator.hideProgressBar()
     }
 
     override fun unknownError(e: Exception) {
-        navigator.log(" vLoginFragment unknownError $e")
         navigator.hideProgressBar()
     }
 

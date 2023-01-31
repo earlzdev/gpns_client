@@ -60,21 +60,21 @@ class CompanionGroupSettingsFragment(
         if (preferenceManager.getBoolean(Keys.IS_DRIVER) && groupId == preferenceManager.getString(
                 Keys.KEY_USER_ID)) {
             val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("Подтвердите действие")
-            builder.setMessage("Вы действительно хотите убрать этого пользователя из группы попутчиков?")
+            builder.setTitle(getString(R.string.agree_the_action))
+            builder.setMessage(getString(R.string.r_u_really_want_to_leave_comp_from_group))
             builder.setPositiveButton(R.string.yes) { dialog, which ->
                 viewModel.removeCompanionFromGroup(
                     preferenceManager.getString(Keys.KEY_JWT) ?: "",
                     groupId,
                     username
                 )
-                Toast.makeText(requireContext(), "Пользователь удален из группы", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.comp_was_deleted_from_group), Toast.LENGTH_SHORT).show()
             }
             builder.setNegativeButton(R.string.no) { dialog, which ->
             }
             builder.show()
         } else {
-            Toast.makeText(requireContext(), "Вы не можете удалить этого попутчика, так как вы не водитель", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.u_cant_delete_this_user), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -82,8 +82,8 @@ class CompanionGroupSettingsFragment(
         if (!preferenceManager.getBoolean(Keys.IS_DRIVER) && groupId != preferenceManager.getString(
                 Keys.KEY_USER_ID)) {
             val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("Подтвердите действие")
-            builder.setMessage("Вы действительно хотите покинуть эту группу попутчиков?")
+            builder.setTitle(getString(R.string.agree_the_action))
+            builder.setMessage(R.string.r_u_really_want_to_leave_comp_from_group)
             builder.setPositiveButton(R.string.yes) { dialog, which ->
                 viewModel.leaveFromCompanionGroup(
                     preferenceManager.getString(Keys.KEY_JWT) ?: "",
@@ -97,7 +97,7 @@ class CompanionGroupSettingsFragment(
             }
             builder.show()
         } else {
-            Toast.makeText(requireContext(), "Вы не можете покинуть свою группу попутчиков!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.u_cant_leave_ur_group), Toast.LENGTH_SHORT).show()
         }
     }
 

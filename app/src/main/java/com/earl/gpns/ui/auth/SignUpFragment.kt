@@ -53,12 +53,10 @@ class SignUpFragment : BaseFragment<FragmentRegistrationBinding>(), AuthResultLi
     }
 
     override fun unauthorized(e: HttpException) {
-        navigator.log(" SignUpFragment unauthorized $e")
         navigator.hideProgressBar()
     }
 
     override fun unknownError(e: Exception) {
-        navigator.log(" SignUpFragment unknownError $e")
         navigator.hideProgressBar()
     }
 

@@ -1,6 +1,5 @@
 package com.earl.gpns.data
 
-import android.util.Log
 import com.earl.gpns.data.localDb.*
 import com.earl.gpns.data.mappers.*
 import com.earl.gpns.data.models.*
@@ -42,10 +41,7 @@ class BaseDatabaseRepository @Inject constructor(
         try {
             roomsDao.insertRoom(room.map(newRoomDomainToDataMapper).mapToDb(newRoomDataToDbMapper))
             val list = roomsDao.fetchAllRooms()
-            Log.d("tag", "insertNewRoomIntoLocalDb: successsful")
-            Log.d("tag", "insertNewRoomIntoLocalDb: room list -> $list")
         } catch (e: Exception) {
-            Log.d("tag", "insertNewRoomIntoLocalDb: $e")
             e.printStackTrace()
         }
     }
@@ -57,19 +53,15 @@ class BaseDatabaseRepository @Inject constructor(
     override suspend fun deleteRoomFromLocalDb(roomId: String) {
         try {
             roomsDao.deleteRoomFromDb(roomId)
-            Log.d("tag", "deleted room ")
         } catch (e: Exception) {
-            Log.d("tag", "deleteRoomFromLocalDb: EXCEPTION -> $e")
         }
     }
 
     override suspend fun clearLocalDataBase() {
-        Log.d("tag", "cleared db")
         roomsDao.clearDatabase()
     }
 
     override suspend fun fetchMessagesCounterForGroup(groupId: String): GroupMessagesCounterDomain? {
-        Log.d("tag", "fetched all rooms")
         return groupsDao.selectCounterForGroup(groupId)
             ?.map(groupMessagesCounterDbToDataMapper)
             ?.map(groupMessagesCounterDataToDomainMapper)
@@ -85,25 +77,20 @@ class BaseDatabaseRepository @Inject constructor(
         try {
             val counterDb = GroupMessagesCountDb(0, groupId, counter)
             groupsDao.insertNewCounter(counterDb)
-            Log.d("tag", "insertGroupMessagesCounter: added $counter")
         } catch (e: Exception) {
-            Log.d("tag", "insertGroupMessagesCounter: $e")
             e.printStackTrace()
         }
     }
 
     override suspend fun deleteMessagesCounterInGroup(groupId: String) {
-        Log.d("tag", "updated messages cunet in group")
         groupsDao.deleteMessagesCounterInGroup(groupId)
     }
 
     override suspend fun updateMessagesReadCounter(groupId: String, counter: Int) {
-        Log.d("tag", "updateMessagesReadCounter -> $counter")
         groupsDao.updateReadMessagesCount(groupId, counter)
     }
 
     override suspend fun insertNotificationIntoDb(notificationDomain: TripNotificationDomain) {
-        Log.d("tag", "insertNotificationIntoDb repository")
         notificationsDao.insertNewNotification(
             notificationDomain
                 .mapToData(notificationDomainToDataMapper)
@@ -132,12 +119,10 @@ class BaseDatabaseRepository @Inject constructor(
             .mapToDomain(notificationDataToDomainMapper)
 
     override suspend fun markNotificationAsNotActive(id: String) {
-        Log.d("tag", "markNotificationAsNotActive: $id")
         notificationsDao.markNotificationAsNotActive(id)
     }
 
     override suspend fun insertNewUserIntoCompanionGroup(user: String) {
-        Log.d("tag", "insertNewUserIntoCompanionGroup: $user")
         companionGroupUsersDao.insertNewUserIntoCompanionGroup(CompanionGroupUser(0, user))
     }
 
@@ -145,12 +130,10 @@ class BaseDatabaseRepository @Inject constructor(
         companionGroupUsersDao.fetchAllCompanionUsers().map { it.name }
 
     override suspend fun removeUserFromCompanionGroupInLocalDb(username: String) {
-        Log.d("tag", "removeUserFromCompanionGroupInLocalDb: ")
         companionGroupUsersDao.removeUserFromCompanionGroupInLocalDb(username)
     }
 
     override suspend fun clearLocalDbCompanionGroupUsersList() {
-        Log.d("tag", "clearLocalDbCompanionGroupUsersList: ")
         companionGroupUsersDao.clearLocalDbCompanionGroupUsersList()
     }
 
