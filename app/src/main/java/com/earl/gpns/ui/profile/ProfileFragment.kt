@@ -13,7 +13,7 @@ import com.earl.gpns.R
 import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentProfileBinding
-import com.earl.gpns.ui.AboutAppFragment
+import com.earl.gpns.ui.about.AboutAppFragment
 import com.earl.gpns.ui.SearchFormsDetails
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,7 +34,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     private fun initViews() {
-        binding.userName.text = preferenceManager.getString(Keys.KEY_NAME) ?: "Здесь должно было быть ваше имя"
+        binding.userName.text = preferenceManager.getString(Keys.KEY_NAME)
         binding.exitBtn.setOnClickListener {
             logOut()
         }
@@ -43,18 +43,16 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 if (preferenceManager.getBoolean(Keys.IS_DRIVER)) {
                     viewModel.fetchDriverFormFromLocalDb()
                     viewModel.observeDriverTripFormLiveData(this) {
-//                        it.provideDriverFormDetailsUi()
                         navigator.driverFormDetails(it.provideDriverFormDetailsUi() as SearchFormsDetails, OWN_TRIP_FORM, "")
                     }
                 } else {
                     viewModel.fetchCompanionFormFromDb()
                     viewModel.observeCompanionTripFormLiveData(this) {
-//                        it.provideCompanionDetailsUi()
                         navigator.companionFormDetails(it.provideCompanionDetailsUi() as SearchFormsDetails, OWN_TRIP_FORM, "")
                     }
                 }
             } else {
-                Toast.makeText(requireContext(), "У вас нет формы попутчика", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.u_dont_have_comp_form), Toast.LENGTH_SHORT).show()
             }
         }
         binding.communicateWithDeveloper.setOnClickListener {
@@ -93,12 +91,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     private fun share() {
         val email = Intent(Intent.ACTION_SEND)
-        email.putExtra(Intent.EXTRA_SUBJECT, "Приложение для поиска попутчиков")
+        email.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.search_comps_app))
         email.putExtra(
-            Intent.EXTRA_TEXT, "Рекомендую это приложение для поиска попутчиков, скачать можно отсюда:" +
+            Intent.EXTRA_TEXT, getString(R.string.recommend) +
                 "\n ${"https://play.google.com/store/apps/details?id=${requireActivity().packageName}"}")
-        email.type = "message/rfc822"
-        startActivity(Intent.createChooser(email, "Выберите e-mail клиент: "))
+        email.type = getString(R.string.msg_interface)
+        startActivity(Intent.createChooser(email, getString(R.string.choose_email_clinet)))
     }
 
     private fun rate() {
@@ -112,11 +110,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private fun communicateWithDev() {
         val intent = Intent(
             Intent.ACTION_SENDTO,
-            Uri.fromParts("mailto", "esinilyadev@gmail.com", null)
+            Uri.fromParts(getString(R.string.mailto), getString(R.string.my_email), null)
         )
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Топливный калькулятор")
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.search_comps_appp))
         try {
-            startActivity(Intent.createChooser(intent, "Выберите мессенджер..."))
+            startActivity(Intent.createChooser(intent, getString(R.string.choose_messenger)))
         } catch (ex: ActivityNotFoundException) {
             Toast.makeText(
                 requireActivity(),

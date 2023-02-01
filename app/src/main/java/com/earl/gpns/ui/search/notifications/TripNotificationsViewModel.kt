@@ -38,8 +38,7 @@ class TripNotificationsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
 
             val remoteList = interactor.fetchAllTripNotifications(token)
-            val localDbNotificationsList = interactor.fetchAllTripNotificationFromLocalDb()
-//                .map { it.provideTripNotificationUiRecyclerItem() }
+
             val recyclerList = remoteList.map { it.mapToUi(tripNotificationDomainToUiMapper) }.map { it.provideTripNotificationUiRecyclerItem() }
             val watchedNotificationsIdsList = interactor.fetchAllWatchedNotificationsIds()
             withContext(Dispatchers.Main) {
@@ -47,12 +46,8 @@ class TripNotificationsViewModel @Inject constructor(
                     if (watchedNotificationsIdsList.contains(it.id) /*|| it.authorName == username*/) {
                         it.read = 1
                     } else {
-//                        Log.d("tag", "insertNotificationIdIntoDb: INSERTED NEW NOTIFICATION TRIPNOTIFICATIONVIEWIEWMODEL WHEN FETCHING")
                         viewModelScope.launch(Dispatchers.IO) {
                             interactor.insertNewWatchedNotificationId(it.id)
-//                            val id = it.id
-//                            interactor.insertNewNotificationIntoDb(remoteList.find { it.provideId() == id }!!)
-//                        insertNotificationIdIntoDb(it.id)
                         }
                     }
                 }

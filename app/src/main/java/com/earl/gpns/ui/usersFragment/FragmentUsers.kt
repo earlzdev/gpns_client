@@ -36,7 +36,6 @@ class FragmentUsers : BaseFragment<FragmentUsersBinding>(), UserClickListener {
         binding.usersRecycler.adapter = adapter
         viewModel.fetchUsers(preferenceManager.getString(Keys.KEY_JWT) ?: "")
         viewModel.observeUsersListLiveData(this) {
-            Log.d("tag", "fetchUsersList: ${it.forEach { it.chatInfo().userOnline }}")
             adapter.submitList(it)
         }
         navigator.hideProgressBar()
@@ -45,9 +44,7 @@ class FragmentUsers : BaseFragment<FragmentUsersBinding>(), UserClickListener {
     override fun joinChat(chatInfo: ChatInfo) {
         navigator.showProgressBar()
         val existedRooms = viewModel.provideExistedRoomsList()
-        Log.d("tag", "joinChat: existed rooms -> $existedRooms")
         val isRoomExists = existedRooms?.find { it.chatInfo().chatTitle == chatInfo.chatTitle }
-        Log.d("tag", "addRoom: existed ${isRoomExists?.chatInfo()?.chatTitle}")
         if (isRoomExists == null) {
             navigator.chat(chatInfo)
         } else {

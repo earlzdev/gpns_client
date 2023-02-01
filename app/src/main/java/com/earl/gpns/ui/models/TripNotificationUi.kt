@@ -51,12 +51,3 @@ interface TripNotificationUi : Same<TripNotificationUi> {
         private const val IS_ACTIVE = 1
     }
 }
-
-/*
-notification isInvite
-0 - отказ - не исп
-1 - приглашение
-2 - водитель удалил анкету
-3 - согласие
-4 - отказ - не исп
- */

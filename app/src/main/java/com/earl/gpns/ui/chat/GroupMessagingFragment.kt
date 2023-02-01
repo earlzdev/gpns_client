@@ -18,7 +18,7 @@ import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentGroupMessagingBinding
 import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketActionsService
-import com.earl.gpns.ui.CurrentDateAndTimeGiver
+import com.earl.gpns.ui.core.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.models.GroupInfo
 import com.earl.gpns.ui.models.GroupMessageUi
 import com.earl.gpns.ui.models.GroupTypingStatusUi

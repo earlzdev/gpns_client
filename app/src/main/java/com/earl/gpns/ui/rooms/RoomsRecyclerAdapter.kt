@@ -1,6 +1,5 @@
 package com.earl.gpns.ui.rooms
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -39,15 +38,6 @@ class RoomsRecyclerAdapter(
         }
     }
 
-    override fun onBindViewHolder(
-        holder: ItemViewHolder,
-        position: Int,
-        payloads: MutableList<Any>
-    ) {
-        super.onBindViewHolder(holder, position, payloads)
-        // todo ???
-    }
-
     fun updateLastMessage(messageForUpdate: LastMessageForUpdateInRoom, position: Int) {
         val item = getItem(position)
         item.updateLastMessage(messageForUpdate)
@@ -55,7 +45,6 @@ class RoomsRecyclerAdapter(
     }
 
     fun swap(position: Int) {
-        // todo need refactoring !!!
         val list = currentList.toMutableList()
         Collections.swap(list, position, START_POSITION)
         this.submitList(list)
@@ -121,26 +110,5 @@ class RoomsRecyclerAdapter(
         override fun areItemsTheSame(oldItem: RoomUi, newItem: RoomUi) = oldItem.same(newItem)
         override fun areContentsTheSame(oldItem: RoomUi, newItem: RoomUi) = oldItem.equals(newItem)
         private const val START_POSITION = 0
-    }
-}
-
-class LockDiffUtil(
-    private val old: List<RoomUi>,
-    private val new: List<RoomUi>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = old.size
-
-    override fun getNewListSize(): Int = new.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-        old[oldItemPosition].same(new[newItemPosition])
-
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-        old[oldItemPosition] == new[newItemPosition]
-
-    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-        // todo ???
-        return super.getChangePayload(oldItemPosition, newItemPosition)
     }
 }

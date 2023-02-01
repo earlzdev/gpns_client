@@ -3,6 +3,7 @@ package com.earl.gpns.ui.search.companion
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
+import com.earl.gpns.R
 
 interface CompanionFormValidation {
 
@@ -20,14 +21,14 @@ interface CompanionFormValidation {
         val context = from.context
 
         override fun validate(): Boolean {
-            return if (from.selectedItem == "Другой район" && fromEd.text.isEmpty()) {
-                Toast.makeText(context, "Выберите район, откуда Вас можно забрать", Toast.LENGTH_SHORT).show()
+            return if (from.selectedItem == context.resources.getString(R.string.anither_district) && fromEd.text.isEmpty()) {
+                Toast.makeText(context, context.getString(R.string.choose_district_u_comfortable_to_catch), Toast.LENGTH_SHORT).show()
                 false
-            } else if (to.selectedItem == "Другое" && toEd.text.isEmpty()) {
-                Toast.makeText(context, "Выберите место, до которого Вам нужно доехать", Toast.LENGTH_SHORT).show()
+            } else if (to.selectedItem == context.resources.getString(R.string.another) && toEd.text.isEmpty()) {
+                Toast.makeText(context, context.getString(R.string.choose_place_u_need_to_go), Toast.LENGTH_SHORT).show()
                 false
-            } else if (tripActualTime.selectedItem == "Другое" && tripActualTimeEd.text.isEmpty()) {
-                Toast.makeText(context, "Выберите время, в течение которого Вам нужно будет ездить по этому маршруту", Toast.LENGTH_SHORT).show()
+            } else if (tripActualTime.selectedItem == context.resources.getString(R.string.another) && tripActualTimeEd.text.isEmpty()) {
+                Toast.makeText(context, context.getString(R.string.choose_time), Toast.LENGTH_SHORT).show()
                 false
             } else {
                 true

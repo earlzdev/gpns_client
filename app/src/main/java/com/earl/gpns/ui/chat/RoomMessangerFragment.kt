@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.earl.gpns.R
 import com.earl.gpns.databinding.FragmentChatBinding
 import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
-import com.earl.gpns.ui.CurrentDateAndTimeGiver
+import com.earl.gpns.ui.core.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.ui.models.ChatInfo
@@ -28,10 +28,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 @AndroidEntryPoint
@@ -101,7 +97,8 @@ class RoomMessangerFragment(
             request
         )
         viewModel.addNewRoomToLocalDatabase(request)
-        val time = CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(CurrentDateAndTimeGiver().fetchTimeOfDayFormat())
+        val time = CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(
+            CurrentDateAndTimeGiver().fetchTimeOfDayFormat())
         val date = CurrentDateAndTimeGiver().fetchCurrentDateAsString()
         val message = MessageUi.Base(
             UUID.randomUUID().toString(),
@@ -161,8 +158,10 @@ class RoomMessangerFragment(
             newRoomFlag = false
         } else {
             if (binding.msgEdittext.text.trim().isNotEmpty()) {
-                val time =  CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(CurrentDateAndTimeGiver().fetchTimeOfDayFormat())
-                val date = CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(CurrentDateAndTimeGiver().standardFormatter)
+                val time =  CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(
+                    CurrentDateAndTimeGiver().fetchTimeOfDayFormat())
+                val date = CurrentDateAndTimeGiver().fetchCurrentDateAndTime().format(
+                    CurrentDateAndTimeGiver().standardFormatter)
                 val message = MessageUi.Base(
                     UUID.randomUUID().toString(),
                     newRoomId,

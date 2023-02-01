@@ -40,8 +40,6 @@ interface GroupMessageUi : Same<GroupMessageUi> {
 
     fun provideMessageId() : String
 
-    fun testProvdetext() : String
-
     class Base(
         private val groupId: String,
         private val messageId: String,
@@ -90,8 +88,6 @@ interface GroupMessageUi : Same<GroupMessageUi> {
         }
 
         override fun provideMessageId() = messageId
-
-        override fun testProvdetext() = messageText
 
         override fun hideAvatar() {
             authorImage = ""

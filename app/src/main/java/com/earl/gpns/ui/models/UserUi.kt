@@ -1,17 +1,12 @@
 package com.earl.gpns.ui.models
 
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.earl.gpns.R
+import com.earl.gpns.ui.core.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.core.Same
 import com.makeramen.roundedimageview.RoundedImageView
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 interface UserUi : Same<UserUi> {
 
@@ -56,24 +51,7 @@ interface UserUi : Same<UserUi> {
             val context = imageView.context
             name.text = username
             if (online == 0) {
-                val currentDate = Date()
-                val simpleDateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-                val standardFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
-                val dateText = simpleDateFormat.format(currentDate)
-                val lastAuthDate = LocalDateTime.parse(lastAuth, standardFormatter)
-                val dayOfYearFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-                val dayOfMonthFormatter = DateTimeFormatter.ofPattern("d MMMM")
-                val timeOfDayFormatter = DateTimeFormatter.ofPattern("HH:mm")
-                val currentDateText = LocalDateTime.parse(dateText, standardFormatter)
-                if (lastAuthDate.format(dayOfMonthFormatter) == currentDateText.format(dayOfMonthFormatter)) {
-                    Log.d("tag", "recyclerDetails: days are equals")
-                    lastSeen.text = "Был(а) в сети в ${lastAuthDate.format(timeOfDayFormatter)}"
-                } else if (lastAuthDate.format(dayOfYearFormatter) == currentDateText.format(dayOfYearFormatter)) {
-                    Log.d("tag", "recyclerDetails: years are equals")
-                    lastSeen.text = "Был(а) в сети ${lastAuthDate.format(dayOfMonthFormatter)}"
-                } else {
-                    lastSeen.text = "Был(а) в сети ${lastAuthDate.format(dayOfYearFormatter)}"
-                }
+                lastSeen.text = context.resources.getString(R.string.was_online_on, CurrentDateAndTimeGiver().initDateTime(lastAuth))
                 onlineIndicator.isVisible = false
                 lastSeen.setTextColor(context.getColor(R.color.grey_tab_unselected))
             } else {
@@ -88,8 +66,10 @@ interface UserUi : Same<UserUi> {
             name: TextView,
             role: TextView
         ) {
+            val context = imageView.context
             name.text = username
-            role.text = if (tripRole == COMPANION) "Попутчик" else "Водитель"
+            role.text = if (tripRole == COMPANION) context.getString(R.string.comp) else context.getString(
+                R.string.driver)
         }
 
         override fun chatInfo() = ChatInfo(null, username, image, online, lastAuth, username)
@@ -102,7 +82,6 @@ interface UserUi : Same<UserUi> {
 
         companion object {
             private const val COMPANION = "Companion"
-            private const val DRIVER = "DRIVER"
         }
     }
 }

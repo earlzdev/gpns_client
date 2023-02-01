@@ -1,11 +1,8 @@
 package com.earl.gpns.ui.search.companion
 
 import android.content.Context
-import android.util.Log
 import android.widget.ArrayAdapter
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.earl.gpns.R
@@ -53,9 +50,7 @@ class CompanionFormViewModel @Inject constructor(
     }
 
     fun inviteCompanion(token: String, notification: TripNotificationUi) {
-        Log.d("tag", "inviteCompanion: viewmodel")
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("tag", "inviteCompanion: async viewmodel")
             interactor.inviteCompanion(
                 token,
                 notification.mapToDomain(tripNotificationUiToDomainMapper)
@@ -100,10 +95,6 @@ class CompanionFormViewModel @Inject constructor(
                 companionGroupUsersLiveData.value = list
             }
         }
-    }
-
-    fun observeCompanionUsersListLiveData(owner: LifecycleOwner, observer: Observer<List<String>>) {
-        companionGroupUsersLiveData.observe(owner, observer)
     }
 
     fun acceptCompanionToRideTogether(token: String, companionUsername: String) {

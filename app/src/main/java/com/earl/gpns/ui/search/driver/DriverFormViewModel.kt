@@ -58,12 +58,6 @@ class DriverFormViewModel @Inject constructor(
         insertNewNotificationIntoDb(notificationUi)
     }
 
-    private fun fetchNotificationsList() {
-        viewModelScope.launch(Dispatchers.IO) {
-
-        }
-    }
-
     private fun insertNewNotificationIntoDb(notificationUi: TripNotificationUi) {
         viewModelScope.launch(Dispatchers.IO) {
             interactor.insertNewNotificationIntoDb(notificationUi.mapToDomain(tripNotificationUiToDomainMapper))
@@ -83,10 +77,6 @@ class DriverFormViewModel @Inject constructor(
                 tripNotificationsLiveData.value = list
             }
         }
-    }
-
-    fun observeTripNotificationsLiveData(owner: LifecycleOwner, observer: Observer<List<TripNotificationUi>>) {
-        tripNotificationsLiveData.observe(owner, observer)
     }
 
     fun provideCompanionUsersListLiveDataValue() = companionGroupUsersLiveData.value
