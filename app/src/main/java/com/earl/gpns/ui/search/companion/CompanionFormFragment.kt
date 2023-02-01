@@ -10,9 +10,9 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
+import com.earl.gpns.databinding.FragmentCompanionFormBinding
 import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.ui.core.Keys
-import com.earl.gpns.databinding.FragmentCompanionFormBinding
 import com.earl.gpns.ui.models.CompanionFormUi
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,7 +43,7 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
         compDriveFrom.adapter = viewModel.initSpinnerAdapter(R.array.spinner_drive_from, requireContext())
         compDriveFrom.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                if (p0?.selectedItem == "Другой район") {
+                if (p0?.selectedItem == getString(R.string.anither_district)) {
                     binding.spinnerCompanionFrom.isVisible = false
                     binding.compFromAnotherDistrict.isVisible = true
                     binding.closeAnotherDistrictView.isVisible = true
@@ -61,7 +61,7 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
         compDriveTo.adapter = viewModel.initSpinnerAdapter(R.array.spinner_drive_to, requireContext())
         compDriveTo.onItemSelectedListener = object  : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                if (p0?.selectedItem == "Другое") {
+                if (p0?.selectedItem == getString(R.string.another)) {
                     binding.spinnerCompanionDriveTo.isVisible = false
                     binding.anotherCompDriveTo.isVisible = true
                     binding.closeAnotherDistrictDriveTo.isVisible = true
@@ -81,7 +81,7 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
         compTripTimeAbility.adapter = viewModel.initSpinnerAdapter(R.array.spinner_how_long_trip_is_actual, requireContext())
         compTripTimeAbility.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                if (p0?.selectedItem == "Другое") {
+                if (p0?.selectedItem == getString(R.string.another)) {
                     binding.spinnerActualTripTime.isVisible = false
                     binding.anotherActualTripTime.isVisible = true
                     binding.closeAnotherActualTripTime.isVisible = true
@@ -133,8 +133,8 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
                 to,
                 binding.spinnerSchedule.selectedItem.toString(),
                 actualTripTime,
-                if (binding.compPriceEd.text.isNullOrEmpty()) "По договоренности" else "По договоренности",
-                binding.editTextDriverComment.text.toString() ?: "",
+                if (binding.compPriceEd.text.isNullOrEmpty()) getString(R.string.by_disscuss) else binding.compPriceEd.text.toString(),
+                binding.editTextDriverComment.text.toString(),
                 FORM_IS_ACTIVE
             )
             preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, true)
@@ -144,9 +144,9 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
                 form
             )
             viewModel.insertNewCompanionTripFormIntoLocalDb(form)
-            Toast.makeText(requireContext(), "Отправлено", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.invite_sent, Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(requireContext(), "У Вас уже есть форма", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.u_already_have_a_form), Toast.LENGTH_SHORT).show()
         }
     }
 

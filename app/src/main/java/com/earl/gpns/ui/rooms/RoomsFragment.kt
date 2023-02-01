@@ -168,7 +168,6 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
 
     override fun joinGroup(group: GroupUi) {
         viewModel.increaseMessagesReadCounterInGroup(group.provideId(), group.provideGroupMessagesCounter())
-//        viewModel.updateActualUnreadMessagesCounterInGroup(group)
         val groupInfo = group.provideGroupInfo()
         if (groupInfo.lastMessageAuthor != preferenceManager.getString(Keys.KEY_NAME)) {
             viewModel.markMessagesAsReadInGroup(
@@ -188,7 +187,6 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
     }
 
     private fun backPressedCallback() {
-        // todo refactor !!!
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 navigator.exit()

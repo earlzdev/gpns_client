@@ -26,10 +26,6 @@ interface MessageUi : Same<MessageUi> {
 
     fun markMessageAsRead()
 
-    fun testprovidetext() : String
-
-    fun testProvideauthroid() : String
-
     class Base(
         private val messageId: String,
         private val roomId: String,
@@ -66,9 +62,5 @@ interface MessageUi : Same<MessageUi> {
         override fun markMessageAsRead() {
             read = 1
         }
-
-        override fun testprovidetext() = messageText
-
-        override fun testProvideauthroid() = authorId
     }
 }

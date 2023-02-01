@@ -118,30 +118,6 @@ interface RoomsObservingSocketController {
                 if (lastMsgUi.isLastMessageRead()) {
                     viewModel?.increaseMessagesReadCounterInGroup(lastMsgUi.provideId(), 1)
                 }
-
-//                val currentList = groupsRecyclerAdapter?.currentList
-//                val newList = mutableListOf<GroupUi>()
-//                val newGroup = GroupUi.Base(
-//                    "common",
-//                    "Общий чат",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    "",
-//                    0,
-//                    0,
-//                    0
-//                    )
-//                newList.add(newGroup)
-//                currentList?.forEach { newList.add(it) }
-//                Log.d("tag", " 1 new list -> ${newList.last().provideGroupMessagesCounter()}")
-//                Log.d("tag", " 1 old list -> ${currentList?.last()?.provideGroupMessagesCounter()}")
-//                newList.find { it.sameId(lastMsgUi.provideId()) }?.updateLastMessage(lastMsgUi.provideLastMessageForUpdateInGroup())
-//                val oldList = groupsRecyclerAdapter?.currentList?.last()?.provideGroupMessagesCounter()
-//                Log.d("tag", " 2 new list -> ${newList.last().provideGroupMessagesCounter()}")
-//                Log.d("tag", " 2 old list -> ${currentList?.last()?.provideGroupMessagesCounter()}")
-//                groupsRecyclerAdapter?.updateGroupByCallback(new = newList)
                 val group = groupsRecyclerAdapter?.currentList?.find { it.sameId(lastMsgUi.provideId()) }
                 val currentPosition = groupsRecyclerAdapter?.currentList?.indexOf(group)
                 if (group != null && currentPosition != null) {
@@ -157,12 +133,7 @@ interface RoomsObservingSocketController {
         }
 
         override fun addNewGroup(group: GroupDomain) {
-            CoroutineScope(Dispatchers.Main).launch {
-                Log.d("tag", "addNewGroup: added")
-//                groupsRecyclerAdapter?.addNewItem(group.mapToUi(groupDomainToUiMapper))
-//                groupsRecyclerAdapter?.currentList?.toMutableList()?.add(group.mapToUi(groupDomainToUiMapper))
-//                groupsRecyclerAdapter?.notifyDataSetChanged()
-            }
+            CoroutineScope(Dispatchers.Main).launch {}
         }
     }
 }

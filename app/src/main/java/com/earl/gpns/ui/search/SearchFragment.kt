@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.earl.gpns.R
 import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentSearchBinding
@@ -88,7 +89,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
 
     private fun observeNewNotifications() {
         viewModel.observeNotificationLiveData(this) {
-            Toast.makeText(requireContext(), "У Вас новое уведомление!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.new_notification), Toast.LENGTH_SHORT).show()
             binding.newNotificationIcon.isVisible = true
         }
     }
@@ -106,7 +107,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
         fun newInstance() = SearchFragment()
         private const val COMPANION_ROLE = "COMPANION_ROLE"
         private const val DETAILS = "DETAILS"
-        private const val NOTIFICATION = "NOTIFICATION"
         private const val NEW_NOTIFICATION = 1
     }
 }

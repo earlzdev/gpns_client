@@ -131,7 +131,7 @@ class SecondDriverFormFragment(
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
-        spinnerDriverCarModel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        spinnerDriverCarModel.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 if (p0?.selectedItem == requireContext().resources.getString(R.string.another_car)) {
                     showInputFieldForAnotherValue()
@@ -141,7 +141,7 @@ class SecondDriverFormFragment(
         }
         val spinnerDriverCarColor = binding.spinnerDriverCarColor
         spinnerDriverCarColor.adapter = viewModel.initSpinnerAdapter(R.array.spinner_driver_car_color, requireContext())
-        spinnerDriverCarColor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        spinnerDriverCarColor.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 if (p0?.selectedItem == requireContext().resources.getString(R.string.another_color)) {
                     binding.spinnerDriverCarColor.isVisible = false
@@ -208,21 +208,20 @@ class SecondDriverFormFragment(
                 preferenceManager.getString(Keys.KEY_IMAGE) ?: "",
                 firstPartOfNewDriverForm.driveFrom,
                 firstPartOfNewDriverForm.driveTo,
-                firstPartOfNewDriverForm.catchCompanionFrom ?: "",
-                firstPartOfNewDriverForm.alsoCanDriveTo ?: "",
+                firstPartOfNewDriverForm.catchCompanionFrom,
+                firstPartOfNewDriverForm.alsoCanDriveTo,
                 firstPartOfNewDriverForm.schedule,
                 firstPartOfNewDriverForm.ableToDriveInTurn,
                 firstPartOfNewDriverForm.actualTripTime,
                 car,
-                carModel ?: "",
+                carModel,
                 carColor,
                 binding.spinnerDriverCarCountOfPassengers.selectedItem.toString(),
                 binding.editTextGosNumberOfCar.text.toString() ?: "",
-                if (tripPrice.isNullOrEmpty()) "По договоренности" else tripPrice,
+                if (tripPrice.isNullOrEmpty()) getString(R.string.by_disscuss) else tripPrice,
                 binding.editTextDriverComment.text.toString() ?: "",
                 FORM_IS_ACTIVE
             )
-            Log.d("tag", "sendNewDriverForm: DRIVER FORM -> ${Json.encodeToString(driverForm)}")
             preferenceManager.putBoolean(Keys.HAS_SEARCH_FORM, true)
             preferenceManager.putBoolean(Keys.IS_DRIVER, true)
             viewModel.sendNewDriverForm(
@@ -230,9 +229,9 @@ class SecondDriverFormFragment(
                 driverForm
             )
             viewModel.insertDriverTripFormIntoLocalDb(driverForm)
-            Toast.makeText(requireContext(), "Форма отправлена", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.form_sent), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(requireContext(), "У Вас уже есть форма", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.still_have_comp_form), Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -2,10 +2,9 @@ package com.earl.gpns.ui.models
 
 import android.widget.TextView
 import com.earl.gpns.ui.core.Same
-import com.earl.gpns.ui.CurrentDateAndTimeGiver
+import com.earl.gpns.ui.core.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.rooms.RoomsObservingSocketController
 import com.makeramen.roundedimageview.RoundedImageView
-import java.time.LocalDateTime
 
 interface RoomUi : Same<RoomUi> {
 
@@ -49,8 +48,6 @@ interface RoomUi : Same<RoomUi> {
 
     fun provideId() : String
 
-    fun testisonline() : Int
-
     class Base(
         private val roomId: String,
         private val image: String,
@@ -81,7 +78,7 @@ interface RoomUi : Same<RoomUi> {
             name.text = title
             lastMsg.text = lastMessage
             unreadMsgCounter.text = this.unreadMsgCounter.toString()
-            lastMsgTime.text = initDateTime(lastMsgTimestamp)
+            lastMsgTime.text = CurrentDateAndTimeGiver().initDateTime(lastMsgTimestamp)
         }
 
         override fun chatInfo() = ChatInfo(roomId, title, image, contactOnline, contactLastAuth, lastMessageAuthor)
@@ -126,27 +123,5 @@ interface RoomUi : Same<RoomUi> {
         }
 
         override fun provideId() = roomId
-
-        override fun testisonline() = contactOnline
-
-        private fun initDateTime(timestamp: String) : String {
-            var time = ""
-            if (lastMsgTimestamp != "") {
-                val dateGiver = CurrentDateAndTimeGiver()
-                val currentDateText = dateGiver.fetchCurrentDateAndTime()
-                val lastAuthDate = LocalDateTime.parse(timestamp, dateGiver.standardFormatter)
-                val dayOfMonthFormatter = dateGiver.fetchDayOfMonthFormat()
-                val timeOfDayFormatter = dateGiver.fetchTimeOfDayFormat()
-                val dayOfYearFormatter = dateGiver.fetchDayOfYearFormat()
-                if (lastAuthDate.format(dayOfMonthFormatter) == currentDateText.format(dayOfMonthFormatter)) {
-                    time = lastAuthDate.format(timeOfDayFormatter)
-                } else if (lastAuthDate.format(dayOfYearFormatter) == currentDateText.format(dayOfYearFormatter)) {
-                    time = lastAuthDate.format(dayOfMonthFormatter)
-                } else {
-                    time = lastAuthDate.format(dayOfYearFormatter)
-                }
-            }
-            return time
-        }
     }
 }

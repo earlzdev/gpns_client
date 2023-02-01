@@ -43,7 +43,7 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
         spinnerDriveFrom.adapter = viewModel.initSpinnerAdapter(R.array.spinner_drive_from, requireContext())
         spinnerDriveFrom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                   if (p0?.selectedItem == "Другой район") {
+                   if (p0?.selectedItem == getString(R.string.anither_district)) {
                        binding.spinnerDriveFrom.isVisible = false
                        binding.driveFromAnotherDistrict.isVisible = true
                        binding.closeAnotherDistrictView.isVisible = true
@@ -61,7 +61,7 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
         spinnerDriveTo.adapter = viewModel.initSpinnerAdapter(R.array.spinner_drive_to, requireContext())
         spinnerDriveTo.onItemSelectedListener= object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                if (p0?.selectedItem == "Другое") {
+                if (p0?.selectedItem == getString(R.string.another)) {
                     binding.spinnerDriveTo.isVisible = false
                     binding.driveToAnotherPlace.isVisible = true
                     binding.closeAnotherDriveToAnotherPlace.isVisible = true
@@ -83,7 +83,7 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
         spinnerHowLongTripWouldBeActual.adapter = viewModel.initSpinnerAdapter(R.array.spinner_how_long_trip_is_actual, requireContext())
         spinnerHowLongTripWouldBeActual.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                if (p0?.selectedItem == "Другое") {
+                if (p0?.selectedItem == getString(R.string.another)) {
                     binding.spinnerHowLongTripIsActual.isVisible = false
                     binding.anotherActualTripTime.isVisible = true
                     binding.closeAnotherActualTripTime.isVisible = true
@@ -100,7 +100,7 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
 
         val multiSpinnerCanCatchCompFrom = binding.multispinnerCanCatchCompFrom
         multiSpinnerCanCatchCompFrom.isSearchEnabled = false
-        multiSpinnerCanCatchCompFrom.setClearText("Стереть и закрыть")
+        multiSpinnerCanCatchCompFrom.setClearText(getString(R.string.clear_close))
         val catchFromSpinnerData = requireContext().resources.getStringArray(R.array.spinner_can_catch_comp_from).toList()
         val catchFromSpinnerDataList = mutableListOf<KeyPairBoolData>()
         val catchFromSpinnerReadyList = mutableListOf<String>()
@@ -114,17 +114,16 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
         multiSpinnerCanCatchCompFrom.setItems(catchFromSpinnerDataList) {
             for (i in catchFromSpinnerDataList.indices) {
                 if (catchFromSpinnerDataList[i].isSelected) {
-                    Log.d("tag", "initSpinners: ${catchFromSpinnerDataList[i].name}")
                     catchFromSpinnerReadyList.add(catchFromSpinnerDataList[i].name)
                 }
             }
         }
         multiSpinnerCanCatchCompFrom.setLimit(5) {
-            Toast.makeText(requireContext(), "Можно выбрать не более 5 мест", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.under_five_places), Toast.LENGTH_SHORT).show()
         }
         val multiSelectSpinnerCanAlsoDriveTo = binding.spinnerCanAlsoDriveTo
         multiSelectSpinnerCanAlsoDriveTo.isSearchEnabled = false
-        multiSelectSpinnerCanAlsoDriveTo.setClearText("Стереть и закрыть")
+        multiSelectSpinnerCanAlsoDriveTo.setClearText(getString(R.string.clear_close))
         val canAlsoDriveToSpinnerData = requireContext().resources.getStringArray(R.array.spinner_can_also_drive_to).toList()
         val canAlsoDriveToSpinnerDataList = mutableListOf<KeyPairBoolData>()
         val canAlsoDriveToSpinnerReadyList = mutableListOf<String>()
@@ -138,13 +137,12 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
         multiSelectSpinnerCanAlsoDriveTo.setItems(canAlsoDriveToSpinnerDataList) {
             for (i in canAlsoDriveToSpinnerDataList.indices) {
                 if (canAlsoDriveToSpinnerDataList[i].isSelected) {
-                    Log.d("tag", "initSpinners: ${canAlsoDriveToSpinnerDataList[i].name}")
                     canAlsoDriveToSpinnerReadyList.add(canAlsoDriveToSpinnerDataList[i].name)
                 }
             }
         }
         multiSelectSpinnerCanAlsoDriveTo.setLimit(5) {
-            Toast.makeText(requireContext(), "Можно выбрать не более 5 мест", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.under_five_places), Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -178,8 +176,8 @@ class FirstDriverFormFragment : BaseFragment<FragmentDriverFormFirstBinding>() {
             val firstPartOfDriverForm = FirstPartOfNewDriverForm(
                 from,
                 binding.spinnerDriveTo.selectedItem.toString(),
-                if (catchCompFrom.trim().isNullOrEmpty()) "По договоренности" else catchCompFrom,
-                if (alsoDriveTo.trim().isNullOrEmpty()) "По договоренности" else alsoDriveTo,
+                if (catchCompFrom.trim().isNullOrEmpty()) getString(R.string.by_disscuss) else catchCompFrom,
+                if (alsoDriveTo.trim().isNullOrEmpty()) getString(R.string.by_disscuss) else alsoDriveTo,
                 binding.spinnerSchedule.selectedItem.toString(),
                 if (binding.chechboxDriveInTurn.isChecked) 1 else 0,
                 actualTripTime

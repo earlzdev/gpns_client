@@ -1,4 +1,4 @@
-package com.earl.gpns.ui
+package com.earl.gpns.ui.about
 
 import android.os.Bundle
 import android.view.LayoutInflater

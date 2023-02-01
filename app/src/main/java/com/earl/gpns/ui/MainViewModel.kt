@@ -18,10 +18,4 @@ class MainViewModel @Inject constructor(
             interactor.closeChatSocketSession()
         }
     }
-
-    fun closeMessagingSocket() {
-        viewModelScope.launch(Dispatchers.IO) {
-            interactor.closeMessagingSocket()
-        }
-    }
 }

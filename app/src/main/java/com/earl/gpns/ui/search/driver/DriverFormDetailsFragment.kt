@@ -1,7 +1,6 @@
 package com.earl.gpns.ui.search.driver
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +8,10 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
-import com.earl.gpns.ui.core.BaseFragment
-import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentDriverFormDetailsBinding
 import com.earl.gpns.ui.SearchFormsDetails
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.ui.models.DriverDetailsUi
 import com.earl.gpns.ui.models.TripNotificationUi
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +44,6 @@ class DriverFormDetailsFragment(
 
     private fun initClickListeners() {
         binding.backBtn.setOnClickListener {
-//            navigator.back()
             when(viewRegime) {
                 NOTIFICATION -> navigator.popBackStackToFragment(tripNotifications)
                 DETAILS -> navigator.popBackStackToFragment(mainFragment)
@@ -73,13 +71,13 @@ class DriverFormDetailsFragment(
             viewModel.clearTripFormInLocalDb()
             viewModel.deleteDriverFormForm(preferenceManager.getString(Keys.KEY_JWT) ?: "")
             navigator.back()
-            Toast.makeText(requireContext(), "Ваша форма удалена", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.ur_form_was_deleted), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun acceptDriverToRideTogether(driverUsername: String) {
         if (isInvitationAnswered) {
-            Toast.makeText(requireContext(), "Вы уже ответили этому пользователю на приглашение", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.already_answered), Toast.LENGTH_SHORT).show()
         } else {
             val existedList = viewModel.provideExistedNotificationsListLiveData()
             if (existedList?.find { it.provideId() == notificationId && it.isActive()} != null) {
@@ -96,17 +94,17 @@ class DriverFormDetailsFragment(
                     viewModel.insertNewUserIntoLocalDbCompGroup(driverUsername)
                     isInvitationAnswered = true
                 } else {
-                    Toast.makeText(requireContext(), "Вы уже договорились здить с другим человеком!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.u_hav_alreragy_ride), Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(requireContext(), "Вы уже отвечали на это приглашение, либо оно уже неактивно", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.alread_answered_or_not_active), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun denyDriverToDriveTogether(driverUsername: String) {
         if (isInvitationAnswered) {
-            Toast.makeText(requireContext(), "Вы уже ответили этому пользователю на приглашение", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.u_had_already_answered), Toast.LENGTH_SHORT).show()
         } else {
             val existedList = viewModel.provideExistedNotificationsListLiveData()
             if (existedList?.find { it.provideId() == notificationId && it.isActive()} != null) {
@@ -120,7 +118,7 @@ class DriverFormDetailsFragment(
                 )
                 isInvitationAnswered = true
             } else {
-                Toast.makeText(requireContext(), "Вы уже отвечали на это приглашение, либо оно уже неактивно", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.alread_answered_or_not_active), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -149,18 +147,17 @@ class DriverFormDetailsFragment(
         binding.from.text = details.from
         binding.goesTo.text = details.to
         binding.schedule.text = details.schedule
-        binding.ableToCatchCompFrom.text = details.catchCompanionFrom ?: "По договоренности"
-        binding.canDriveInTurn.text = if (details.ableToDriveInTurn == 1) "Да" else "Нет"
-        binding.alsoAbleToVisit.text = details.alsoCanDriveTo ?: "По договоренности"
+        binding.ableToCatchCompFrom.text = details.catchCompanionFrom
+        binding.canDriveInTurn.text = if (details.ableToDriveInTurn == 1) context?.getString(R.string.yes) else context?.getString(R.string.no)
+        binding.alsoAbleToVisit.text = details.alsoCanDriveTo
         binding.tripTime.text = details.actualTripTime
         binding.avaliablePlaces.text = details.passengersCount.toString()
-        binding.tripPrice.text = details.tripPrice.toString() ?: "По договоренности"
+        binding.tripPrice.text = details.tripPrice
         binding.comment.text = details.driverComment
     }
 
     private fun inviteDriver() {
         val existedList = viewModel.provideExistedNotificationsListLiveData()?.map { it.provideTripNotificationUiRecyclerItem() }
-//            val existedNotification = existedList?.find {  it.receiverName == binding.userName.text.toString() || it.authorName == binding.userName.text.toString()}
         val usersListInCompanionGroup = viewModel.provideCompanionUsersListLiveDataValue() ?: emptyList()
         val existedNotification = existedList?.find {
             (it.receiverName == binding.userName.text.toString()
@@ -168,8 +165,6 @@ class DriverFormDetailsFragment(
                     && it.type == INVITE
                     && it.active == ACTIVE
         }
-        Log.d("tag", "inviteDriver: existedlist -> $existedList")
-        Log.d("tag", "inviteDriver: existed -> $existedNotification")
         if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP)) {
             if (!notificationSent) {
                 if (!usersListInCompanionGroup.contains(binding.userName.text.toString())) {
@@ -191,32 +186,28 @@ class DriverFormDetailsFragment(
                                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                                 notification
                             )
-//                        viewModel.markTripNotificationAsNotActive(
-//                            preferenceManager.getString(Keys.KEY_JWT) ?: "",
-//                            notificationId
-//                        )
-                            Toast.makeText(requireContext(), "Приглашение отправлено", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), getString(R.string.invite_sent), Toast.LENGTH_SHORT).show()
                             notificationSent = true
                         } else {
-                            Toast.makeText(requireContext(), "Чтобы отправить уведомление этому пользователю, нужно иметь активную анкету попутчика!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), getString(R.string.need_comp_form), Toast.LENGTH_SHORT).show()
                         }
                     } else if (existedNotification.receiverName == binding.userName.text.toString() && existedNotification.active == ACTIVE) {
-                        Toast.makeText(requireContext(), "Вы уже отправяли приглашение этому пользователю, дождитесь ответа", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.already_sent_wait_for_an_answer), Toast.LENGTH_SHORT).show()
                     } else if (existedNotification.active == ACTIVE) {
-                        Toast.makeText(requireContext(), "У вас уже есть приглашение от этого пользователя", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.already_have_invite_from_this_user), Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Toast.makeText(
                         requireContext(),
-                        "Этот пользователь и так уже ездит с Вами",
+                        getString(R.string.this_user_is_still_ride_with_you),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             } else {
-                Toast.makeText(requireContext(), "Вы уже отправляли приглашение этому пользователю", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.u_had_already_answered), Toast.LENGTH_SHORT).show()
             }
         } else {
-            Toast.makeText(requireContext(), "Вы уже состоите в группе попутчиков, отправлять приглашения может только ее создатель", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.already_in_comp_group), Toast.LENGTH_SHORT).show()
         }
     }
 

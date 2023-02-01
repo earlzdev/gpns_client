@@ -1,18 +1,12 @@
 package com.earl.gpns.ui.models
 
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.earl.gpns.R
+import com.earl.gpns.ui.core.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.core.Same
-import com.earl.gpns.ui.CurrentDateAndTimeGiver
 import com.makeramen.roundedimageview.RoundedImageView
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 interface GroupUi : Same<GroupUi> {
 
@@ -73,7 +67,7 @@ interface GroupUi : Same<GroupUi> {
             readIndicator: ImageView
         ) {
             val context = groupTitle.context
-            lastMsgTimestamp.text = initDateTime(lastMessageTimestamp)
+            lastMsgTimestamp.text = CurrentDateAndTimeGiver().initDateTime(lastMessageTimestamp)
             groupTitle.text = title
             lastMsg.text = lastMessage
             lastMsgAuthor.text = context.resources.getString(R.string.message_author_in_group, lastMessageAuthor)
@@ -81,12 +75,10 @@ interface GroupUi : Same<GroupUi> {
                 readIndicator.isVisible = false
                 unreadMessagesCounter.isVisible = false
                 unreadIndicator.isVisible = true
-                Log.d("tag", "recyclerDetails: username == lastMessageAuthor && lastMsgRead == 0")
             } else if (username == lastMessageAuthor && lastMsgRead == 1) {
                 unreadIndicator.isVisible = false
                 unreadMessagesCounter.isVisible = false
                 readIndicator.isVisible = true
-                Log.d("tag", "recyclerDetails: username == lastMessageAuthor && lastMsgRead == 1")
             } else if (username != lastMessageAuthor && messagesCount != 0 && lastMsgRead == 0){
                 unreadMessagesCounter.text = messagesCount.toString()
                 unreadIndicator.isVisible = false
@@ -94,17 +86,14 @@ interface GroupUi : Same<GroupUi> {
                 readIndicator.isVisible = false
                 lastMsgAuthorImg.isVisible = true
                 lastMsgAuthor.isVisible = true
-                Log.d("tag", "messagesCount != 0")
             } else if (username != lastMessageAuthor && lastMsgRead == 1) {
                 lastMsgAuthor.isVisible = true
                 lastMsgAuthorImg.isVisible = true
                 readIndicator.isVisible = false
                 unreadIndicator.isVisible = false
                 unreadMessagesCounter.isVisible = false
-                Log.d("tag", "recyclerDetails: username != lastMessageAuthor && lastMsgRead == 1")
             } else {
                 unreadMessagesCounter.isVisible = false
-                Log.d("tag", "else")
             }
         }
 
@@ -117,7 +106,6 @@ interface GroupUi : Same<GroupUi> {
             lastMessageAuthor = lstMsg.authorName
             lastMessageTimestamp = lstMsg.timestamp
             lastMsgRead = lstMsg.read
-            Log.d("tag", "updateLastMessage: read or not -> ${lstMsg.read}")
             if (lstMsg.read == 1) {
                 messagesCount = 0
             } else {
@@ -138,26 +126,6 @@ interface GroupUi : Same<GroupUi> {
         override fun markAuthoredMessagesAsRead() {
             messagesCount = 0
             lastMsgRead = 1
-        }
-
-        private fun initDateTime(timestamp: String) : String {
-            var time = ""
-            if (lastMessageTimestamp != "") {
-                val dateGiver = CurrentDateAndTimeGiver()
-                val currentDateText = dateGiver.fetchCurrentDateAndTime()
-                val lastAuthDate = LocalDateTime.parse(timestamp, dateGiver.standardFormatter)
-                val dayOfMonthFormatter = dateGiver.fetchDayOfMonthFormat()
-                val timeOfDayFormatter = dateGiver.fetchTimeOfDayFormat()
-                val dayOfYearFormatter = dateGiver.fetchDayOfYearFormat()
-                if (lastAuthDate.format(dayOfMonthFormatter) == currentDateText.format(dayOfMonthFormatter)) {
-                    time = lastAuthDate.format(timeOfDayFormatter)
-                } else if (lastAuthDate.format(dayOfYearFormatter) == currentDateText.format(dayOfYearFormatter)) {
-                    time = lastAuthDate.format(dayOfMonthFormatter)
-                } else {
-                    time = lastAuthDate.format(dayOfYearFormatter)
-                }
-            }
-            return time
         }
     }
 }

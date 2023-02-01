@@ -29,14 +29,12 @@ class RoomsViewModel @Inject constructor(
     private val interactor: Interactor,
     private val roomDomainToUiMapper: RoomDomainToUiMapper<RoomUi>,
     private val roomDomainToNewRoomDomainMapper: RoomDomainToNewRoomDomainMapper<NewRoomDtoDomain>,
-    private val messageDomainToUiMapper: MessageDomainToUiMapper<MessageUi>,
     private val groupDomainToUiMapper: GroupDomainToUiMapper<GroupUi>,
     private val groupMessagesCounterDomainToUiMapper: GroupMessagesCounterDomainToUimapper<GroupMessagesCounterUi>
 ) : ViewModel() {
 
     private val rooms: MutableStateFlow<List<RoomUi>> = MutableStateFlow(emptyList())
     val _rooms = rooms.asStateFlow()
-    private val groupsLiveData = MutableLiveData<List<GroupUi>>()
     private val groups: MutableStateFlow<List<GroupUi>> = MutableStateFlow(emptyList())
     val _groups = groups.asStateFlow()
 
@@ -56,9 +54,7 @@ class RoomsViewModel @Inject constructor(
             val list = interactor.fetchGroups(token).map { it.mapToUi(groupDomainToUiMapper) }.onEach {
                 updateActualUnreadMessagesCounterInGroup(it)
             }
-//            val list = interactor.fetchGroups(token).map { it.mapToUi(groupDomainToUiMapper) }
             withContext(Dispatchers.Main) {
-//                groupsLiveData.value = list
                 groups.value += list
             }
         }
@@ -108,7 +104,7 @@ class RoomsViewModel @Inject constructor(
         }
     }
 
-    fun insertGroupMessagesReadCounter(groupId: String, counter: Int) {
+    private fun insertGroupMessagesReadCounter(groupId: String, counter: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val readCounter = interactor.fetchGroupMessagesCounter(groupId)
                 ?.map(groupMessagesCounterDomainToUiMapper)?.provideCounter()
@@ -131,8 +127,6 @@ class RoomsViewModel @Inject constructor(
             }
             val group = groups.value.find { it.sameId(groupId) }
             group?.updateMessagesCounter(0)
-            Log.d("tag", "increaseMessagesReadCounterInGroup:RoomvViewModel group -> $group")
-//            groupsLiveData.value?.find { it.sameId(groupId) }?.updateMessagesCounter(0)
         }
     }
 
@@ -159,7 +153,6 @@ class RoomsViewModel @Inject constructor(
                 val allMessagesCount = group.provideGroupMessagesCounter()
                 val unread = allMessagesCount - readMessagesCounter
                 group.updateMessagesCounter(unread)
-                Log.d("tag", "updateActualUnreadMessagesCounterInGroup: before -> $readMessagesCounter")
             }
         }
     }

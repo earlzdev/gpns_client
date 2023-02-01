@@ -31,7 +31,6 @@ class SearchViewModel @Inject constructor(
 
     private val tripForms: MutableStateFlow<List<TripFormUi>> = MutableStateFlow(emptyList())
     val _tripForms = tripForms.asStateFlow()
-    private val searchTripFormsLiveData = MutableLiveData<List<TripFormUi>>()
     private val newNotificationsLiveData = MutableLiveData<Int>()
     private val remoteNotificationsList = MutableLiveData<List<TripNotificationUi>>()
     private val localDbNotificationsList = MutableLiveData<List<TripNotificationUi>>()
@@ -65,12 +64,9 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val remoteNotificationsList = interactor.fetchAllTripNotifications(token).map { it.mapToUi(tripNotificationDomainToUiMapper) }
             val remoteNotificationsIdsList = remoteNotificationsList.map { it.provideId() }
-            Log.d("tag", "fetchAllNotifications: remote -> ${remoteNotificationsIdsList}")
             val localDbNotificationsList = interactor.fetchAllTripNotificationFromLocalDb().map { it.mapToUi(tripNotificationDomainToUiMapper) }
             val localDbNotificationsIdsList = localDbNotificationsList.map { it.provideId() }
-            Log.d("tag", "fetchAllNotifications: local -> ${localDbNotificationsIdsList}")
             val watchedNotificationsIdsList = interactor.fetchAllWatchedNotificationsIds()
-            Log.d("tag", "fetchAllNotifications: local ids -> ${watchedNotificationsIdsList}")
             val newNotificationsList = mutableListOf<TripNotificationUi>()
             for (i in remoteNotificationsIdsList) {
                 if (localDbNotificationsList.find { it.provideId() == i } == null) {
@@ -82,7 +78,6 @@ class SearchViewModel @Inject constructor(
             }
             withContext(Dispatchers.Main) {
                 if (remoteNotificationsIdsList.size != watchedNotificationsIdsList.size) {
-                    Log.d("tag", "fetchAllNotifications: LISTS ARE NOT EQUAL")
                     newUnwatchedNotificationsLiveData.value = NEW_NOTIFICATION
                 }
                 if (newNotificationsList.isNotEmpty()) {
@@ -105,15 +100,12 @@ class SearchViewModel @Inject constructor(
             val newNotification = notification.mapToUi(tripNotificationDomainToUiMapper).provideTripNotificationUiRecyclerItem()
             reactOnNotification(newNotification)
             if (!watchedNotificationsIdsList.contains(newNotification.id) && newNotification.authorName == username) {
-                Log.d("tag", "reactOnNewNotification: insrted")
                 interactor.insertNewWatchedNotificationId(newNotification.id)
             } else if (!watchedNotificationsIdsList.contains(newNotification.id)){
-                Log.d("tag", "NEW NOTIFICATIONS")
                 withContext(Dispatchers.Main) {
                     newNotificationsLiveData.value = NEW_NOTIFICATION
                 }
             }
-            Log.d("tag", "reactOnNewNotification: reacted on new notification $notification")
         }
     }
 
@@ -180,7 +172,6 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val list = interactor.fetchAllTripForms(token).map { it.map(tripFormDomainToUiMapper) }
             withContext(Dispatchers.Main) {
-                Log.d("tag", "fetchAllTripForms ui : $list")
                 tripForms.value += list
             }
         }
@@ -206,10 +197,6 @@ class SearchViewModel @Inject constructor(
 
     fun observeNotificationLiveData(owner: LifecycleOwner, observer: Observer<Int>) {
         newNotificationsLiveData.observe(owner, observer)
-    }
-
-    fun observeSearchTripFormsLiveData(owner: LifecycleOwner, observer: Observer<List<TripFormUi>>) {
-        searchTripFormsLiveData.observe(owner, observer)
     }
 
     fun observeUnwatchedNotificationsLiveData(owner: LifecycleOwner, observer: Observer<Int>) {
