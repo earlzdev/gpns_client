@@ -364,7 +364,6 @@ interface Interactor {
         }
 
         override suspend fun insertNewWatchedNotificationId(id: String) {
-            Log.d("tag", "insertNewWatchedNotificationId: INSERTED NEW WATCHED NOTIFICATION")
             localDatabaseRepository.insertNewWatchedNotificationId(id)
         }
 
@@ -411,7 +410,6 @@ interface Interactor {
         }
 
         override suspend fun markTripNotificationAsNotActiveInLocalDb(notificationId: String) {
-            Log.d("tag", "markTripNotificationAsNotActiveInLocalDb: marked as not active")
             localDatabaseRepository.markNotificationAsNotActive(notificationId)
         }
 

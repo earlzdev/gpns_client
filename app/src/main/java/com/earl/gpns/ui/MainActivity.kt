@@ -42,8 +42,6 @@ class MainActivity : AppCompatActivity(), NavigationContract {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        val test = AuthorMessage(this)
-//        setContentView(test)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         preferenceManager = SharedPreferenceManager(this)
         if (preferenceManager.getBoolean(Keys.KEY_IS_SIGNED_UP)) {

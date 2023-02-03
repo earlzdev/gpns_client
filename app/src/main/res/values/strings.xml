@@ -280,6 +280,7 @@
     <string name="u_invited_to_drive">Вы пригласили %s %s ездить вместе.</string>
     <string name="user_invites_u_to_driver_together">%s %s приглашает Вас ездить вместе.</string>
     <string name="new_notification">У Вас новое уведомление!</string>
+    <string name="unknown_view_type">Unknown view type</string>
 
     // spinners
     <string-array name="spinner_drive_from">

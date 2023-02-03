@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.earl.gpns.R
 import com.earl.gpns.databinding.RecyclerGroupMessageContactItemBinding
 import com.earl.gpns.databinding.RecyclerGroupMessageUserItemBinding
 import com.earl.gpns.ui.models.GroupMessageUi
@@ -36,7 +37,7 @@ class GroupMessagingRecyclerAdapter(
                 RecyclerGroupMessageContactItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             )
         }
-        else -> throw IllegalStateException("Unknown view type")
+        else -> throw IllegalStateException(parent.context.getString(R.string.unknown_view_type))
     }
 
     override fun onBindViewHolder(holder: BaseGroupMessagingViewHolder, position: Int) {
@@ -49,9 +50,7 @@ class GroupMessagingRecyclerAdapter(
         var result = false
         result = if (position != lastPosition) {
             message.provideAuthorName() == getItem(position + 1).provideAuthorName()
-        } else if (position == lastPosition) {
-            false
-        } else false
+        } else if (position == lastPosition) { false } else false
         holder.bind(getItem(position), isSameUser, isSameDate, result)
     }
 
