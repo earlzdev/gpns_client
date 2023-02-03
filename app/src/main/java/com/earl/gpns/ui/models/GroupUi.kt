@@ -67,7 +67,9 @@ interface GroupUi : Same<GroupUi> {
             readIndicator: ImageView
         ) {
             val context = groupTitle.context
-            lastMsgTimestamp.text = CurrentDateAndTimeGiver().initDateTime(lastMessageTimestamp)
+            if (lastMessageTimestamp.isNotEmpty()) {
+                lastMsgTimestamp.text = CurrentDateAndTimeGiver().initDateTime(lastMessageTimestamp)
+            }
             groupTitle.text = title
             lastMsg.text = lastMessage
             lastMsgAuthor.text = context.resources.getString(R.string.message_author_in_group, lastMessageAuthor)

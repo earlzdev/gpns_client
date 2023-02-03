@@ -174,6 +174,7 @@ class RoomsFragment : BaseFragment<FragmentRoomsBinding>(), OnRoomClickListener,
                 preferenceManager.getString(Keys.KEY_JWT) ?: "",
                 groupInfo.groupId
             )
+            groupsRecyclerAdapter.markAuthoredMessagesAsRead(groupInfo.groupId)
         }
         navigator.groupMessaging(groupInfo)
     }

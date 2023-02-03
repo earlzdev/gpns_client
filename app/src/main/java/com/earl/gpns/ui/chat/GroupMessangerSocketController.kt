@@ -24,7 +24,7 @@ interface GroupMessangerSocketController {
 
         override fun updateLastMessageAuthorImageInGroup() {
             CoroutineScope(Dispatchers.Main).launch {
-                recyclerAdapter?.updateLastMessageAuthorImage()
+//                recyclerAdapter?.updateLastMessageAuthorImage()
             }
         }
 
