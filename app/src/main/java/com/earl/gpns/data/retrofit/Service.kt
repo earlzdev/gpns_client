@@ -243,4 +243,11 @@ interface Service {
         @Header("Authorization") token: String,
         @Body id: NotificationIdDto
     )
+
+    @Headers("Content-Type: application/json")
+    @POST("/updateUserAvatar")
+    suspend fun updateUserAvatar(
+        @Header("Authorization") token: String,
+        @Body newImageString: UpdateUserAvatarRequest
+    )
 }

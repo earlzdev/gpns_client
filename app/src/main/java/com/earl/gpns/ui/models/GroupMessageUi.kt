@@ -1,11 +1,11 @@
 package com.earl.gpns.ui.models
 
+import android.graphics.BitmapFactory
+import android.util.Base64
+import android.widget.ImageView
 import android.widget.TextView
-import com.earl.gpns.R
 import com.earl.gpns.ui.core.Same
 import com.earl.gpns.ui.mappers.GroupMessageUiToDomainMapper
-import com.makeramen.roundedimageview.RoundedImageView
-import org.w3c.dom.Text
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -33,7 +33,8 @@ interface GroupMessageUi : Same<GroupMessageUi> {
     fun recyclerDetailsForContact(
         authorUsername: TextView,
         messageTime: TextView,
-        message: TextView
+        message: TextView,
+        image: ImageView
     )
 
     fun markMessageAsRead()
@@ -76,15 +77,20 @@ interface GroupMessageUi : Same<GroupMessageUi> {
         override fun recyclerDetailsForContact(
             authorUsername: TextView,
             messageTime: TextView,
-            message: TextView
+            message: TextView,
+            image: ImageView
         ) {
-            val context = message.context
             authorUsername.text = authorName
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
             val dateTime = LocalDateTime.parse(timestamp, formatter)
             val formatter2 = DateTimeFormatter.ofPattern("HH mm")
             messageTime.text = dateTime.format(formatter2)
             message.text = messageText
+            if (authorImage.isNotEmpty()) {
+                val bytes = Base64.decode(authorImage, Base64.DEFAULT)
+                val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                image.setImageBitmap(bitmap)
+            }
         }
 
         override fun provideMessageId() = messageId

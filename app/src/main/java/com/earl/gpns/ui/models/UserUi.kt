@@ -4,6 +4,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.earl.gpns.R
+import com.earl.gpns.ui.core.BitmapFromStringDecoder
 import com.earl.gpns.ui.core.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.core.Same
 import com.makeramen.roundedimageview.RoundedImageView
@@ -59,6 +60,9 @@ interface UserUi : Same<UserUi> {
                 lastSeen.text = context.getString(R.string.online_string)
                 lastSeen.setTextColor(context.getColor(R.color.green))
             }
+            if (image.isNotEmpty()) {
+                imageView.setImageBitmap(BitmapFromStringDecoder().decode(image))
+            }
         }
 
         override fun companionGroupRecyclerDetails(
@@ -66,6 +70,9 @@ interface UserUi : Same<UserUi> {
             name: TextView,
             role: TextView
         ) {
+            if (image.isNotEmpty()) {
+                imageView.setImageBitmap(BitmapFromStringDecoder().decode(image))
+            }
             val context = imageView.context
             name.text = username
             role.text = if (tripRole == COMPANION) context.getString(R.string.comp) else context.getString(

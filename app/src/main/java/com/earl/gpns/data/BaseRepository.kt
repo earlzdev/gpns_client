@@ -449,6 +449,14 @@ class BaseRepository @Inject constructor(
         }
     }
 
+    override suspend fun updateUserAvatar(token: String, newImageString: String) {
+        try {
+            service.updateUserAvatar("Bearer $token", UpdateUserAvatarRequest((newImageString)))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     companion object {
         private const val KEY_SUCCESS = "success"
         private const val COMPANION_ROLE = "COMPANION_ROLE"

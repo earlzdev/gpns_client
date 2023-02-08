@@ -11,6 +11,7 @@ import com.earl.gpns.R
 import com.earl.gpns.databinding.FragmentDriverFormDetailsBinding
 import com.earl.gpns.ui.SearchFormsDetails
 import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.BitmapFromStringDecoder
 import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.ui.models.DriverDetailsUi
 import com.earl.gpns.ui.models.TripNotificationUi
@@ -154,6 +155,7 @@ class DriverFormDetailsFragment(
         binding.avaliablePlaces.text = details.passengersCount.toString()
         binding.tripPrice.text = details.tripPrice
         binding.comment.text = details.driverComment
+        binding.userAvatar.setImageBitmap(BitmapFromStringDecoder().decode(details.userImage))
     }
 
     private fun inviteDriver() {
