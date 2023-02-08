@@ -5,4 +5,5 @@
     <dimen name="margin_start_companions">20dp</dimen>
     <dimen name="companion_values_max_width">150dp</dimen>
     <dimen name="margin1">10dp</dimen>
+    <dimen name="max_search_form_recycler_width">150dp</dimen>
 </resources>

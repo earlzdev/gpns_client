@@ -18,6 +18,7 @@ import com.earl.gpns.databinding.FragmentChatBinding
 import com.earl.gpns.domain.webSocketActions.services.RoomsMessagingSocketActionsService
 import com.earl.gpns.ui.core.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.BitmapFromStringDecoder
 import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.ui.models.ChatInfo
 import com.earl.gpns.ui.models.MessageUi
@@ -31,7 +32,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 @AndroidEntryPoint
-class RoomMessangerFragment(
+class RoomMessengerFragment(
     private val chatInfo: ChatInfo,
 ) : BaseFragment<FragmentChatBinding>(), RoomsMessagingSocketActionsService {
 
@@ -190,6 +191,11 @@ class RoomMessangerFragment(
             binding.contactLastAuth.text = context?.resources?.getString(R.string.was_online_on, CurrentDateAndTimeGiver().initDateTime(chatInfo.userLastAuth))
             binding.contactLastAuth.isVisible = true
         }
+        with(binding.userAvatar) {
+            if (chatInfo.chatImage.isNotEmpty()) {
+                setImageBitmap(BitmapFromStringDecoder().decode(chatInfo.chatImage))
+            }
+        }
     }
 
     override fun updateUserOnlineInChat(online: Int, lastAuth: String) {
@@ -274,7 +280,7 @@ class RoomMessangerFragment(
 
     companion object {
 
-        fun newInstance(chatInfo: ChatInfo) = RoomMessangerFragment(chatInfo)
+        fun newInstance(chatInfo: ChatInfo) = RoomMessengerFragment(chatInfo)
         private const val MSG_UNREAD_KEY = 0
     }
 }

@@ -102,7 +102,6 @@
         app:layout_constraintTop_toBottomOf="@id/timestamp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/timestamp"
-        app:layout_constraintStart_toStartOf="@id/timestamp"
         android:gravity="center_horizontal"
         />
 

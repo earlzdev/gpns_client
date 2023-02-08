@@ -102,7 +102,8 @@ abstract class BaseGroupMessagingViewHolder(view: View) : RecyclerView.ViewHolde
             item.recyclerDetailsForContact(
                 binding.authorName,
                 binding.timestamp,
-                binding.messageText
+                binding.messageText,
+                binding.userAvatar
             )
             if (isSameDate) binding.dateHeader.visibility = View.GONE else binding.dateHeader.text = item.provideDate()
             if (isSameUser && isSameDate) {

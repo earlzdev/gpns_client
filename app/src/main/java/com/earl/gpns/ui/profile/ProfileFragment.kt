@@ -1,13 +1,20 @@
 package com.earl.gpns.ui.profile
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
 import com.earl.gpns.ui.core.BaseFragment
@@ -15,12 +22,16 @@ import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentProfileBinding
 import com.earl.gpns.ui.about.AboutAppFragment
 import com.earl.gpns.ui.SearchFormsDetails
+import com.earl.gpns.ui.core.BitmapFromStringDecoder
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.ByteArrayOutputStream
+import java.io.FileNotFoundException
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     private lateinit var viewModel: ProfileViewModel
+    var encodedImage: String? = null
 
     override fun viewBinding(
         inflater: LayoutInflater,
@@ -34,6 +45,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     private fun initViews() {
+        with(binding.userAvatar) {
+            val preferenceManagerImage = preferenceManager.getString(Keys.KEY_IMAGE) ?: ""
+            if (preferenceManagerImage.isNotEmpty()) {
+                setImageBitmap(BitmapFromStringDecoder().decode(preferenceManagerImage))
+            }
+        }
         binding.userName.text = preferenceManager.getString(Keys.KEY_NAME)
         binding.exitBtn.setOnClickListener {
             logOut()
@@ -69,14 +86,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         binding.aboutApp.setOnClickListener {
             AboutAppFragment.newInstance().show(parentFragmentManager.beginTransaction(), AboutAppFragment.TAG)
         }
-        binding.shareBtn.setOnClickListener {
-            share()
-        }
-        binding.rate.setOnClickListener {
-            rate()
-        }
-        binding.communicateWithDeveloper.setOnClickListener {
-            communicateWithDev()
+        binding.shareBtn.setOnClickListener { share() }
+        binding.rate.setOnClickListener { rate() }
+        binding.communicateWithDeveloper.setOnClickListener { communicateWithDev() }
+        binding.newAvatarBtn.setOnClickListener {
+            val intent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            pickImage.launch(intent)
         }
     }
 
@@ -121,6 +138,42 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 R.string.no_emails_client,
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    private fun encodeImage(bitmap: Bitmap): String {
+        val previewWidth = 150
+        val previewHeight = bitmap.height * previewWidth / bitmap.width
+        val previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWidth, previewHeight, false)
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream)
+        val bytes = byteArrayOutputStream.toByteArray()
+        return Base64.encodeToString(bytes, Base64.DEFAULT)
+    }
+
+    private val pickImage = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            if (result.data != null) {
+                val imageUri = result.data!!.data
+                try {
+                    val inputStream =
+                        requireContext().contentResolver.openInputStream(
+                            imageUri!!
+                        )
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    binding.userAvatar.setImageBitmap(bitmap)
+                    encodedImage = encodeImage(bitmap)
+                    preferenceManager.putString(Keys.KEY_IMAGE, encodeImage(bitmap))
+                    viewModel.updateUserAvatar(
+                        preferenceManager.getString(Keys.KEY_JWT) ?: "",
+                        encodeImage(bitmap)
+                    )
+                } catch (exception: FileNotFoundException) {
+                    exception.printStackTrace()
+                }
+            }
         }
     }
 

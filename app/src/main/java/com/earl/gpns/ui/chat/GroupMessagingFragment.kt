@@ -74,6 +74,13 @@ class GroupMessagingFragment(
         if (!groupInfo.isCompanionGroup) {
             binding.groupSettings.visibility = View.GONE
         }
+        with(binding.chatImage) {
+            if (groupInfo.isCompanionGroup) {
+                setImageResource(R.drawable.default_comps_group_image)
+            } else {
+                setImageResource(R.drawable.default_common_group_image)
+            }
+        }
     }
 
     private fun initGroupSocketController() {

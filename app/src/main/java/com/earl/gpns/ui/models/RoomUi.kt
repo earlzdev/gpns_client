@@ -1,6 +1,7 @@
 package com.earl.gpns.ui.models
 
 import android.widget.TextView
+import com.earl.gpns.ui.core.BitmapFromStringDecoder
 import com.earl.gpns.ui.core.Same
 import com.earl.gpns.ui.core.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.rooms.RoomsObservingSocketController
@@ -79,6 +80,9 @@ interface RoomUi : Same<RoomUi> {
             lastMsg.text = lastMessage
             unreadMsgCounter.text = this.unreadMsgCounter.toString()
             lastMsgTime.text = CurrentDateAndTimeGiver().initDateTime(lastMsgTimestamp)
+            if (image.isNotEmpty()) {
+                icon.setImageBitmap(BitmapFromStringDecoder().decode(image))
+            }
         }
 
         override fun chatInfo() = ChatInfo(roomId, title, image, contactOnline, contactLastAuth, lastMessageAuthor)

@@ -7,6 +7,7 @@ import com.earl.gpns.R
 import com.earl.gpns.ui.core.Same
 import com.earl.gpns.domain.TripFormDetails
 import com.earl.gpns.ui.SearchFormsDetails
+import com.earl.gpns.ui.core.BitmapFromStringDecoder
 import com.makeramen.roundedimageview.RoundedImageView
 
 interface TripFormUi : Same<TripFormUi> {
@@ -52,7 +53,6 @@ interface TripFormUi : Same<TripFormUi> {
             scheduleTv: TextView
         ) {
             val context = name.context
-
             name.text = username
             if (companionRole == COMPANION_ROLE) {
                 tripRole.text = context.resources.getString(R.string.compa)
@@ -66,6 +66,9 @@ interface TripFormUi : Same<TripFormUi> {
             fromTv.text = from
             toTv.text = to
             scheduleTv.text = schedule
+            if (userImage.isNotEmpty()) {
+                image.setImageBitmap(BitmapFromStringDecoder().decode(userImage))
+            }
         }
 
         override fun provideDetails() : SearchFormsDetails {

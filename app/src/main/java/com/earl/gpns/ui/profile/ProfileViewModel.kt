@@ -79,4 +79,10 @@ class ProfileViewModel @Inject constructor(
     fun observeCompanionTripFormLiveData(owner: LifecycleOwner, observer: Observer<CompanionFormUi>) {
         companionTripFormLiveData.observe(owner, observer)
     }
+
+    fun updateUserAvatar(token: String, avatar: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.updateUserAvatar(token, avatar)
+        }
+    }
 }

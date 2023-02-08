@@ -13,6 +13,7 @@ import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentCompanionFormDetailsBinding
 import com.earl.gpns.ui.SearchFormsDetails
+import com.earl.gpns.ui.core.BitmapFromStringDecoder
 import com.earl.gpns.ui.models.CompanionDetailsUi
 import com.earl.gpns.ui.models.TripNotificationUi
 import dagger.hilt.android.AndroidEntryPoint
@@ -158,6 +159,7 @@ class CompanionFormDetailsFragment(
         binding.tripTime.text = details.actualTripTime
         binding.price.text = details.ableToPay
         binding.comment.text = details.comment
+        binding.userAvatar.setImageBitmap(BitmapFromStringDecoder().decode(details.userImage))
     }
 
     private fun inviteCompanion() {

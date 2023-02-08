@@ -161,6 +161,8 @@ interface Interactor {
 
     suspend fun clearCompanionFormInLocalDb()
 
+    suspend fun updateUserAvatar(token: String, newImageString: String)
+
     class Base @Inject constructor(
         private val repository: Repository,
         private val socketRepository: SocketsRepository,
@@ -448,6 +450,10 @@ interface Interactor {
 
         override suspend fun clearCompanionFormInLocalDb() {
             localDatabaseRepository.clearCompanionFormInLocalDb()
+        }
+
+        override suspend fun updateUserAvatar(token: String, newImageString: String) {
+            repository.updateUserAvatar(token, newImageString)
         }
     }
 }

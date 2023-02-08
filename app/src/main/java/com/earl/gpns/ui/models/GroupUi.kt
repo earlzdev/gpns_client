@@ -4,6 +4,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.earl.gpns.R
+import com.earl.gpns.ui.core.BitmapFromStringDecoder
 import com.earl.gpns.ui.core.CurrentDateAndTimeGiver
 import com.earl.gpns.ui.core.Same
 import com.makeramen.roundedimageview.RoundedImageView
@@ -67,8 +68,16 @@ interface GroupUi : Same<GroupUi> {
             readIndicator: ImageView
         ) {
             val context = groupTitle.context
+            val bitmapDecoder = BitmapFromStringDecoder()
             if (lastMessageTimestamp.isNotEmpty()) {
                 lastMsgTimestamp.text = CurrentDateAndTimeGiver().initDateTime(lastMessageTimestamp)
+            }
+            when (title) {
+                context.getString(R.string.common_chat) -> img.setImageResource(R.drawable.default_common_group_image)
+                context.getString(R.string.my_comps) -> img.setImageResource(R.drawable.default_comps_group_image)
+            }
+            if (lastMessageAuthorImage.isNotEmpty()) {
+                lastMsgAuthorImg.setImageBitmap(bitmapDecoder.decode(lastMessageAuthorImage))
             }
             groupTitle.text = title
             lastMsg.text = lastMessage

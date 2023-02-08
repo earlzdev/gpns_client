@@ -75,4 +75,6 @@ interface Repository {
     suspend fun leaveFromCompanionGroup(token: String, groupId: String)
 
     suspend fun markTripNotificationAsNotActive(token: String, notificationId: String)
+
+    suspend fun updateUserAvatar(token: String, newImageString: String)
 }
