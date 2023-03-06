@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), NavigationContract {
     }
 
     override fun log(text: String) {
-        Log.d("tag", "log: $text")
+        Log.d("tag", "log: $text ")
     }
 
     companion object {
