@@ -1,6 +1,5 @@
 package com.earl.gpns.domain
 
-import android.util.Log
 import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.data.models.remote.requests.RegisterRequest
 import com.earl.gpns.domain.models.*
@@ -17,7 +16,7 @@ interface Interactor {
 
     suspend fun login(loginRequest: LoginRequest, callback: AuthResultListener)
 
-    suspend fun authenticate(token: String, callback: AuthResultListener)
+    suspend fun authenticate(token: String, callback: RegisterResultListener)
 
     suspend fun fetchUserInfo(token: String) : UserDomain?
 
@@ -177,7 +176,7 @@ interface Interactor {
             repository.login(loginRequest, callback)
         }
 
-        override suspend fun authenticate(token: String, callback: AuthResultListener) {
+        override suspend fun authenticate(token: String, callback: RegisterResultListener) {
             repository.authenticate(token, callback)
         }
 

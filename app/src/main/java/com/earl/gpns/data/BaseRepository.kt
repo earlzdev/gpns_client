@@ -7,6 +7,7 @@ import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.data.retrofit.Service
 import com.earl.gpns.domain.AuthResultListener
+import com.earl.gpns.domain.RegisterResultListener
 import com.earl.gpns.domain.Repository
 import com.earl.gpns.domain.mappers.*
 import com.earl.gpns.domain.models.*
@@ -58,32 +59,33 @@ class BaseRepository @Inject constructor(
                     LoginRequest(
                         registerRequest.email,
                         registerRequest.password
-                    ), callback)
+                    ), callback
+                )
             } else {
                 callback.unknownError(Exception(registerOperationResult))
             }
         } catch (e: HttpException) {
             e.printStackTrace()
-            callback.unauthorized(e)
+            callback.httpError(e.message())
         } catch (e: Exception) {
-            e.printStackTrace()
             callback.unknownError(e)
+            e.printStackTrace()
         }
     }
+
 
     override suspend fun login(loginRequest: LoginRequest, callback: AuthResultListener) {
         try {
             val token = service.login(loginRequest)
             callback.authorized(token.token)
         } catch (e: HttpException) {
-            e.printStackTrace()
-            callback.unauthorized(e)
+            callback.httpError(e.message())
         } catch (e: Exception) {
             callback.unknownError(e)
         }
     }
 
-    override suspend fun authenticate(token: String, callback: AuthResultListener) {
+    override suspend fun authenticate(token: String, callback: RegisterResultListener) {
         try {
             service.authenticate("Bearer $token")
             callback.authorized(KEY_SUCCESS)

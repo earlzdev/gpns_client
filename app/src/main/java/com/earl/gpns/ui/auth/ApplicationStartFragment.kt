@@ -4,15 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.earl.gpns.databinding.FragmentApplicationStartBinding
 import com.earl.gpns.ui.core.BaseFragment
-import com.earl.gpns.databinding.FragmentStartBinding
 
-class StartFragment : BaseFragment<FragmentStartBinding>() {
+class ApplicationStartFragment : BaseFragment<FragmentApplicationStartBinding>() {
 
     override fun viewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ) = FragmentStartBinding.inflate(inflater, container, false)
+    ) = FragmentApplicationStartBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -26,6 +26,6 @@ class StartFragment : BaseFragment<FragmentStartBinding>() {
 
     companion object {
 
-        fun newInstance() = StartFragment()
+        fun newInstance() = ApplicationStartFragment()
     }
 }

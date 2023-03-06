@@ -12,9 +12,9 @@ import com.earl.gpns.R
 import com.earl.gpns.ui.about.FragmentPolicy
 import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.ui.core.SharedPreferenceManager
-import com.earl.gpns.ui.auth.LoginFragment
-import com.earl.gpns.ui.auth.SignUpFragment
-import com.earl.gpns.ui.auth.StartFragment
+import com.earl.gpns.ui.auth.login.LoginFragment
+import com.earl.gpns.ui.auth.register.SignUpFragment
+import com.earl.gpns.ui.auth.ApplicationStartFragment
 import com.earl.gpns.ui.chat.RoomMessengerFragment
 import com.earl.gpns.ui.chat.CompanionGroupSettingsFragment
 import com.earl.gpns.ui.chat.GroupMessagingFragment
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), NavigationContract {
     }
 
     override fun start() {
-        showFragment(StartFragment.newInstance(), start)
+        showFragment(ApplicationStartFragment.newInstance(), start)
     }
 
     override fun login() {

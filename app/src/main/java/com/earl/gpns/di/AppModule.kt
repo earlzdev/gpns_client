@@ -20,6 +20,8 @@ import com.earl.gpns.domain.Repository
 import com.earl.gpns.domain.SocketsRepository
 import com.earl.gpns.domain.mappers.*
 import com.earl.gpns.domain.models.*
+import com.earl.gpns.ui.auth.login.LoginFormValidation
+import com.earl.gpns.ui.auth.register.RegisterFormValidation
 import com.earl.gpns.ui.models.GroupLastMessageUi
 import com.earl.gpns.ui.models.GroupUi
 import com.earl.gpns.ui.models.NewLastMessageInRoomUi
@@ -264,5 +266,17 @@ object AppModule {
             groupLastMessageDomainToUiMapper,
             groupDomainToUiMapper
         )
+    }
+
+    @Singleton
+    @Provides
+    fun provideLoginValidation() : LoginFormValidation {
+        return LoginFormValidation.Base()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRegisterFormValidation() : RegisterFormValidation {
+        return RegisterFormValidation.Base()
     }
 }
