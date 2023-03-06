@@ -7,6 +7,59 @@
     android:background="@drawable/messangers_background"
     android:fitsSystemWindows="true">
 
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/messages_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/chat_info"
+        app:layout_constraintBottom_toTopOf="@id/msg_edittext"
+        android:layout_marginBottom="4dp"
+        tools:listitem="@layout/recycler_sender_message_item"
+        />
+
+    <EditText
+        android:id="@+id/msg_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_ur_msg_text"
+        android:textColorHint="@color/contact_msg_text_color"
+        android:textColor="@color/contact_msg_text_color"
+        android:textSize="14sp"
+        android:fontFamily="@font/montserrat_regular"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/chat_edittext_background"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="20dp"
+        android:paddingVertical="13dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="60dp"
+        />
+
+    <ImageView
+        android:id="@+id/add_file_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/prikrepit_icon"
+        app:layout_constraintTop_toTopOf="@id/msg_edittext"
+        app:layout_constraintBottom_toBottomOf="@id/msg_edittext"
+        app:layout_constraintEnd_toEndOf="@id/msg_edittext"
+        android:layout_marginEnd="20dp"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/send_msg_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/msg_edittext"
+        app:layout_constraintBottom_toBottomOf="@id/msg_edittext"
+        app:layout_constraintEnd_toEndOf="@id/msg_edittext"
+        android:layout_marginEnd="18dp"
+        android:src="@drawable/send_msg"
+        />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/chat_info"
         android:layout_width="match_parent"
@@ -92,56 +145,5 @@
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/messages_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/chat_info"
-        app:layout_constraintBottom_toTopOf="@id/msg_edittext"
-        android:layout_marginBottom="4dp"
-        tools:listitem="@layout/recycler_sender_message_item"
-        />
-
-    <EditText
-        android:id="@+id/msg_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/enter_ur_msg_text"
-        android:textColorHint="@color/contact_msg_text_color"
-        android:textColor="@color/contact_msg_text_color"
-        android:textSize="14sp"
-        android:fontFamily="@font/montserrat_regular"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/chat_edittext_background"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="20dp"
-        android:paddingVertical="13dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="60dp"
-        />
-
-    <ImageView
-        android:id="@+id/add_file_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/prikrepit_icon"
-        app:layout_constraintTop_toTopOf="@id/msg_edittext"
-        app:layout_constraintBottom_toBottomOf="@id/msg_edittext"
-        app:layout_constraintEnd_toEndOf="@id/msg_edittext"
-        android:layout_marginEnd="20dp"
-        android:visibility="gone"
-        />
-
-    <ImageView
-        android:id="@+id/send_msg_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/msg_edittext"
-        app:layout_constraintBottom_toBottomOf="@id/msg_edittext"
-        app:layout_constraintEnd_toEndOf="@id/msg_edittext"
-        android:layout_marginEnd="18dp"
-        android:src="@drawable/send_msg"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

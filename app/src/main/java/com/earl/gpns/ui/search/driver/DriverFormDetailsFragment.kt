@@ -155,7 +155,9 @@ class DriverFormDetailsFragment(
         binding.avaliablePlaces.text = details.passengersCount.toString()
         binding.tripPrice.text = details.tripPrice
         binding.comment.text = details.driverComment
-        binding.userAvatar.setImageBitmap(BitmapFromStringDecoder().decode(details.userImage))
+        if (details.userImage.isNotEmpty()) {
+            binding.userAvatar.setImageBitmap(BitmapFromStringDecoder().decode(details.userImage))
+        }
     }
 
     private fun inviteDriver() {
@@ -215,7 +217,8 @@ class DriverFormDetailsFragment(
 
     companion object {
 
-        fun newInstance(details: SearchFormsDetails, viewRegime: String, notificationId: String) = DriverFormDetailsFragment(details, viewRegime, notificationId)
+        fun newInstance(details: SearchFormsDetails, viewRegime: String, notificationId: String) =
+            DriverFormDetailsFragment(details, viewRegime, notificationId)
         private const val DRIVER_ROLE = "DRIVER_ROLE"
         private const val COMPANION_ROLE = "COMPANION_ROLE"
         private const val INVITE = "INVITE"
