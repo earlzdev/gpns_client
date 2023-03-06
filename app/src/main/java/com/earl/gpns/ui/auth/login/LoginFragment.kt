@@ -11,8 +11,6 @@ import com.earl.gpns.R
 import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.databinding.FragmentLoginBinding
 import com.earl.gpns.domain.AuthResultListener
-import com.earl.gpns.domain.LoginResultListener
-import com.earl.gpns.domain.RegisterResultListener
 import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.ui.core.HttpExceptionMessages
 import com.earl.gpns.ui.core.Keys

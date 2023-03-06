@@ -10,8 +10,6 @@ interface Repository {
 
     suspend fun login(loginRequest: LoginRequest, callback: AuthResultListener)
 
-    suspend fun authenticate(token: String, callback: RegisterResultListener)
-
     suspend fun fetchUsers(token: String) : List<UserDomain>
 
     suspend fun fetchRooms(token: String) : List<RoomDomain>

@@ -7,7 +7,6 @@ import com.earl.gpns.data.models.remote.requests.*
 import com.earl.gpns.data.models.remote.responses.TypingMessageDtoResponse
 import com.earl.gpns.data.retrofit.Service
 import com.earl.gpns.domain.AuthResultListener
-import com.earl.gpns.domain.RegisterResultListener
 import com.earl.gpns.domain.Repository
 import com.earl.gpns.domain.mappers.*
 import com.earl.gpns.domain.models.*
@@ -80,17 +79,6 @@ class BaseRepository @Inject constructor(
             callback.authorized(token.token)
         } catch (e: HttpException) {
             callback.httpError(e.message())
-        } catch (e: Exception) {
-            callback.unknownError(e)
-        }
-    }
-
-    override suspend fun authenticate(token: String, callback: RegisterResultListener) {
-        try {
-            service.authenticate("Bearer $token")
-            callback.authorized(KEY_SUCCESS)
-        } catch (e: HttpException) {
-            callback.unauthorized(e)
         } catch (e: Exception) {
             callback.unknownError(e)
         }

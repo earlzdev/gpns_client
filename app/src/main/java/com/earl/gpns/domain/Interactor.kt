@@ -16,8 +16,6 @@ interface Interactor {
 
     suspend fun login(loginRequest: LoginRequest, callback: AuthResultListener)
 
-    suspend fun authenticate(token: String, callback: RegisterResultListener)
-
     suspend fun fetchUserInfo(token: String) : UserDomain?
 
     suspend fun fetchUsers(token: String) : List<UserDomain>
@@ -174,10 +172,6 @@ interface Interactor {
 
         override suspend fun login(loginRequest: LoginRequest, callback: AuthResultListener) {
             repository.login(loginRequest, callback)
-        }
-
-        override suspend fun authenticate(token: String, callback: RegisterResultListener) {
-            repository.authenticate(token, callback)
         }
 
         override suspend fun fetchUsers(token: String) = repository.fetchUsers(token)

@@ -2,7 +2,6 @@ package com.earl.gpns.ui.auth.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.earl.gpns.domain.RegisterResultListener
 import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.domain.AuthResultListener
 import com.earl.gpns.domain.Interactor
