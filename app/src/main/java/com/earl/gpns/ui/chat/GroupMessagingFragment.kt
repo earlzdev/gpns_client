@@ -7,18 +7,21 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.earl.gpns.R
-import com.earl.gpns.ui.core.BaseFragment
-import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentGroupMessagingBinding
 import com.earl.gpns.domain.webSocketActions.services.GroupMessagingSocketActionsService
+import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.ui.core.CurrentDateAndTimeGiver
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.ui.models.GroupInfo
 import com.earl.gpns.ui.models.GroupMessageUi
 import com.earl.gpns.ui.models.GroupTypingStatusUi
@@ -226,3 +229,4 @@ class GroupMessagingFragment(
         private const val UNREAD = 0
     }
 }
+

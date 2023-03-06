@@ -15,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 //private const val BASE_URL = "http://10.0.2.2:8080/"
 // genymotion
 private const val BASE_URL = "http://10.0.3.2:8080/"
+//private const val BASE_URL = "http://45.12.19.184:8080/"
 
 @Module
 @InstallIn(SingletonComponent::class)

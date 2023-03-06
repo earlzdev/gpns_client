@@ -159,7 +159,9 @@ class CompanionFormDetailsFragment(
         binding.tripTime.text = details.actualTripTime
         binding.price.text = details.ableToPay
         binding.comment.text = details.comment
-        binding.userAvatar.setImageBitmap(BitmapFromStringDecoder().decode(details.userImage))
+        if (details.userImage.isNotEmpty()) {
+            binding.userAvatar.setImageBitmap(BitmapFromStringDecoder().decode(details.userImage))
+        }
     }
 
     private fun inviteCompanion() {
