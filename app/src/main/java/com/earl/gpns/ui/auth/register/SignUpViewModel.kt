@@ -1,9 +1,10 @@
-package com.earl.gpns.ui.auth
+package com.earl.gpns.ui.auth.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.earl.gpns.domain.RegisterResultListener
+import com.earl.gpns.data.models.remote.requests.RegisterRequest
 import com.earl.gpns.domain.AuthResultListener
-import com.earl.gpns.data.models.remote.requests.LoginRequest
 import com.earl.gpns.domain.Interactor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -11,13 +12,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class SignUpViewModel @Inject constructor(
     private val interactor: Interactor
-) : ViewModel() {
+): ViewModel() {
 
-    fun login(request: LoginRequest, callback: AuthResultListener) {
+    fun register(request: RegisterRequest, callback: AuthResultListener) {
         viewModelScope.launch(Dispatchers.IO) {
-            interactor.login(request, callback)
+            interactor.register(request, callback)
         }
     }
 }

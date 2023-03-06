@@ -6,4 +6,5 @@ interface AuthResultListener {
     fun <T> authorized(value: T)
     fun unauthorized(e: HttpException)
     fun unknownError(e: Exception)
+    fun httpError(message: String)
 }

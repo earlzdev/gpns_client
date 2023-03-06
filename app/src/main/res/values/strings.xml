@@ -281,6 +281,24 @@
     <string name="user_invites_u_to_driver_together">%s %s приглашает Вас ездить вместе.</string>
     <string name="new_notification">У Вас новое уведомление!</string>
     <string name="unknown_view_type">Unknown view type</string>
+    <string name="attentoin_alert_message">Это приложение предназначено только для сотрудников одного предприятния. Если Вы не работаете на нем, просьба - отказаться от регистрации и использования приложения. Это необходимо для избежания путаниц при поиске попутчиков. Надеемся на Ваше понимание, спасибо!</string>
+    <string name="attention">Внимание!</string>
+    <string name="i_work_on_d_factory">Я работаю на предприятии</string>
+    <string name="exite">Выйти</string>
+    <string name="field_cannot_be_empty">Это поле не может быть пустым!</string>
+    <string name="login_is_not_correct">Некорректный логин</string>
+    <string name="too_short_password">Слишком короткий пароль</string>
+    <string name="pass_are_not_equlals">Пароли не совпадают!</string>
+    <string name="name_is_too_short">Имя не может быть таким коротким</string>
+    <string name="incorrect_email">Некорректный email адрес</string>
+    <string name="error">Ошибка</string>
+    <string name="user_eamil_exists">Пользователь с таким email адресом уже зарегистрирован</string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="user_username_exists">Пользователь с таким именем уже зарегистрирован</string>
+    <string name="erorr"><![CDATA[Возникла ошибка -> %s]]></string>
+    <string name="auth_error">Ошибка авторизации, попробуйте снова</string>
+    <string name="user_with_such_email_is_not_found">Пользователь с таким email адресом не найден</string>
+    <string name="wrond_pas">Неверный пароль</string>
 
     // spinners
     <string-array name="spinner_drive_from">

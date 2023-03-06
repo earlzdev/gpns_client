@@ -11,18 +11,16 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
-import com.earl.gpns.domain.AuthResultListener
 import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentMainBinding
 import com.earl.gpns.ui.core.BaseFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import retrofit2.HttpException
 import java.util.*
 
 @AndroidEntryPoint
-class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
+class MainFragment : BaseFragment<FragmentMainBinding>() {
 
     private lateinit var viewModel: MainFragmentViewModel
 
@@ -34,7 +32,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
         viewModel = ViewModelProvider(requireActivity())[MainFragmentViewModel::class.java]
         viewPager(requireContext())
         fetchUserInfo()
-        authenticate()
         backPressedCallback()
     }
 
@@ -77,23 +74,6 @@ class MainFragment : BaseFragment<FragmentMainBinding>(), AuthResultListener {
                 preferenceManager.putString(Keys.KEY_USER_ID, it.provideId())
             }
         }
-    }
-
-    private fun authenticate() {
-        navigator.showProgressBar()
-        viewModel.authenticate(preferenceManager.getString(Keys.KEY_JWT) ?: "", this)
-    }
-
-    override fun <T> authorized(value: T) {
-        navigator.hideProgressBar()
-    }
-
-    override fun unauthorized(e: HttpException) {
-        navigator.hideProgressBar()
-    }
-
-    override fun unknownError(e: Exception) {
-        navigator.hideProgressBar()
     }
 
     private fun backPressedCallback() {
