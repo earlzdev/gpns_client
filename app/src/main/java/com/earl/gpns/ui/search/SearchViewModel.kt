@@ -1,16 +1,16 @@
 package com.earl.gpns.ui.search
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.earl.gpns.domain.Interactor
+import com.earl.gpns.domain.mappers.CompanionFormDomainToUiMapper
+import com.earl.gpns.domain.mappers.DriverFormDomainToUiMapper
 import com.earl.gpns.domain.mappers.TripFormDomainToUiMapper
 import com.earl.gpns.domain.mappers.TripNotificationDomainToUiMapper
 import com.earl.gpns.domain.models.TripNotificationDomain
 import com.earl.gpns.domain.webSocketActions.services.SearchingSocketService
+import com.earl.gpns.ui.SearchFormsDetails
 import com.earl.gpns.ui.mappers.TripNotificationUiToDomainMapper
-import com.earl.gpns.ui.models.TripFormUi
-import com.earl.gpns.ui.models.TripNotificationRecyclerItemUi
-import com.earl.gpns.ui.models.TripNotificationUi
+import com.earl.gpns.ui.models.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,11 +26,17 @@ class SearchViewModel @Inject constructor(
     private val interactor: Interactor,
     private val tripFormDomainToUiMapper: TripFormDomainToUiMapper<TripFormUi>,
     private val tripNotificationUiToDomainMapper: TripNotificationUiToDomainMapper<TripNotificationDomain>,
-    private val tripNotificationDomainToUiMapper: TripNotificationDomainToUiMapper<TripNotificationUi>
+    private val tripNotificationDomainToUiMapper: TripNotificationDomainToUiMapper<TripNotificationUi>,
+    private val companionFormDomainToUiMapper: CompanionFormDomainToUiMapper<CompanionFormUi>,
+    private val driverFormDomainToUiMapper: DriverFormDomainToUiMapper<DriverFormUi>
 ) : ViewModel(), SearchingSocketService {
 
     private val tripForms: MutableStateFlow<List<TripFormUi>> = MutableStateFlow(emptyList())
     val _tripForms = tripForms.asStateFlow()
+
+    private val _ownTripForm: MutableStateFlow<TripFormUi?> = MutableStateFlow(null)
+    val ownTripForm = _ownTripForm.asStateFlow()
+
     private val newNotificationsLiveData = MutableLiveData<Int>()
     private val remoteNotificationsList = MutableLiveData<List<TripNotificationUi>>()
     private val localDbNotificationsList = MutableLiveData<List<TripNotificationUi>>()
@@ -40,7 +46,7 @@ class SearchViewModel @Inject constructor(
     private var reactListener: NotificationReactListener? = null
 
     fun initSearchingSocket(token: String, name: String, listener: NotificationReactListener) {
-        fetchAllTripForms(token)
+        fetchAllTripForms(token, name)
         fetchAllNotifications(token)
         reactListener = listener
         username = name
@@ -49,13 +55,16 @@ class SearchViewModel @Inject constructor(
                 true -> {
                     interactor.observeSearchingForms(this@SearchViewModel).onEach { newForm ->
                         if (newForm != null) {
-                            tripForms.value += newForm.map(tripFormDomainToUiMapper)
+                            val formUi = newForm.map(tripFormDomainToUiMapper)
+                            if (formUi.sameUsername(name) || _ownTripForm.value == null) {
+                                _ownTripForm.value = formUi
+                            } else {
+                                tripForms.value += newForm.map(tripFormDomainToUiMapper)
+                            }
                         }
                     }.collect()
                 }
-                else -> {
-                    Log.d("tag", "initSearchingSocket: error")
-                }
+                else -> throw IllegalStateException("Can't set searching trip forms socket service")
             }
         }
     }
@@ -90,7 +99,7 @@ class SearchViewModel @Inject constructor(
     }
 
     override fun updateNotificationsList() {
-
+        // ????
     }
 
     override fun reactOnNewNotification(notification: TripNotificationDomain) {
@@ -126,7 +135,7 @@ class SearchViewModel @Inject constructor(
                         .map { it.mapToUi(tripNotificationDomainToUiMapper) }
                         .map { it.provideTripNotificationUiRecyclerItem() }
                     val existedInviteNotificationsListFromThisUser = existedList.filter {
-                                it.authorName == username
+                        it.authorName == username
                                 && it.receiverName == notification.authorName
                                 && it.type == INVITE
                     }
@@ -145,7 +154,7 @@ class SearchViewModel @Inject constructor(
                         .map { it.mapToUi(tripNotificationDomainToUiMapper) }
                         .map { it.provideTripNotificationUiRecyclerItem() }
                     val existedInviteNotificationsListFromThisUser = existedList.filter {
-                                it.authorName == username
+                        it.authorName == username
                                 && it.receiverName == notification.authorName
                                 && it.type == INVITE
                     }
@@ -158,7 +167,16 @@ class SearchViewModel @Inject constructor(
 
     override fun removeDeletedSearchingFormFromList(username: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            removeDeletedSearchingForm(username)
+            if (tripForms.value.isNotEmpty()) {
+                val form = tripForms.value.find { it.sameUsername(username) }
+                if (form != null) {
+                    tripForms.value -= form
+                }
+            }
+            val isOwnForm = ownTripForm.value?.sameUsername(username)
+            if (isOwnForm == true) {
+                _ownTripForm.value = null
+            }
         }
     }
 
@@ -168,22 +186,17 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun fetchAllTripForms(token: String) {
+    private fun fetchAllTripForms(token: String, username: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val list = interactor.fetchAllTripForms(token).map { it.map(tripFormDomainToUiMapper) }
             withContext(Dispatchers.Main) {
-                tripForms.value += list
-            }
-        }
-    }
-
-    private fun removeDeletedSearchingForm(username: String) {
-        viewModelScope.launch(Dispatchers.Main) {
-            if (tripForms.value.isNotEmpty()) {
-                val form = tripForms.value.find { it.sameUsername(username) }
-                if (form != null) {
-                    tripForms.value -= form
+                list.find { it.sameUsername(username) }.apply {
+                    if (this != null) {
+                        _ownTripForm.value = this
+                    }
                 }
+                val readyList = list.filter { !it.sameUsername(username) }
+                tripForms.value += readyList
             }
         }
     }
@@ -192,6 +205,26 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             interactor.clearNotificationsDb()
             interactor.clearWatchedNotificationsDb()
+        }
+    }
+
+    fun fetchOwnCompanionFormFromLocalDb(nav: (SearchFormsDetails) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.fetchCompanionTripFormFromLocalDb()
+                .mapToUi(companionFormDomainToUiMapper)
+                .provideCompanionDetailsUi().apply {
+                    nav.invoke(this)
+                }
+        }
+    }
+
+    fun fetchOwnDriverFormFromLocalDb(nav: (SearchFormsDetails) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.fetchDriverTripFormFromLocalDb()
+                .mapToUi(driverFormDomainToUiMapper)
+                .provideDriverFormDetailsUi().apply {
+                    nav.invoke(this)
+                }
         }
     }
 

@@ -6,18 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.earl.gpns.R
-import com.earl.gpns.ui.core.BaseFragment
-import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentSearchBinding
 import com.earl.gpns.domain.mappers.TripNotificationDomainToUiMapper
 import com.earl.gpns.ui.SearchFormsDetails
+import com.earl.gpns.ui.core.BaseFragment
+import com.earl.gpns.ui.core.BitmapFromStringDecoder
+import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.ui.models.TripNotificationUi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -56,6 +60,45 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
         viewModel.observeUnwatchedNotificationsLiveData(this) {
             binding.newNotificationIcon.isVisible = it == NEW_NOTIFICATION
         }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.ownTripForm.onEach { tripForm ->
+                    val details = tripForm?.provideTripCardDetails()
+                    if (details != null) {
+                        binding.usersOwnSearchForm.visibility = View.VISIBLE
+                        binding.searchCard.userName.text = details.name
+                        if (details.image.isNotEmpty()) {
+                            binding.searchCard.userAvatar.setImageBitmap(BitmapFromStringDecoder().decode(details.image))
+                        }
+                        if (details.tripRole == COMPANION_ROLE) {
+                            binding.searchCard.companionIcon.isVisible = true
+                            binding.searchCard.driverIcon.isVisible = false
+                            binding.searchCard.tripRole.text = requireContext().resources.getString(R.string.compa)
+                        } else {
+                            binding.searchCard.companionIcon.isVisible = false
+                            binding.searchCard.driverIcon.isVisible = true
+                            binding.searchCard.tripRole.text = requireContext().resources.getString(R.string.driv)
+                        }
+                        binding.searchCard.fromEd.text = details.fromTv
+                        binding.searchCard.driveToEd.text = details.toTv
+                        binding.searchCard.schduleEd.text = details.scheduleTv
+                        binding.searchCard.lookTripDetailsBtn.setOnClickListener {
+                            if (preferenceManager.getBoolean(Keys.IS_DRIVER)) {
+                                viewModel.fetchOwnDriverFormFromLocalDb {
+                                    navigator.driverFormDetails(it, OWN_TRIP_FORM, "")
+                                }
+                            } else {
+                                viewModel.fetchOwnCompanionFormFromLocalDb {
+                                    navigator.companionFormDetails(it, OWN_TRIP_FORM, "")
+                                }
+                            }
+                        }
+                    } else {
+                        binding.usersOwnSearchForm.visibility = View.GONE
+                    }
+                }.collect()
+            }
+        }
     }
 
     private fun recycler() {
@@ -82,7 +125,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
     private fun initSearchingSocket() {
         viewModel.initSearchingSocket(
             preferenceManager.getString(Keys.KEY_JWT) ?: "",
-        preferenceManager.getString(Keys.KEY_NAME) ?: "",
+            preferenceManager.getString(Keys.KEY_NAME) ?: "",
             this
         )
     }
@@ -108,5 +151,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
         private const val COMPANION_ROLE = "COMPANION_ROLE"
         private const val DETAILS = "DETAILS"
         private const val NEW_NOTIFICATION = 1
+        private const val OWN_TRIP_FORM = "OWN_TRIP_FORM"
     }
 }

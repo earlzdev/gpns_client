@@ -4,10 +4,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.earl.gpns.R
-import com.earl.gpns.ui.core.Same
 import com.earl.gpns.domain.TripFormDetails
 import com.earl.gpns.ui.SearchFormsDetails
 import com.earl.gpns.ui.core.BitmapFromStringDecoder
+import com.earl.gpns.ui.core.Same
 import com.makeramen.roundedimageview.RoundedImageView
 
 interface TripFormUi : Same<TripFormUi> {
@@ -25,11 +25,13 @@ interface TripFormUi : Same<TripFormUi> {
         scheduleTv: TextView
     )
 
-    fun provideDetails() : SearchFormsDetails
+    fun provideDetails(): SearchFormsDetails
 
-    fun provideTripRole() : String
+    fun provideTripRole(): String
 
-    fun sameUsername(name: String) : Boolean
+    fun sameUsername(name: String): Boolean
+
+    fun provideTripCardDetails(): TripCardDetails
 
     class Base(
         private val username: String,
@@ -71,7 +73,7 @@ interface TripFormUi : Same<TripFormUi> {
             }
         }
 
-        override fun provideDetails() : SearchFormsDetails {
+        override fun provideDetails(): SearchFormsDetails {
             return if (companionRole == COMPANION_ROLE) {
                 details as CompanionFormDetailsUi
                 details.provideCompanionFormDetails(username, userImage, from, to, schedule)
@@ -84,9 +86,13 @@ interface TripFormUi : Same<TripFormUi> {
         override fun provideTripRole() = companionRole
 
         override fun sameUsername(name: String) = name == username
-    }
 
-    companion object {
-        private const val COMPANION_ROLE = "COMPANION_ROLE"
+        override fun provideTripCardDetails() = TripCardDetails(
+            username, userImage, companionRole, from, to, schedule
+        )
+
+        companion object {
+            private const val COMPANION_ROLE = "COMPANION_ROLE"
+        }
     }
 }
