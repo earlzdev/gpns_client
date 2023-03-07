@@ -17,12 +17,12 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.earl.gpns.R
-import com.earl.gpns.ui.core.BaseFragment
-import com.earl.gpns.ui.core.Keys
 import com.earl.gpns.databinding.FragmentProfileBinding
-import com.earl.gpns.ui.about.AboutAppFragment
 import com.earl.gpns.ui.SearchFormsDetails
+import com.earl.gpns.ui.about.AboutAppFragment
+import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.ui.core.BitmapFromStringDecoder
+import com.earl.gpns.ui.core.Keys
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
@@ -111,7 +111,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         email.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.search_comps_app))
         email.putExtra(
             Intent.EXTRA_TEXT, getString(R.string.recommend) +
-                "\n ${"https://play.google.com/store/apps/details?id=${requireActivity().packageName}"}")
+                    "\n ${"https://play.google.com/store/apps/details?id=${requireActivity().packageName}"}")
         email.type = getString(R.string.msg_interface)
         startActivity(Intent.createChooser(email, getString(R.string.choose_email_clinet)))
     }

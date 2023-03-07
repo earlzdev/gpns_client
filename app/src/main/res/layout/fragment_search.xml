@@ -61,11 +61,60 @@
         android:layout_marginEnd="30dp"
         />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/users_own_search_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/image"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/users_form_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ur_form_text"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/montesserat_medium"
+            android:layout_marginStart="@dimen/margin1"
+            android:layout_marginTop="@dimen/margin1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <include
+            android:id="@+id/search_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/recycler_search_item"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="@dimen/margin1"
+            app:layout_constraintTop_toBottomOf="@id/users_form_header"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="5dp"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/search_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/search_text_"
+        android:textColor="@color/white"
+        android:fontFamily="@font/montesserat_medium"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/users_own_search_form"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/margin1"
+        android:layout_marginStart="@dimen/margin1"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_trip_forms"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/image"
+        app:layout_constraintTop_toBottomOf="@id/search_text"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/recycler_search_item"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

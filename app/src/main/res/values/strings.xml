@@ -299,6 +299,8 @@
     <string name="auth_error">Ошибка авторизации, попробуйте снова</string>
     <string name="user_with_such_email_is_not_found">Пользователь с таким email адресом не найден</string>
     <string name="wrond_pas">Неверный пароль</string>
+    <string name="ur_form_text">Ваша форма:</string>
+    <string name="search_text_">Поиск:</string>
 
     // spinners
     <string-array name="spinner_drive_from">
