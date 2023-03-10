@@ -31,6 +31,7 @@
         android:background="@color/white_alpha_5"
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="@color/grey_tab_unselected"
+        app:tabIndicatorColor="@android:color/transparent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

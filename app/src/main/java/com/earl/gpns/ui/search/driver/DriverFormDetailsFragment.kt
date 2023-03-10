@@ -173,8 +173,8 @@ class DriverFormDetailsFragment(
             if (!notificationSent) {
                 if (!usersListInCompanionGroup.contains(binding.userName.text.toString())) {
                     if (existedNotification == null || existedNotification.active != ACTIVE) {
-                        if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) && !preferenceManager.getBoolean(
-                                Keys.IS_DRIVER)) {
+                        if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) /*&& !preferenceManager.getBoolean(
+                                Keys.IS_DRIVER)*/) {
                             val notificationId = UUID.randomUUID().toString()
                             val notification = TripNotificationUi.Base(
                                 notificationId,

@@ -83,14 +83,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), OnSearchFormClickL
                         binding.searchCard.driveToEd.text = details.toTv
                         binding.searchCard.schduleEd.text = details.scheduleTv
                         binding.searchCard.lookTripDetailsBtn.setOnClickListener {
-                            if (preferenceManager.getBoolean(Keys.IS_DRIVER)) {
-                                viewModel.fetchOwnDriverFormFromLocalDb {
-                                    navigator.driverFormDetails(it, OWN_TRIP_FORM, "")
-                                }
+                            if (tripForm.provideTripRole() == COMPANION_ROLE) {
+                                navigator.companionFormDetails(tripForm.provideDetails(), OWN_TRIP_FORM, "")
                             } else {
-                                viewModel.fetchOwnCompanionFormFromLocalDb {
-                                    navigator.companionFormDetails(it, OWN_TRIP_FORM, "")
-                                }
+                                navigator.driverFormDetails(tripForm.provideDetails(), OWN_TRIP_FORM, "")
                             }
                         }
                     } else {

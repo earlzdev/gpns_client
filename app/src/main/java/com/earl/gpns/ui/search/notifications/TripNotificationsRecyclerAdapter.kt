@@ -45,44 +45,32 @@ class TripNotificationsRecyclerAdapter(
             val tripRoleInviter = if (item.authorTripRole == COMPANION_ROLE) context.getString(R.string.comp) else context.getString(R.string.driver)
             val tripRoleInviting = if (item.receiverTripRole == COMPANION_ROLE) context.getString(R.string.comp_s) else context.getString(R.string.driver_s)
             if (item.type == AGREED && item.receiverName != username) {
-//                binding.inviteText.text = "Вы приняли приглашение $tripRoleInviting ${item.receiverName} ездить вместе и были добавлены в группу попутчиков, где можно детальнее договориться о поездке."
                 binding.inviteText.text = context.getString(R.string.u_agreed_to_tide_together, tripRoleInviting, item.receiverName)
             } else if (item.type == AGREED && item.receiverName == username) {
-//                binding.inviteText.text = "$tripRoleInviter ${item.authorName} принял Ваше приглашение ездить вместе. Вы добавлены в совместную группу попутчиков, где можно детальнее договориться о поездке."
                 binding.inviteText.text = context.getString(R.string.user_agreed, tripRoleInviter, item.authorName)
             } else if (item.type == DELETED_DRIVER_FORM && item.authorName != username) {
-//                binding.inviteText.text = "Водитель ${item.authorName}, с которым Вы ездили вместе, удалил свою анкету. Предлагаем найти нового водителя."
                 binding.inviteText.text = context.getString(R.string.ur_driver_deleted_form, item.authorName)
             } else if (item.type == DELETED_DRIVER_FORM && item.authorName == username) {
                 binding.inviteText.text = context.getString(R.string.u_deleted_ur_driver_form)
             } else if (item.type == REMOVED_COMPANION_FROM_GROUP && item.receiverName == username) {
-//                binding.inviteText.text = "$tripRoleInviter ${item.authorName} убрал Вас из совместной группы попутчиков. Найдите другого водителя"
                 binding.inviteText.text = context.getString(R.string.u_was_deleted_from_comp_group, tripRoleInviter, item.authorName)
             } else if (item.type == REMOVED_COMPANION_FROM_GROUP && item.receiverName != username) {
-//                binding.inviteText.text = "Вы убрали ${item.receiverName} из совместной группы попутчиков"
                 binding.inviteText.text = context.getString(R.string.u_deleted_comp_from_group, item.receiverName)
             } else if (item.type == COMPANION_LEAVED_GROUP && item.receiverName == username) {
-//                binding.inviteText.text = "$tripRoleInviter ${item.authorName} покинул группу попутчиков"
                 binding.inviteText.text = context.getString(R.string.comp_leaved_comp_groupp, tripRoleInviter, item.authorName)
             } else if (item.type == COMPANION_LEAVED_GROUP && item.receiverName != username) {
-//                binding.inviteText.text = "Вы покинули группу попутчиков $tripRoleInviting ${item.receiverName}"
                 binding.inviteText.text = context.getString(R.string.u_leaved_group_of_driver, tripRoleInviting, item.receiverName)
             } else if (item.type == DISAGREED && item.authorTripRole == COMPANION_ROLE && item.receiverName == username) {
-//                binding.inviteText.text = "Попутчик ${item.authorName} отказался ездить с Вами вместе"
                 binding.inviteText.text = context.getString(R.string.comp_denied, item.authorName)
             } else if (item.type == DISAGREED && item.authorTripRole == DRIVER_ROLE && item.receiverName == username) {
-//                binding.inviteText.text = "Водитель ${item.authorName} отказался ездить с Вами вместе"
                 binding.inviteText.text = context.getString(R.string.driver_deined, item.authorName)
             } else if (item.type == DISAGREED && item.receiverName != username) {
-//                binding.inviteText.text = "Вы отказались ездить вместе с ${item.receiverName}"
                 binding.inviteText.text = context.getString(R.string.u_denied_to_driver_with, item.receiverName)
             } else {
                 if (item.authorName == username) {
-//                        binding.inviteText.text = "Вы пригласили $tripRoleInviting ${item.receiverName} ездить вместе."
                     binding.inviteText.text = context.getString(R.string.u_invited_to_drive, tripRoleInviting, item.receiverName)
                 } else {
-//                        binding.inviteText.text = "$tripRoleInviter ${item.authorName} приглашает Вас ездить вместе."
-                    binding.inviteText.text = context.getString(R.string.user_invites_u_to_driver_together, tripRoleInviter, item.authorName)
+                    binding.inviteText.text = context.getString(R.string.user_invites_u_to_driver_together, item.authorName)
                 }
             }
             binding.timestamp.text = item.timestamp
