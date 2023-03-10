@@ -31,10 +31,10 @@ class TripNotificationsRecyclerAdapter(
         val item = getItem(position)
         holder.bind(item)
         holder.itemView.setOnClickListener {
-            if (item.authorName == username && item.authorTripRole == tripRole) {
+            if (item.authorName == username /*&& item.authorTripRole == tripRole*/) {
                 clickListener.showNotificationDetails(item.id, item.receiverName, item.receiverTripRole, item.watchable == 1)
             } else {
-                clickListener.showNotificationDetails(item.id, item.authorName, item.authorTripRole, item.watchable == 1)
+                clickListener.showNotificationDetails(item.id, item.authorName, item.receiverTripRole, item.watchable == 1)
             }
         }
     }
@@ -70,7 +70,7 @@ class TripNotificationsRecyclerAdapter(
                 if (item.authorName == username) {
                     binding.inviteText.text = context.getString(R.string.u_invited_to_drive, tripRoleInviting, item.receiverName)
                 } else {
-                    binding.inviteText.text = context.getString(R.string.user_invites_u_to_driver_together, item.authorName)
+                    binding.inviteText.text = context.getString(R.string.user_invites_u_to_driver_together, tripRoleInviter, item.authorName)
                 }
             }
             binding.timestamp.text = item.timestamp

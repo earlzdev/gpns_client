@@ -54,12 +54,8 @@ class DriverFormDetailsFragment(
         }
         binding.seggustDriveTogether.setOnClickListener {
             when(viewRegime) {
-                NOTIFICATION -> {
-                    acceptDriverToRideTogether(binding.userName.text.toString())
-                }
-                DETAILS -> {
-                    inviteDriver()
-                }
+                NOTIFICATION -> acceptDriverToRideTogether(binding.userName.text.toString())
+                DETAILS -> inviteDriver()
             }
         }
         binding.deny.setOnClickListener {
@@ -173,8 +169,7 @@ class DriverFormDetailsFragment(
             if (!notificationSent) {
                 if (!usersListInCompanionGroup.contains(binding.userName.text.toString())) {
                     if (existedNotification == null || existedNotification.active != ACTIVE) {
-                        if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM) /*&& !preferenceManager.getBoolean(
-                                Keys.IS_DRIVER)*/) {
+                        if (preferenceManager.getBoolean(Keys.HAS_SEARCH_FORM)) {
                             val notificationId = UUID.randomUUID().toString()
                             val notification = TripNotificationUi.Base(
                                 notificationId,

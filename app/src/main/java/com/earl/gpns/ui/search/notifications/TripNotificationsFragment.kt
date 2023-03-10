@@ -89,7 +89,6 @@ class TripNotificationsFragment : BaseFragment<FragmentNotificationsBinding>(), 
                     }
                 }
             }
-        } else {
         }
     }
 

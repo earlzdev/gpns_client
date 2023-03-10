@@ -56,7 +56,7 @@ class SearchViewModel @Inject constructor(
                     interactor.observeSearchingForms(this@SearchViewModel).onEach { newForm ->
                         if (newForm != null) {
                             val formUi = newForm.map(tripFormDomainToUiMapper)
-                            if (formUi.sameUsername(name) || _ownTripForm.value == null) {
+                            if (formUi.sameUsername(name) && _ownTripForm.value == null) {
                                 _ownTripForm.value = formUi
                             } else {
                                 tripForms.value += newForm.map(tripFormDomainToUiMapper)
@@ -205,26 +205,6 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             interactor.clearNotificationsDb()
             interactor.clearWatchedNotificationsDb()
-        }
-    }
-
-    fun fetchOwnCompanionFormFromLocalDb(nav: (SearchFormsDetails) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            interactor.fetchCompanionTripFormFromLocalDb()
-                .mapToUi(companionFormDomainToUiMapper)
-                .provideCompanionDetailsUi().apply {
-                    nav.invoke(this)
-                }
-        }
-    }
-
-    fun fetchOwnDriverFormFromLocalDb(nav: (SearchFormsDetails) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            interactor.fetchDriverTripFormFromLocalDb()
-                .mapToUi(driverFormDomainToUiMapper)
-                .provideDriverFormDetailsUi().apply {
-                    nav.invoke(this)
-                }
         }
     }
 
