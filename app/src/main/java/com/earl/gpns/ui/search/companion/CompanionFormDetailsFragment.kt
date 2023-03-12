@@ -98,6 +98,7 @@ class CompanionFormDetailsFragment(
                     preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, true)
                     viewModel.insertNewUserIntoLocalDbCompGroup(companionUsername)
                     isInvitationAnswered = true
+                    Toast.makeText(requireContext(), getString(R.string.u_accepted_to_ride_together), Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -126,6 +127,7 @@ class CompanionFormDetailsFragment(
                     companionUsername
                 )
                 isInvitationAnswered = true
+                Toast.makeText(requireContext(), getString(R.string.u_disagreed_to_ride_together), Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), getString(R.string.alread_answered_or_not_active), Toast.LENGTH_SHORT).show()
             }

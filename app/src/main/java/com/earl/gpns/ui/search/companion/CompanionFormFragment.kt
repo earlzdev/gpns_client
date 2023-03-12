@@ -144,7 +144,7 @@ class CompanionFormFragment : BaseFragment<FragmentCompanionFormBinding>() {
                 form
             )
             viewModel.insertNewCompanionTripFormIntoLocalDb(form)
-            Toast.makeText(requireContext(), R.string.invite_sent, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.comp_form_successully_sent), Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), getString(R.string.u_already_have_a_form), Toast.LENGTH_SHORT).show()
         }

@@ -1,6 +1,5 @@
 package com.earl.gpns.ui.search.notifications
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.earl.gpns.domain.Interactor
 import com.earl.gpns.domain.mappers.CompanionFormDomainToUiMapper
@@ -36,14 +35,14 @@ class TripNotificationsViewModel @Inject constructor(
 
     fun fetchNotifications(token: String, username: String) {
         viewModelScope.launch(Dispatchers.IO) {
-
             val remoteList = interactor.fetchAllTripNotifications(token)
-
-            val recyclerList = remoteList.map { it.mapToUi(tripNotificationDomainToUiMapper) }.map { it.provideTripNotificationUiRecyclerItem() }
+            val recyclerList = remoteList
+                .map { it.mapToUi(tripNotificationDomainToUiMapper) }
+                .map { it.provideTripNotificationUiRecyclerItem() }
             val watchedNotificationsIdsList = interactor.fetchAllWatchedNotificationsIds()
             withContext(Dispatchers.Main) {
                 tripNotificationsLiveData.value = recyclerList.onEach {
-                    if (watchedNotificationsIdsList.contains(it.id) /*|| it.authorName == username*/) {
+                    if (watchedNotificationsIdsList.contains(it.id)) {
                         it.read = 1
                     } else {
                         viewModelScope.launch(Dispatchers.IO) {
@@ -66,14 +65,14 @@ class TripNotificationsViewModel @Inject constructor(
 //        }
 //    }
 
-    private suspend fun fetchAllWatchedNotificationsIdsList() : List<String> {
-        return viewModelScope.async(Dispatchers.IO) {
-            val list = interactor.fetchAllWatchedNotificationsIds()
-            withContext(Dispatchers.Main) {
-                return@withContext list
-            }
-        }.await()
-    }
+//    private suspend fun fetchAllWatchedNotificationsIdsList() : List<String> {
+//        return viewModelScope.async(Dispatchers.IO) {
+//            val list = interactor.fetchAllWatchedNotificationsIds()
+//            withContext(Dispatchers.Main) {
+//                return@withContext list
+//            }
+//        }.await()
+//    }
 
     fun fetchCompanionForm(token: String, username: String) {
         viewModelScope.launch(Dispatchers.IO) {

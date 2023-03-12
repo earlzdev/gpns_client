@@ -64,6 +64,12 @@ class CompanionGroupSettingsViewModel @Inject constructor(
         }
     }
 
+    fun clearCompanionsLocalDb() {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.clearLocalDbCompanionGroupUsersList()
+        }
+    }
+
     companion object {
         private const val INVITE = "INVITE"
         private const val ACTIVE = 1

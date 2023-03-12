@@ -9,9 +9,9 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.earl.gpns.R
+import com.earl.gpns.databinding.FragmentCompanionGroupSettingsBinding
 import com.earl.gpns.ui.core.BaseFragment
 import com.earl.gpns.ui.core.Keys
-import com.earl.gpns.databinding.FragmentCompanionGroupSettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -74,27 +74,25 @@ class CompanionGroupSettingsFragment(
             }
             builder.show()
         } else {
-            Toast.makeText(requireContext(), getString(R.string.u_cant_delete_this_user), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.only_creator_of_comp_group_can_remove_users), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun leaveCompanionGroup() {
-        if (!preferenceManager.getBoolean(Keys.IS_DRIVER) && groupId != preferenceManager.getString(
-                Keys.KEY_USER_ID)) {
+        if (groupId != preferenceManager.getString(Keys.KEY_USER_ID)) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle(getString(R.string.agree_the_action))
-            builder.setMessage(R.string.r_u_really_want_to_leave_comp_from_group)
-            builder.setPositiveButton(R.string.yes) { dialog, which ->
+            builder.setMessage(getString(R.string.do_u_really_want_to_leave_this_comp_group))
+            builder.setPositiveButton(R.string.yes) { _, _ ->
                 viewModel.leaveFromCompanionGroup(
                     preferenceManager.getString(Keys.KEY_JWT) ?: "",
                     groupId
                 )
-                onDestroy()
+                viewModel.clearCompanionsLocalDb()
                 preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, false)
                 navigator.popBackStackToFragment(mainFragment)
             }
-            builder.setNegativeButton(R.string.no) { dialog, which ->
-            }
+            builder.setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss()}
             builder.show()
         } else {
             Toast.makeText(requireContext(), getString(R.string.u_cant_leave_ur_group), Toast.LENGTH_SHORT).show()
