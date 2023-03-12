@@ -259,7 +259,7 @@
     <string name="place_u_from">Выберите место, откуда Вы выезжаете</string>
     <string name="place_u_drive">Выберите место, до которого доезжаете</string>
     <string name="time_u_drive">Выберите время, в течение которого Вы будете ездить по этому маршруту</string>
-    <string name="form_sent">Форма отправлена</string>
+    <string name="form_sent">Форма водителя успешно отправлена</string>
     <string name="still_have_comp_form">У Вас уже есть форма</string>
     <string name="anothera">Другая</string>
     <string name="car_mark">Укажите марку Вашего автомобиля</string>
@@ -301,6 +301,11 @@
     <string name="wrond_pas">Неверный пароль</string>
     <string name="ur_form_text">Ваша форма:</string>
     <string name="search_text_">Поиск:</string>
+    <string name="do_u_really_want_to_leave_this_comp_group">Вы действительно хотите покинуть эту группу попутчиков?</string>
+    <string name="only_creator_of_comp_group_can_remove_users">Убирать попутчиков из группы может только ее создатель</string>
+    <string name="u_accepted_to_ride_together">Вы согласились ездить вместе</string>
+    <string name="u_disagreed_to_ride_together">Вы отказались ездить вместе</string>
+    <string name="comp_form_successully_sent">Форма попутчика успешно отправлена</string>
 
     // spinners
     <string-array name="spinner_drive_from">

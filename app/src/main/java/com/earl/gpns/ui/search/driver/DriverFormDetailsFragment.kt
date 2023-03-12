@@ -78,7 +78,8 @@ class DriverFormDetailsFragment(
         } else {
             val existedList = viewModel.provideExistedNotificationsListLiveData()
             if (existedList?.find { it.provideId() == notificationId && it.isActive()} != null) {
-                if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP)) {
+                if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP) && !preferenceManager.getBoolean(Keys.IS_DRIVER)
+                    || preferenceManager.getBoolean(Keys.IS_DRIVER)) {
                     viewModel.acceptDriverToRideTogether(
                         preferenceManager.getString(Keys.KEY_JWT) ?: "",
                         driverUsername
@@ -90,6 +91,7 @@ class DriverFormDetailsFragment(
                     preferenceManager.putBoolean(Keys.IS_STILL_IN_COMP_GROUP, true)
                     viewModel.insertNewUserIntoLocalDbCompGroup(driverUsername)
                     isInvitationAnswered = true
+                    Toast.makeText(requireContext(), getString(R.string.u_accepted_to_ride_together), Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(requireContext(), getString(R.string.u_hav_alreragy_ride), Toast.LENGTH_SHORT).show()
                 }
@@ -114,6 +116,7 @@ class DriverFormDetailsFragment(
                     driverUsername
                 )
                 isInvitationAnswered = true
+                Toast.makeText(requireContext(), getString(R.string.u_disagreed_to_ride_together), Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), getString(R.string.alread_answered_or_not_active), Toast.LENGTH_SHORT).show()
             }
@@ -131,9 +134,7 @@ class DriverFormDetailsFragment(
                 binding.seggustDriveTogether.visibility = View.GONE
                 binding.deny.visibility = View.GONE
             }
-            DETAILS -> {
-
-            }
+            DETAILS -> {  }
             OWN_TRIP_FORM -> {
                 binding.seggustDriveTogether.visibility = View.GONE
                 binding.deny.visibility = View.GONE
@@ -165,7 +166,8 @@ class DriverFormDetailsFragment(
                     && it.type == INVITE
                     && it.active == ACTIVE
         }
-        if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP)) {
+        if (!preferenceManager.getBoolean(Keys.IS_STILL_IN_COMP_GROUP) && !preferenceManager.getBoolean(Keys.IS_DRIVER)
+            || preferenceManager.getBoolean(Keys.IS_DRIVER)) {
             if (!notificationSent) {
                 if (!usersListInCompanionGroup.contains(binding.userName.text.toString())) {
                     if (existedNotification == null || existedNotification.active != ACTIVE) {
@@ -175,7 +177,7 @@ class DriverFormDetailsFragment(
                                 notificationId,
                                 preferenceManager.getString(Keys.KEY_NAME) ?: "",
                                 binding.userName.text.toString(),
-                                COMPANION_ROLE,
+                                if (preferenceManager.getBoolean(Keys.IS_DRIVER)) DRIVER_ROLE else COMPANION_ROLE,
                                 DRIVER_ROLE,
                                 INVITE,
                                 "",

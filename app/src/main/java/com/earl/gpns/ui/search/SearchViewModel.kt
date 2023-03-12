@@ -59,7 +59,7 @@ class SearchViewModel @Inject constructor(
                             if (formUi.sameUsername(name) && _ownTripForm.value == null) {
                                 _ownTripForm.value = formUi
                             } else {
-                                tripForms.value += newForm.map(tripFormDomainToUiMapper)
+                                tripForms.value += formUi
                             }
                         }
                     }.collect()

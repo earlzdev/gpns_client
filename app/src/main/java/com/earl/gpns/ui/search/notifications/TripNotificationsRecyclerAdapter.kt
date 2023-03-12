@@ -31,10 +31,10 @@ class TripNotificationsRecyclerAdapter(
         val item = getItem(position)
         holder.bind(item)
         holder.itemView.setOnClickListener {
-            if (item.authorName == username /*&& item.authorTripRole == tripRole*/) {
+            if (item.authorName == username) {
                 clickListener.showNotificationDetails(item.id, item.receiverName, item.receiverTripRole, item.watchable == 1)
             } else {
-                clickListener.showNotificationDetails(item.id, item.authorName, item.receiverTripRole, item.watchable == 1)
+                clickListener.showNotificationDetails(item.id, item.authorName, item.authorTripRole, item.watchable == 1)
             }
         }
     }
