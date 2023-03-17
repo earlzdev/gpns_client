@@ -13,7 +13,6 @@ import com.earl.gpns.ui.models.TripNotificationRecyclerItemUi
 import com.earl.gpns.ui.models.TripNotificationUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -53,26 +52,6 @@ class TripNotificationsViewModel @Inject constructor(
             }
         }
     }
-
-//    fun insertNotificationIdIntoDb(id: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val existedList = fetchAllWatchedNotificationsIdsList()
-//            Log.d("tag", "insertNotificationIdIntoDb: existed list -> $existedList")
-//            if (!existedList.contains(id)) {
-//                Log.d("tag", "insertNotificationIdIntoDb: INSERTED NEW NOTIFICATION TRIPNOTIFICATIONVIEWIEWMODEL")
-//                interactor.insertNewWatchedNotificationId(id)
-//            }
-//        }
-//    }
-
-//    private suspend fun fetchAllWatchedNotificationsIdsList() : List<String> {
-//        return viewModelScope.async(Dispatchers.IO) {
-//            val list = interactor.fetchAllWatchedNotificationsIds()
-//            withContext(Dispatchers.Main) {
-//                return@withContext list
-//            }
-//        }.await()
-//    }
 
     fun fetchCompanionForm(token: String, username: String) {
         viewModelScope.launch(Dispatchers.IO) {
